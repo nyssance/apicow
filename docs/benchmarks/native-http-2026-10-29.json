@@ -1,0 +1,251 @@
+{
+  "measuredAt": "2026-10-28T19:31:32.690Z",
+  "revision": "f16429a84116b80a36fca55d83d2ff57640fa272",
+  "workingTreeDirty": false,
+  "platform": "darwin",
+  "arch": "arm64",
+  "osRelease": "27.2.0",
+  "cpu": "Apple M4",
+  "build": "debug Wry + hasgard-testing",
+  "scope": "local HTTP 127.0.0.1; ephemeral Rust RPC; no UI render timing; native elapsed has millisecond precision; bridge includes CLI startup, IPC and body JSON transfer; no upstream comparison",
+  "rows": [
+    {
+      "bytes": 1024,
+      "warmups": 4,
+      "iterations": 20,
+      "engineMs": {
+        "min": 1,
+        "median": 1,
+        "p95": 1,
+        "max": 2
+      },
+      "bridgeMs": {
+        "min": 14.018,
+        "median": 14.71,
+        "p95": 15.175,
+        "max": 15.234
+      },
+      "samples": [
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.745
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.84
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 15.234
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 15.165
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.628
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.647
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 15.175
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 15.042
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.505
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.517
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 15.013
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.468
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.718
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.79
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.71
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.447
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.313
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.24
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.018
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 14.424
+        }
+      ]
+    },
+    {
+      "bytes": 65536,
+      "warmups": 4,
+      "iterations": 20,
+      "engineMs": {
+        "min": 1,
+        "median": 2,
+        "p95": 2,
+        "max": 2
+      },
+      "bridgeMs": {
+        "min": 36.324,
+        "median": 37.13,
+        "p95": 37.998,
+        "max": 38.187
+      },
+      "samples": [
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.402
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 36.443
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 37.241
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.486
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 36.905
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 37.088
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 36.629
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 36.427
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 38.187
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 36.324
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 36.905
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 36.784
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 37.697
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.728
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.998
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.587
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.757
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 36.992
+        },
+        {
+          "engineMs": 2,
+          "headersMs": 1,
+          "bridgeMs": 37.008
+        },
+        {
+          "engineMs": 1,
+          "headersMs": 1,
+          "bridgeMs": 37.13
+        }
+      ]
+    }
+  ]
+}
