@@ -1438,7 +1438,9 @@ pub fn run() {
 
                     if cfg!(feature = "updater") {
                         // Run update check whenever the window is focused
-                        let w = app_handle.get_webview_window(&label).unwrap();
+                        let Some(w) = app_handle.get_webview_window(&label) else {
+                            return;
+                        };
                         let h = app_handle.clone();
                         tauri::async_runtime::spawn(async move {
                             let settings = w.db().get_settings();

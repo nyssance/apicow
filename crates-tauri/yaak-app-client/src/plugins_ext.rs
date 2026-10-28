@@ -424,7 +424,10 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             }
             RunEvent::WindowEvent { event: WindowEvent::Focused(true), label, .. } => {
                 // Check for plugin updates on window focus
-                let w = app.get_webview_window(&label).unwrap();
+                // Focus events can outlive a short-lived OAuth window.
+                let Some(w) = app.get_webview_window(&label) else {
+                    return;
+                };
                 let h = app.clone();
                 tauri::async_runtime::spawn(async move {
                     tokio::time::sleep(Duration::from_secs(3)).await;

@@ -126,3 +126,12 @@
 当前仍不是最佳：尚无与原版 Yaak 的同机性能对比；浏览器 OAuth/PKCE、其余认证、SOCKS、Git 文件同步 UI 和全界面隐藏分支未完成原生验证。优先继续这些兼容性验证，再做性能基准；不以本轮测试通过声称所有官方功能已完全验收。
 
 最终 Test / Dev 两种 macOS 包均重建成功，三套原生脚本全部通过；lint/类型检查通过（3 项原有警告）。Dev 的 Cargo features 为 default/wry，对应 OUT_DIR capabilities 只有 default，不包含 Hasgard。注意源码目录 gen/schemas 是多构建共享的编辑器产物，可能留有 Test 记录；实际 Tauri context 读取对应构建的 OUT_DIR/capabilities.json，不能用共享 schema 判断产品权限。
+
+## 浏览器 OAuth、SOCKS 与窗口生命周期（2026-10-29）
+
+`node scripts/test-native-oauth-socks.mjs` 在打包 Test 应用通过：
+本机授权页面在真正的内嵌 WebView 中加载并导航到回调；服务端核对 PKCE S256 challenge/verifier、授权码交换、redirect_uri 和 Bearer 标头；再次请求复用令牌；拒绝授权不换取令牌、不发送受保护请求。这里不模拟平台账户登录，也未验收系统外部浏览器和真实身份提供商。
+
+连续授权复现了应用崩溃：授权窗口销毁后收到延迟 Focused 事件，插件更新器用 `get_webview_window(...).unwrap()` 解引用不存在的窗口。改为忽略已经销毁的窗口，同步修正应用更新器同类入口。相同授权成功 / 拒绝序列复测不再退出。
+
+SOCKS5h 使用本机协议服务器，验证用户名密码握手、成功响应的中文原文、错误密码拒绝，以及目标 HTTP 服务收不到代理凭据；不将此扩大为所有 SOCKS/DNS/IPv6 场景兼容。
