@@ -113,5 +113,8 @@ Hasgard 仅随 `hasgard-testing` feature 注册，且仅在 debug 构建运行�
 
 扩展原生回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-workflows`。
 高风险原生回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-advanced`（本机 Git、OAuth、双向 TLS、gRPC 流与取消）。
+浏览器授权和 SOCKS：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-oauth-socks`。
+文件同步与 Git 界面：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-sync`。
+本机 HTTP 性能采样：`TAURI_HASGARD_SOCKET=<路径> npm run bench:native -- /tmp/apicub-benchmark.json`；需在构建、测试等后台工作结束后运行。
 覆盖导入导出、认证、HTTP/SSE/WebSocket、gRPC、TLS 和 HTTP 代理；具体执行层与边界见
 [验证记录](docs/apicub-validation.md)。gRPC 测试服务依赖仅加入 devDependencies。

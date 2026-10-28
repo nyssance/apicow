@@ -54,7 +54,7 @@ export function SelectFile({
   };
 
   const itemLabel = noun ?? (directory ? "Folder" : "File");
-  const selectOrChange = (filePath ? "Change " : "Select ") + itemLabel;
+  const selectOrChange = t(filePath ? "Change {{p0}}" : "Select {{p0}}", { p0: t(itemLabel) });
   const [isHovering, setIsHovering] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -113,7 +113,7 @@ export function SelectFile({
                 size={size === "auto" ? "md" : size}
                 variant="border"
                 icon="x"
-                title={t("Unset {{p0}}", { p0: String(itemLabel) })}
+                title={t("Unset {{p0}}", { p0: t(itemLabel) })}
                 onClick={handleClear}
               />
             )}
@@ -126,7 +126,7 @@ export function SelectFile({
               )}
             >
               {rtlEscapeChar}
-              {filePath ?? `No ${itemLabel.toLowerCase()} selected`}
+              {filePath ?? t("No {{p0}} selected", { p0: t(itemLabel.toLowerCase()) })}
             </div>
             {filePath == null && help && !label && <IconTooltip content={help} />}
           </>

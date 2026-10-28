@@ -30,6 +30,10 @@ export function initModelStore(store: JotaiStore) {
 
         if (payload.change.type === "upsert") {
           const modelType = payload.model.model;
+          const current = next[modelType][payload.model.id];
+          // Background DB polling can deliver an older snapshot after the
+          // immediate window-write channel has already applied a newer edit.
+          if (current && current.updatedAt > payload.model.updatedAt) continue;
           if (!clonedBuckets.has(modelType)) {
             next[modelType] = { ...next[modelType] } as never;
             clonedBuckets.add(modelType);

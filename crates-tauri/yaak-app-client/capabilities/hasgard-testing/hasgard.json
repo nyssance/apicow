@@ -2,5 +2,5 @@
   "identifier": "hasgard-testing",
   "description": "ApiCub development WebView automation; only included with hasgard-testing",
   "windows": ["*"],
-  "permissions": ["hasgard:default"]
+  "permissions": ["hasgard:default", "core:event:allow-emit-to"]
 }

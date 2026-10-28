@@ -20,7 +20,6 @@ import { jotaiStore } from "../lib/jotai";
 import { showPrompt } from "../lib/prompt";
 import { resolvedModelNameWithFolders } from "../lib/resolvedModelName";
 import { showToast } from "../lib/toast";
-import { pluralizeCount } from "@yaakapp-internal/lib/pluralize";
 
 export const createFolder = createFastMutation<
   string | null,
@@ -129,9 +128,12 @@ export const syncWorkspace = createFastMutation<
             <span />
           )}
           <p>
-            {pluralizeCount("file", dbOps.length)} {" " + t("in the directory")}{" "}
-            {dbOps.length === 1 ? t("has") : t("have")}{" "}
-            {t("changed. Do you want to update your workspace?")}
+            {t(
+              dbOps.length === 1
+                ? "{{p0}} file in the directory has changed. Do you want to update your workspace?"
+                : "{{p0}} files in the directory have changed. Do you want to update your workspace?",
+              { p0: dbOps.length },
+            )}
           </p>
           <Table scrollable className="my-4">
             <TableHead>
@@ -170,10 +172,10 @@ export const syncWorkspace = createFastMutation<
                 return (
                   // oxlint-disable-next-line react/no-array-index-key
                   <TableRow key={i}>
-                    <TableCell className="text-text-subtle">{model}</TableCell>
+                    <TableCell className="text-text-subtle">{t(model)}</TableCell>
                     <TruncatedWideTableCell>{name}</TruncatedWideTableCell>
                     <TableCell className="text-right">
-                      <InlineCode className={color}>{label}</InlineCode>
+                      <InlineCode className={color}>{t(label)}</InlineCode>
                     </TableCell>
                   </TableRow>
                 );

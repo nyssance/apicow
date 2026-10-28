@@ -235,7 +235,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
                     checked={(n) => nodeCheckedStatus(n.data)}
                     onCheck={(n) => checkNode(n.data)}
                     checkboxTitle={(n) =>
-                      nodeCheckedStatus(n.data) ? "Unstage change" : "Stage change"
+                      t(nodeCheckedStatus(n.data) ? "Unstage change" : "Stage change")
                     }
                     isRelevant={(n) => n.data.status.status !== "current"}
                     canSelectRow={(n) => n.data.status.status !== "current"}
@@ -334,7 +334,7 @@ function CommitTreeRow({ node }: { node: CommitTreeNode }) {
       )}
       <div className="truncate flex-1">{resolvedModelName(node.model)}</div>
       {node.status.status !== "current" && (
-        <Chip color={statusColor(node.status.status)}>{node.status.status}</Chip>
+        <Chip color={statusColor(node.status.status)}>{t(node.status.status)}</Chip>
       )}
     </>
   );
@@ -369,7 +369,7 @@ function ExternalTreeNode({
           <Icon color="secondary" icon="file_code" />
           <div className="truncate">{displayPath}</div>
           <Chip className="ml-auto" color={statusColor(entry.status)}>
-            {entry.status}
+            {t(entry.status)}
           </Chip>
         </div>
       }
