@@ -1,0 +1,335 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { createServer } from "node:http";
+import { createServer as createHttpsServer } from "node:https";
+import * as grpc from "@grpc/grpc-js";
+import { loadSync } from "@grpc/proto-loader";
+import { hasgard, hasgardAsync, until } from "./lib/hasgard.mjs";
+const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
+assert.ok(main);
+assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+const rpc = (cmd, payload) =>
+  hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
+const dir = await mkdtemp(join(tmpdir(), "apicub-advanced-"));
+const servers = [];
+const grpcServer = new grpc.Server();
+const settings = await rpc("models_get_settings", {});
+const workspaceId = await rpc("models_upsert", {
+  model: { model: "workspace", name: "ApiCub 高风险回归" },
+});
+const send = (request) =>
+  rpc("cmd_send_ephemeral_request", { request, environmentId: null, cookieJarId: null });
+const body = (result) => Buffer.from(result.body).toString();
+const listen = async (server) => {
+  servers.push(server);
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  return server.address().port;
+};
+const git = (cwd, ...args) =>
+  execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
+try {
+  // Only isolated repositories and a local bare remote; no hosted-account writes.
+  const remote = join(dir, "remote.git");
+  git(dir, "init", "--bare", "--initial-branch=main", remote);
+  const seed = join(dir, "seed");
+  git(dir, "clone", remote, seed);
+  const identity = (cwd) => {
+    git(cwd, "config", "user.name", "ApiCub Test");
+    git(cwd, "config", "user.email", "test@example.invalid");
+  };
+  identity(seed);
+  await writeFile(join(seed, "api.json"), '{"name":"初始"}\n');
+  git(seed, "add", ".");
+  git(seed, "commit", "-m", "fixture");
+  git(seed, "push", "origin", "main");
+  const a = join(dir, "a");
+  const b = join(dir, "b");
+  for (const target of [a, b]) {
+    await rpc("cmd_git_clone", { url: remote, dir: target });
+    identity(target);
+  }
+  for (const [target, text] of [
+    [a, "第一份"],
+    [b, "第二份"],
+  ]) {
+    if (target === b) await rpc("cmd_git_pull", { dir: target });
+    await writeFile(join(target, "api.json"), JSON.stringify({ name: text }) + "\n");
+    await rpc("cmd_git_add", { dir: target, relaPaths: ["api.json"] });
+    await rpc("cmd_git_commit", { dir: target, message: text });
+    await rpc("cmd_git_push", { dir: target });
+    assert.equal(git(target, "rev-parse", "HEAD"), git(remote, "rev-parse", "refs/heads/main"));
+  }
+  await rpc("cmd_git_fetch_all", { dir: a });
+  await rpc("cmd_git_pull", { dir: a });
+  assert.equal(await readFile(join(a, "api.json"), "utf8"), '{"name":"第二份"}\n');
+  await rpc("cmd_git_branch", { dir: a, branch: "test-branch", base: null });
+  await rpc("cmd_git_checkout", { dir: a, branch: "test-branch", force: false });
+  assert.equal(git(a, "branch", "--show-current"), "test-branch");
+  console.log(
+    "PASS: native Git clone/stage/commit/push/fetch/pull/branch/checkout against local bare remote",
+  );
+
+  const tokens = [];
+  const authorizations = [];
+  const http = createServer((req, res) => {
+    let data = "";
+    req.on("data", (chunk) => {
+      data += chunk;
+    });
+    req.on("end", () => {
+      res.setHeader("Content-Type", "application/json");
+      if (req.url === "/token") {
+        const form = Object.fromEntries(new URLSearchParams(data));
+        tokens.push(form);
+        if (form.client_secret !== "dummy-secret") {
+          res.writeHead(401);
+          res.end(JSON.stringify({ error: "invalid_client" }));
+          return;
+        }
+        res.end(
+          JSON.stringify({
+            access_token: "dummy-token-" + tokens.length,
+            token_type: "Bearer",
+            expires_in: tokens.length === 1 ? -1 : 3600,
+          }),
+        );
+      } else {
+        authorizations.push(req.headers.authorization);
+        res.end(JSON.stringify({ authorization: req.headers.authorization }));
+      }
+    });
+  });
+  const port = await listen(http);
+  let request = {
+    model: "http_request",
+    workspaceId,
+    name: "OAuth native test",
+    method: "GET",
+    url: `http://127.0.0.1:${port}/protected`,
+    authenticationType: "oauth2",
+    authentication: {
+      grantType: "client_credentials",
+      credentials: "body",
+      clientId: "dummy-client",
+      clientSecret: "dummy-secret",
+      accessTokenUrl: `http://127.0.0.1:${port}/token`,
+      scope: "read",
+      headerPrefix: "Bearer",
+    },
+  };
+  request.id = await rpc("models_upsert", { model: request });
+  for (const expected of ["dummy-token-1", "dummy-token-2", "dummy-token-2"]) {
+    const result = await send(request);
+    assert.equal(result.response.status, 200);
+    assert.equal(JSON.parse(body(result)).authorization, "Bearer " + expected);
+  }
+  assert.equal(tokens.length, 2);
+  assert.equal(tokens[0].grant_type, "client_credentials");
+  assert.equal(tokens[0].client_id, "dummy-client");
+  assert.equal(tokens[0].scope, "read");
+  const bad = {
+    ...request,
+    id: undefined,
+    authentication: { ...request.authentication, clientId: "bad-client", clientSecret: "wrong" },
+  };
+  bad.id = await rpc("models_upsert", { model: bad });
+  let failed = false;
+  try {
+    const r = await send(bad);
+    failed = !!r.response.error;
+  } catch {
+    failed = true;
+  }
+  assert.ok(failed);
+  assert.equal(authorizations.length, 3, "failed token request must not reach protected resource");
+  const recovered = await send({
+    ...bad,
+    authentication: { ...bad.authentication, clientSecret: "dummy-secret" },
+  });
+  assert.equal(recovered.response.status, 200);
+  console.log(
+    "PASS: OAuth client credentials, expiration/reacquisition/cache, rejection and recovery",
+  );
+
+  const makeCert = (name) => {
+    const key = join(dir, name + ".key");
+    const cert = join(dir, name + ".pem");
+    execFileSync(
+      "openssl",
+      [
+        "req",
+        "-x509",
+        "-newkey",
+        "rsa:2048",
+        "-nodes",
+        "-keyout",
+        key,
+        "-out",
+        cert,
+        "-days",
+        "1",
+        "-subj",
+        "/CN=" + name,
+      ],
+      { stdio: "ignore" },
+    );
+    return { key, cert };
+  };
+  const serverCert = makeCert("localhost");
+  const clientCert = makeCert("apicub-test-client");
+  let verified = 0;
+  const tls = createHttpsServer(
+    {
+      key: await readFile(serverCert.key),
+      cert: await readFile(serverCert.cert),
+      ca: await readFile(clientCert.cert),
+      requestCert: true,
+      rejectUnauthorized: true,
+    },
+    (req, res) => {
+      assert.ok(req.socket.authorized);
+      assert.equal(req.socket.getPeerCertificate().subject.CN, "apicub-test-client");
+      verified++;
+      res.end("双向 TLS");
+    },
+  );
+  const tlsPort = await listen(tls);
+  const tlsRequest = {
+    ...request,
+    authenticationType: null,
+    authentication: {},
+    url: `https://127.0.0.1:${tlsPort}`,
+    settingValidateCertificates: { enabled: true, value: false },
+  };
+  const rejected = async () => {
+    let failed = false;
+    try {
+      const r = await send(tlsRequest);
+      failed = !!r.response.error || r.response.status !== 200;
+    } catch {
+      failed = true;
+    }
+    assert.ok(failed, "mTLS must reject missing/mismatched certificate");
+  };
+  await rpc("models_upsert", { model: { ...settings, clientCertificates: [] } });
+  await rejected();
+  const certificate = {
+    host: "127.0.0.1",
+    port: tlsPort,
+    crtFile: clientCert.cert,
+    keyFile: clientCert.key,
+    enabled: true,
+  };
+  await rpc("models_upsert", { model: { ...settings, clientCertificates: [certificate] } });
+  const accepted = await send(tlsRequest);
+  assert.equal(accepted.response.status, 200);
+  assert.equal(body(accepted), "双向 TLS");
+  await rpc("models_upsert", {
+    model: { ...settings, clientCertificates: [{ ...certificate, enabled: false }] },
+  });
+  await rejected();
+  await rpc("models_upsert", {
+    model: {
+      ...settings,
+      clientCertificates: [{ ...certificate, port: tlsPort === 65535 ? 65534 : tlsPort + 1 }],
+    },
+  });
+  await rejected();
+  assert.equal(verified, 1);
+  await rpc("models_upsert", { model: settings });
+  console.log("PASS: mTLS certificate identity, missing/disabled/wrong-port rejection");
+
+  const proto = join(dir, "stream.proto");
+  await writeFile(
+    proto,
+    'syntax="proto3"; package apicub; message Message { string text=1; } service Stream { rpc Client(stream Message) returns(Message); rpc Bidi(stream Message) returns(stream Message); rpc HalfClose(stream Message) returns(stream Message); }',
+  );
+  const def = grpc.loadPackageDefinition(loadSync(proto));
+  let halfClosed = false;
+  let cancelled = false;
+  grpcServer.addService(def.apicub.Stream.service, {
+    Client(call, cb) {
+      const messages = [];
+      call.on("data", (m) => messages.push(m.text));
+      call.on("end", () => cb(null, { text: messages.join("|") }));
+    },
+    Bidi(call) {
+      call.on("data", (m) => call.write(m));
+      call.on("end", () => call.end());
+    },
+    HalfClose(call) {
+      call.on("data", (m) => call.write(m));
+      call.on("end", () => {
+        halfClosed = true;
+      });
+      call.on("cancelled", () => {
+        cancelled = true;
+      });
+    },
+  });
+  const grpcPort = await new Promise((resolve, reject) =>
+    grpcServer.bindAsync("127.0.0.1:0", grpc.ServerCredentials.createInsecure(), (e, p) =>
+      e ? reject(e) : resolve(p),
+    ),
+  );
+  for (const method of ["Client", "Bidi", "HalfClose"]) {
+    const id = await rpc("models_upsert", {
+      model: {
+        model: "grpc_request",
+        workspaceId,
+        name: method,
+        url: `http://127.0.0.1:${grpcPort}`,
+        service: "apicub.Stream",
+        method,
+      },
+    });
+    const payload = { requestId: id, environmentId: null, protoFiles: [proto] };
+    await rpc("cmd_grpc_reflect", payload);
+    const connectionId = await rpc("cmd_grpc_go", payload);
+    const emit = (payload) =>
+      hasgardAsync(
+        main,
+        "ipc",
+        "plugin:event|emit",
+        "--args",
+        JSON.stringify({ event: "grpc_client_msg_" + connectionId, payload }),
+      );
+    for (const text of ["中文", "Settings"]) await emit({ Message: JSON.stringify({ text }) });
+    await emit("Commit");
+    if (method === "HalfClose") {
+      await until(() => halfClosed, "server receives client half-close");
+      await emit("Cancel");
+    }
+    await until(
+      async () =>
+        (await rpc("models_grpc_events", { connectionId })).some(
+          (e) => e.eventType === "connection_end",
+        ),
+      method + " finishes",
+    );
+    const events = await rpc("models_grpc_events", { connectionId });
+    assert.equal(
+      events.find((e) => e.eventType === "connection_end").status,
+      method === "HalfClose" ? 1 : 0,
+    );
+    const texts = events
+      .filter((e) => e.eventType === "server_message")
+      .reverse()
+      .map((e) => JSON.parse(e.content).text);
+    assert.deepEqual(texts, method === "Client" ? ["中文|Settings"] : ["中文", "Settings"]);
+    if (method === "HalfClose") await until(() => cancelled, "server sees cancellation");
+    console.log("PASS: gRPC " + method);
+  }
+} finally {
+  await rpc("models_upsert", { model: settings });
+  grpcServer.forceShutdown();
+  for (const server of servers) {
+    server.closeAllConnections();
+    await new Promise((resolve) => server.close(resolve));
+  }
+  await rm(dir, { recursive: true, force: true });
+}

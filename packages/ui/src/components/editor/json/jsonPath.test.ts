@@ -1,14 +1,14 @@
 import { EditorState } from "@codemirror/state";
 import { jsonc } from "@shopify/lang-jsonc";
-import { forceParsing } from "@codemirror/language";
+import { ensureSyntaxTree } from "@codemirror/language";
 import { describe, expect, test } from "vite-plus/test";
 import { jsonPathSegmentsAt, jsonPathToSegments, segmentsToJsonPath } from "./jsonPath";
 
 function stateFor(doc: string): EditorState {
   const state = EditorState.create({ doc, extensions: [jsonc()] });
   // Ensure the whole doc is parsed so resolveInner sees a complete tree.
-  forceParsing({ state } as never, doc.length, 5000);
-  return state;
+  expect(ensureSyntaxTree(state, doc.length, 5000)).not.toBeNull();
+  return state.update({}).state;
 }
 
 /** JSONPath produced when the cursor sits just after the first occurrence of `needle`. */

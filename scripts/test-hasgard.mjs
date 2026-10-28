@@ -43,6 +43,10 @@ const settings = await until(
 );
 await until(() => evaluate(settings, '!!document.querySelector("select")'), "settings ready");
 for (const locale of ["en", "zh-CN"]) {
+  await until(
+    () => evaluate(settings, '!!document.querySelector("select")'),
+    "language selector after reload",
+  );
   hasgard(settings, "select", "select", locale);
   for (const window of [settings, main]) {
     await until(
@@ -55,9 +59,17 @@ for (const locale of ["en", "zh-CN"]) {
     );
   }
 }
-assert.ok(
-  evaluate(main, 'document.body.innerText.includes("无环境")'),
-  "Chinese environment fallback",
+await until(
+  () => evaluate(main, 'document.body.innerText.includes("无环境")'),
+  "Chinese environment fallback after reload",
+);
+await until(
+  () =>
+    evaluate(
+      settings,
+      'Array.from(document.querySelectorAll("button")).some(e => e.textContent.trim() === "快捷键")',
+    ),
+  "settings navigation after reload",
 );
 clickText(settings, "快捷键");
 hasgard(settings, "fill", 'input[placeholder="筛选快捷键…"]', "发送当前请求");

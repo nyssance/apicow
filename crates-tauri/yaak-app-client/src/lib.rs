@@ -427,6 +427,20 @@ async fn cmd_grpc_go<R: Runtime>(
                 return;
             }
 
+            let incoming = match serde_json::from_str::<IncomingMsg>(ev.payload()) {
+                Ok(incoming) => incoming,
+                Err(e) => {
+                    error!("Failed to parse gRPC message: {:?}", e);
+                    return;
+                }
+            };
+            // Committing closes only the sending half. The response stream must
+            // remain cancellable while the server is still sending or waiting.
+            if matches!(incoming, IncomingMsg::Cancel) {
+                cancelled_tx.send_replace(true);
+                return;
+            }
+
             let mut maybe_in_msg_tx = maybe_in_msg_tx.lock().expect("previous holder not to panic");
             let in_msg_tx = if let Some(in_msg_tx) = maybe_in_msg_tx.as_ref() {
                 in_msg_tx
@@ -436,8 +450,8 @@ async fn cmd_grpc_go<R: Runtime>(
                 return;
             };
 
-            match serde_json::from_str::<IncomingMsg>(ev.payload()) {
-                Ok(IncomingMsg::Message(msg)) => {
+            match incoming {
+                IncomingMsg::Message(msg) => {
                     let window = window.clone();
                     let environment_chain = environment_chain.clone();
                     let plugin_manager = plugin_manager.clone();
@@ -465,15 +479,10 @@ async fn cmd_grpc_go<R: Runtime>(
                     let msg = strip_json_comments(&msg);
                     in_msg_tx.try_send(msg.clone()).unwrap();
                 }
-                Ok(IncomingMsg::Commit) => {
+                IncomingMsg::Commit => {
                     maybe_in_msg_tx.take();
                 }
-                Ok(IncomingMsg::Cancel) => {
-                    cancelled_tx.send_replace(true);
-                }
-                Err(e) => {
-                    error!("Failed to parse gRPC message: {:?}", e);
-                }
+                IncomingMsg::Cancel => unreachable!("cancel handled before sender lookup"),
             }
         }
     };

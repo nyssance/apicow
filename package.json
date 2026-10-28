@@ -110,7 +110,8 @@
     "client:debug": "node scripts/run-dev.mjs client --config crates-tauri/yaak-app-client/tauri.hasgard.conf.json",
     "client:debug:build": "node scripts/run-build.mjs client --debug --bundles app --no-sign --config crates-tauri/yaak-app-client/tauri.development.conf.json --config crates-tauri/yaak-app-client/tauri.hasgard.conf.json",
     "test:hasgard": "node scripts/test-hasgard.mjs",
-    "test:native-workflows": "node scripts/test-native-workflows.mjs"
+    "test:native-workflows": "node scripts/test-native-workflows.mjs",
+    "test:native-advanced": "node scripts/test-native-advanced.mjs"
   },
   "dependencies": {
     "@codemirror/lang-go": "^6.0.1",

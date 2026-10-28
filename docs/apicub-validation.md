@@ -94,3 +94,22 @@
 下一顺序：补齐上述高影响异常路径和 Git 工作流，再建立同机性能基准。
 
 本轮最终结果：更新后的打包 Test 应用上，两套 Hasgard 脚本均通过；全量前端 80 文件 / 1025 项通过，lint 与类型检查通过（3 项原有警告）。Rust 未改动，Tauri 原生打包编译通过。中文摘要回归额外发现并修复单数 Environment 漏译。
+
+## 高风险原生回归与取消修复（2026-10-29）
+
+入口：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-advanced`。
+通过 Hasgard 调用打包 Test 应用的实际 Rust RPC / Tauri 事件，连接本机服务；
+不是完整 UI 按钮、证书选择器或 Git 同步设置界面的验收。
+
+- Git：临时 bare 远端和两个克隆，实际克隆、暂存、提交、推送、抓取、拉取、建分支与切换；独立 git 命令核对远端提交 ID、分支及中文文件原文。只写临时仓库，不连接托管平台。
+- OAuth：实际 OAuth 插件的 client_credentials，核对表单字段、Bearer 标头、过期重新获取和缓存复用；错误凭据不发送受保护请求，修正后恢复。仅虚构令牌，不包含浏览器授权码 / PKCE。
+- 双向 TLS：服务器验证客户端证书身份；缺失、禁用和错误端口均拒绝，正确证书成功。仅单次请求关闭自签服务器证书校验，全局设置在 finally 恢复，临时私钥删除。
+- gRPC：客户端流汇总、双向流逐条回显、客户端半关闭后取消，核对中文消息原文、结束状态和服务端取消事件。
+- 真实复现 `cmd_grpc_go` 的取消缺陷：Commit 丢弃发送端后，Cancel 被发送端存在性检查提前返回。修复为先解析并处理 Cancel，再检查发送端。旧构建稳定超时 `HalfClose finishes`；新构建同一用例通过，状态为 1（Cancelled）。
+- `until` 支持等待异步断言，避免 Promise 被误判为条件已满足。
+
+这些是 ApiCub 新增的原生集成回归，不代表官方没有相应测试，也不是上游覆盖率审计。
+此前列出的 Git、OAuth 和 gRPC 缺口按上述实际执行层收窄；浏览器 OAuth、Git 文件同步 UI、
+系统证书、HTTPS CONNECT/SOCKS、其他认证和导入冲突全分支仍未覆盖。
+
+验证结果：更新后的 macOS Test 打包完成，三套 Hasgard 原生脚本通过；全量前端 80 文件 / 1025 项通过；npm workspace 测试、lint/类型检查及客户端 Clippy 通过（保留上游警告）。全量测试发现 JSONPath 测试用不完整 View 调用 forceParsing 的时序问题，改用 ensureSyntaxTree 和真实 State transaction，断言不变；语言测试等待重载后的控件与中文内容，避免 DOM lang 已更新但组件尚未就绪的竞态。

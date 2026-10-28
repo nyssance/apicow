@@ -19,7 +19,7 @@ export async function until(check, description) {
   let last;
   while (Date.now() < deadline) {
     try {
-      const value = check();
+      const value = await check();
       if (value) return value;
     } catch (error) {
       last = error;
