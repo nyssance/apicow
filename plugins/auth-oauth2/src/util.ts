@@ -31,7 +31,18 @@ export function jwtExpiresAt(token: string | undefined): number | null {
   return null;
 }
 
-export function extractCode(urlStr: string, redirectUri: string | null): string | null {
+export function validateOAuthState(params: URLSearchParams, expectedState: string) {
+  const states = params.getAll("state");
+  if (states.length !== 1 || states[0] !== expectedState) {
+    throw new Error("OAuth callback state is missing or does not match");
+  }
+}
+
+export function extractCode(
+  urlStr: string,
+  redirectUri: string | null,
+  expectedState?: string,
+): string | null {
   const url = new URL(urlStr);
 
   if (!urlMatchesRedirect(url, redirectUri)) {
@@ -56,6 +67,7 @@ export function extractCode(urlStr: string, redirectUri: string | null): string 
 
   const error = queryError || hashError;
   if (error) {
+    if (expectedState != null) validateOAuthState(queryError ? query : hashParams!, expectedState);
     const desc = queryDesc || hashDesc;
     const uri = queryUri || hashUri;
     let message = `Failed to authorize: ${error}`;
@@ -65,10 +77,16 @@ export function extractCode(urlStr: string, redirectUri: string | null): string 
   }
 
   const queryCode = query.get("code");
-  if (queryCode) return queryCode;
+  if (queryCode) {
+    if (expectedState != null) validateOAuthState(query, expectedState);
+    return queryCode;
+  }
 
   const hashCode = hashParams?.get("code");
-  if (hashCode) return hashCode;
+  if (hashCode) {
+    if (expectedState != null) validateOAuthState(hashParams!, expectedState);
+    return hashCode;
+  }
 
   console.log("[oauth2] Code not found");
   return null;

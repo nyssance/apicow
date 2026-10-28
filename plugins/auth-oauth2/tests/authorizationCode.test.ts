@@ -9,7 +9,7 @@ const REDIRECT_URI = "https://app.example.com/callback";
  * Drives the embedded-browser flow: records the authorization URL the plugin
  * opens, then navigates straight to the redirect with a code.
  */
-function createMockContext() {
+function createMockContext(callback?: (authorizationUrl: string) => string) {
   const opened: string[] = [];
   const sent: Partial<HttpRequest>[] = [];
   const values = new Map<string, unknown>();
@@ -33,7 +33,15 @@ function createMockContext() {
       }) {
         opened.push(url);
         // Deferred because onNavigate closes the window it is handed back from
-        setTimeout(() => onNavigate({ url: `${REDIRECT_URI}?code=code-123` }), 0);
+        setTimeout(
+          () =>
+            onNavigate({
+              url:
+                callback?.(url) ??
+                `${REDIRECT_URI}?code=code-123&state=${new URL(url).searchParams.get("state")}`,
+            }),
+          0,
+        );
         return { close() {} };
       },
     },
@@ -133,5 +141,27 @@ describe("authorization code custom parameters", () => {
     const form = sent[0]!.body?.form ?? [];
     expect(form).toContainEqual({ name: "realm", value: "employees" });
     expect(form).toContainEqual({ name: "code", value: "code-123" });
+  });
+});
+
+describe("authorization callback state", () => {
+  for (const query of ["", "&state=wrong", "&state=expected&state=expected"]) {
+    test(`rejects invalid callback state before exchanging a code: ${query}`, async () => {
+      const { ctx, sent } = createMockContext(() => `${REDIRECT_URI}?code=code-123${query}`);
+      await expect(
+        getAuthorizationCode(ctx, "state-test", { ...baseArgs, state: "expected" }),
+      ).rejects.toThrow("state");
+      expect(sent).toHaveLength(0);
+    });
+  }
+  test("generates a fresh unpredictable state when no explicit value is configured", async () => {
+    const states = [];
+    for (let i = 0; i < 2; i++) {
+      const { ctx, opened } = createMockContext();
+      await getAuthorizationCode(ctx, `generated-${i}`, baseArgs);
+      states.push(new URL(opened[0]!).searchParams.get("state"));
+    }
+    expect(states[0]).toMatch(/^[A-Za-z0-9_-]{43}$/);
+    expect(states[0]).not.toBe(states[1]);
   });
 });

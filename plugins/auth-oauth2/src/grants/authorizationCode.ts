@@ -101,6 +101,10 @@ export async function getAuthorizationCode(
   // to the user: overriding it would send the code somewhere nothing listens
   applyQueryParams(authorizationUrl, customParams.authorizationQuery);
 
+  const expectedState =
+    authorizationUrl.searchParams.get("state") || randomBytes(32).toString("base64url");
+  authorizationUrl.searchParams.set("state", expectedState);
+
   let code: string;
   let actualRedirectUri: string | null = redirectUri;
 
@@ -111,7 +115,7 @@ export async function getAuthorizationCode(
       callbackPort: externalBrowser.callbackPort,
     });
     // Pass null to skip redirect URI matching — the callback came from our own local server
-    const extractedCode = extractCode(result.callbackUrl, null);
+    const extractedCode = extractCode(result.callbackUrl, null, expectedState);
     if (!extractedCode) {
       throw new Error("No authorization code found in callback URL");
     }
@@ -122,7 +126,13 @@ export async function getAuthorizationCode(
     if (redirectUri) {
       authorizationUrl.searchParams.set("redirect_uri", redirectUri);
     }
-    code = await getCodeViaEmbeddedBrowser(ctx, contextId, authorizationUrl, redirectUri);
+    code = await getCodeViaEmbeddedBrowser(
+      ctx,
+      contextId,
+      authorizationUrl,
+      redirectUri,
+      expectedState,
+    );
   }
 
   console.log("[oauth2] Code found");
@@ -154,42 +164,55 @@ async function getCodeViaEmbeddedBrowser(
   contextId: string,
   authorizationUrl: URL,
   redirectUri: string | null,
+  expectedState: string,
 ): Promise<string> {
   const dataDirKey = await getDataDirKey(ctx, contextId);
   const authorizationUrlStr = authorizationUrl.toString();
   console.log("[oauth2] Authorizing via embedded browser", authorizationUrlStr);
 
-  // oxlint-disable-next-line no-async-promise-executor -- Required for this pattern
-  return new Promise<string>(async (resolve, reject) => {
+  return new Promise<string>((resolve, reject) => {
+    let closeWindow: (() => void) | undefined;
+    let closeRequested = false;
+    const close = () => {
+      closeRequested = true;
+      closeWindow?.();
+    };
     let foundCode = false;
-    const { close } = await ctx.window.openUrl({
-      dataDirKey,
-      url: authorizationUrlStr,
-      label: "oauth-authorization-url",
-      async onClose() {
-        if (!foundCode) {
-          reject(new Error("Authorization window closed"));
-        }
-      },
-      async onNavigate({ url: urlStr }) {
-        let code: string | null;
-        try {
-          code = extractCode(urlStr, redirectUri);
-        } catch (err) {
-          reject(err);
+    void ctx.window
+      .openUrl({
+        dataDirKey,
+        url: authorizationUrlStr,
+        label: "oauth-authorization-url",
+        async onClose() {
+          if (!foundCode) {
+            reject(new Error("Authorization window closed"));
+          }
+        },
+        async onNavigate({ url: urlStr }) {
+          let code: string | null;
+          try {
+            code = extractCode(urlStr, redirectUri, expectedState);
+          } catch (err) {
+            reject(err);
+            close();
+            return;
+          }
+
+          if (!code) {
+            return;
+          }
+
+          foundCode = true;
           close();
-          return;
-        }
-
-        if (!code) {
-          return;
-        }
-
-        foundCode = true;
-        close();
-        resolve(code);
-      },
-    });
+          resolve(code);
+        },
+      })
+      .then((handle) => {
+        closeWindow = () => {
+          handle.close();
+        };
+        if (closeRequested) close();
+      }, reject);
   });
 }
 

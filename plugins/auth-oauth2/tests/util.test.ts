@@ -123,12 +123,12 @@ describe("isTokenExpired", () => {
   });
 
   test("falls back to JWT exp claim when expiresAt is null", () => {
-    expect(
-      isTokenExpired({ response: { access_token: jwtWithExp(-60) }, expiresAt: null }),
-    ).toBe(true);
-    expect(
-      isTokenExpired({ response: { access_token: jwtWithExp(60) }, expiresAt: null }),
-    ).toBe(false);
+    expect(isTokenExpired({ response: { access_token: jwtWithExp(-60) }, expiresAt: null })).toBe(
+      true,
+    );
+    expect(isTokenExpired({ response: { access_token: jwtWithExp(60) }, expiresAt: null })).toBe(
+      false,
+    );
   });
 
   test("treats opaque tokens without expiresAt as non-expiring", () => {
@@ -158,5 +158,35 @@ describe("jwtExpiresAt", () => {
     expect(jwtExpiresAt("not-a-jwt")).toBeNull();
     expect(jwtExpiresAt(undefined)).toBeNull();
     expect(jwtExpiresAt(jwt.sign({ foo: "bar" }, "test-secret"))).toBeNull();
+  });
+});
+
+describe("callback state belongs to the consumed response", () => {
+  test("cannot borrow query state for a fragment code", () => {
+    expect(() =>
+      extractCode(
+        "https://app.example.com/cb?code=&state=expected#code=other",
+        "https://app.example.com/cb",
+        "expected",
+      ),
+    ).toThrow("state");
+  });
+  test("cannot borrow fragment state for a query code", () => {
+    expect(() =>
+      extractCode(
+        "https://app.example.com/cb?code=other#state=expected",
+        "https://app.example.com/cb",
+        "expected",
+      ),
+    ).toThrow("state");
+  });
+  test("accepts a fragment response with its own matching state", () => {
+    expect(
+      extractCode(
+        "https://app.example.com/cb#code=ok&state=expected",
+        "https://app.example.com/cb",
+        "expected",
+      ),
+    ).toBe("ok");
   });
 });

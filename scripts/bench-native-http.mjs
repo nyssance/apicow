@@ -87,7 +87,9 @@ try {
   };
   const output = process.argv[2];
   if (output) await writeFile(output, JSON.stringify(result, null, 2) + "\n");
-  console.log(JSON.stringify({ ...result, rows: rows.map(({ samples, ...row }) => row) }, null, 2));
+  console.log(
+    JSON.stringify({ ...result, rows: rows.map(({ samples: _samples, ...row }) => row) }, null, 2),
+  );
 } finally {
   server.closeAllConnections();
   await new Promise((r) => server.close(r));

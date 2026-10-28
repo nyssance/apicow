@@ -114,7 +114,9 @@
     "test:native-advanced": "node scripts/test-native-advanced.mjs",
     "test:native-oauth-socks": "node scripts/test-native-oauth-socks.mjs",
     "test:native-sync": "node scripts/test-native-sync.mjs",
-    "bench:native": "node scripts/bench-native-http.mjs"
+    "bench:native": "node scripts/bench-native-http.mjs",
+    "test:native-oauth-security": "node scripts/test-native-oauth-security.mjs",
+    "test:native-recovery": "node scripts/test-native-recovery.mjs"
   },
   "dependencies": {
     "@codemirror/lang-go": "^6.0.1",
