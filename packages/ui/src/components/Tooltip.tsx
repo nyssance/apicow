@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import classNames from "classnames";
 import type { CSSProperties, KeyboardEvent, ReactNode } from "react";
 import { useRef, useState } from "react";
@@ -147,7 +148,7 @@ function Triangle({ className, position }: { className?: string; position: "top"
           : "border-b-2 border-surface-highlight -top-[calc(0.5rem-3px)] mt-2",
       )}
     >
-      <title>Triangle</title>
+      <title>{t("Triangle")}</title>
       <polygon
         className="fill-surface-highlight"
         points={isBottom ? "0,0 30,0 15,10" : "0,10 30,10 15,0"}

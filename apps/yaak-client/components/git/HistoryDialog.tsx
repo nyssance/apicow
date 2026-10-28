@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useGitLog } from "@yaakapp-internal/git";
 import { formatDistanceToNowStrict } from "date-fns";
 import {
@@ -18,22 +19,26 @@ export function HistoryDialog({ dir }: { dir: string }) {
       <Table scrollable className="px-1">
         <TableHead>
           <TableRow>
-            <TableHeaderCell>Message</TableHeaderCell>
-            <TableHeaderCell>Author</TableHeaderCell>
-            <TableHeaderCell>When</TableHeaderCell>
+            <TableHeaderCell>{t("Message")}</TableHeaderCell>
+            <TableHeaderCell>{t("Author")}</TableHeaderCell>
+            <TableHeaderCell>{t("When")}</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {(log.data ?? []).map((l) => (
             <TableRow key={l.oid}>
               <TruncatedWideTableCell>
-                {l.message || <em className="text-text-subtle">No message</em>}
+                {l.message || <em className="text-text-subtle">{t("No message")}</em>}
               </TruncatedWideTableCell>
               <TableCell>
-                <span title={`Email: ${l.author.email}`}>{l.author.name || "Unknown"}</span>
+                <span title={t("Email: {{p0}}", { p0: String(l.author.email) })}>
+                  {l.author.name || "Unknown"}
+                </span>
               </TableCell>
               <TableCell className="text-text-subtle">
-                <span title={l.when}>{formatDistanceToNowStrict(l.when)} ago</span>
+                <span title={l.when}>
+                  {formatDistanceToNowStrict(l.when)} {" " + t("ago")}
+                </span>
               </TableCell>
             </TableRow>
           ))}

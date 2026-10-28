@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Folder, HttpRequest } from "@yaakapp-internal/models";
 import { foldersAtom, httpRequestsAtom } from "@yaakapp-internal/models";
 import type {
@@ -202,7 +203,7 @@ function FormInputs<T extends Record<string, JsonPrimitive>>({
             return (
               <div key={i + stateKey}>
                 <DetailsBanner
-                  summary={input.label}
+                  summary={t(input.label)}
                   className={classNames("mb-auto!", disabled && "opacity-disabled")}
                 >
                   <div className="mt-3">
@@ -303,12 +304,12 @@ function TextArg({
     defaultValue: value === DYNAMIC_FORM_NULL_ARG ? arg.defaultValue : value,
     required: !arg.optional,
     disabled: arg.disabled,
-    help: arg.description,
+    help: arg.description ? t(arg.description) : undefined,
     type: arg.password ? "password" : "text",
-    label: arg.label ?? arg.name,
+    label: arg.label ? t(arg.label) : arg.name,
     size: INPUT_SIZE,
     hideLabel: arg.hideLabel ?? arg.label == null,
-    placeholder: arg.placeholder ?? undefined,
+    placeholder: arg.placeholder ? t(arg.placeholder) : undefined,
     forceUpdateKey: stateKey,
     autocomplete: arg.completionOptions ? { options: arg.completionOptions } : undefined,
     stateKey,
@@ -349,10 +350,10 @@ function EditorArg({
         htmlFor={id}
         required={!arg.optional}
         visuallyHidden={arg.hideLabel}
-        help={arg.description}
+        help={arg.description ? t(arg.description) : undefined}
         tags={arg.language ? [capitalize(arg.language)] : undefined}
       >
-        {arg.label}
+        {arg.label ? t(arg.label) : arg.label}
       </Label>
       <div
         className={classNames(
@@ -385,22 +386,22 @@ function EditorArg({
                 size="sm"
                 className="my-0.5 opacity-60 group-hover:opacity-100"
                 icon="expand"
-                title="Pop out to large editor"
+                title={t("Pop out to large editor")}
                 onClick={() => {
                   showDialog({
                     id: "id",
                     size: "full",
-                    title: arg.readOnly ? "View Value" : "Edit Value",
+                    title: arg.readOnly ? t("View Value") : t("Edit Value"),
                     className: "max-w-200! max-h-240!",
                     description: arg.label && (
                       <Label
                         htmlFor={id}
                         required={!arg.optional}
                         visuallyHidden={arg.hideLabel}
-                        help={arg.description}
+                        help={arg.description ? t(arg.description) : undefined}
                         tags={arg.language ? [capitalize(arg.language)] : undefined}
                       >
-                        {arg.label}
+                        {arg.label ? t(arg.label) : arg.label}
                       </Label>
                     ),
                     onClose() {
@@ -449,16 +450,16 @@ function SelectArg({
 }) {
   return (
     <Select
-      label={arg.label ?? arg.name}
+      label={arg.label ? t(arg.label) : arg.name}
       name={arg.name}
-      help={arg.description}
+      help={arg.description ? t(arg.description) : undefined}
       onChange={onChange}
       defaultValue={arg.defaultValue}
       hideLabel={arg.hideLabel}
       value={value}
       size={INPUT_SIZE}
       disabled={arg.disabled}
-      options={arg.options}
+      options={arg.options.map((option) => ({ ...option, label: t(option.label) }))}
     />
   );
 }
@@ -475,7 +476,7 @@ function FileArg({
   return (
     <SelectFile
       disabled={arg.disabled}
-      help={arg.description}
+      help={arg.description ? t(arg.description) : undefined}
       onChange={({ filePath }) => onChange(filePath)}
       filePath={filePath === DYNAMIC_FORM_NULL_ARG ? null : filePath}
       directory={!!arg.directory}
@@ -504,10 +505,10 @@ function HttpRequestArg({
 
   return (
     <Select
-      label={arg.label ?? arg.name}
+      label={arg.label ? t(arg.label) : arg.name}
       name={arg.name}
       onChange={onChange}
-      help={arg.description}
+      help={arg.description ? t(arg.description) : undefined}
       value={value}
       disabled={arg.disabled}
       options={httpRequests.map((r) => {
@@ -553,9 +554,9 @@ function CheckboxArg({
     <Checkbox
       onChange={onChange}
       checked={value}
-      help={arg.description}
+      help={arg.description ? t(arg.description) : undefined}
       disabled={arg.disabled}
-      title={arg.label ?? arg.name}
+      title={arg.label ? t(arg.label) : arg.name}
       hideLabel={arg.label == null}
     />
   );
@@ -594,9 +595,9 @@ function KeyValueArg({
         htmlFor={`input-${arg.name}`}
         required={!arg.optional}
         visuallyHidden={arg.hideLabel}
-        help={arg.description}
+        help={arg.description ? t(arg.description) : undefined}
       >
-        {arg.label ?? arg.name}
+        {arg.label ? t(arg.label) : arg.name}
       </Label>
       <PairEditor
         pairs={pairs}

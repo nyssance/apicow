@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import {
   HStack,
   Icon,
@@ -142,7 +143,7 @@ function OptionsPickerDropdown({
         iconSize="sm"
         size="xs"
         icon="chevron_down"
-        title="Show suggestions"
+        title={t("Show suggestions")}
         className="mr-0.5 h-auto! my-0.5 text-text-subtlest @max-[24rem]:hidden"
       />
     </Dropdown>
@@ -283,20 +284,20 @@ function EncryptionInput({
   const dropdownItems = useMemo<DropdownItem[]>(
     () => [
       {
-        label: state.obscured ? "Show" : "Hide",
+        label: state.obscured ? t("Show") : t("Hide"),
         disabled: isEncryptionEnabled && state.fieldType === "text",
         leftSlot: <Icon icon={state.obscured ? "eye" : "eye_closed"} />,
         onSelect: () => setState((s) => ({ ...s, obscured: !s.obscured })),
       },
       {
-        label: "Copy",
+        label: t("Copy"),
         leftSlot: <Icon icon="copy" />,
         hidden: !state.value,
         onSelect: () => copyToClipboard(state.value ?? ""),
       },
       { type: "separator" },
       {
-        label: state.fieldType === "text" ? "Encrypt Field" : "Decrypt Field",
+        label: state.fieldType === "text" ? t("Encrypt Field") : t("Decrypt Field"),
         leftSlot: <Icon icon={state.fieldType === "text" ? "lock" : "lock_open"} />,
         onSelect: () => handleFieldTypeChange(state.fieldType === "text" ? "encrypted" : "text"),
       },
@@ -336,7 +337,7 @@ function EncryptionInput({
             size="sm"
             variant="border"
             color={tint}
-            aria-label="Configure encryption"
+            aria-label={t("Configure encryption")}
             className={classNames(
               "flex items-center justify-center h-full! px-1!",
               "opacity-70", // Makes it a bit subtler
@@ -344,8 +345,8 @@ function EncryptionInput({
             )}
           >
             <HStack space={0.5}>
-              <Icon size="sm" title="Configure encryption" icon={icon} />
-              <Icon size="xs" title="Configure encryption" icon="chevron_down" />
+              <Icon size="sm" title={t("Configure encryption")} icon={icon} />
+              <Icon size="xs" title={t("Configure encryption")} icon="chevron_down" />
             </HStack>
           </Button>
         </Dropdown>

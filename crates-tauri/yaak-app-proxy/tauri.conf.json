@@ -1,7 +1,7 @@
 {
-  "productName": "Yaak Proxy",
+  "productName": "ApiCub Proxy",
   "version": "0.0.0",
-  "identifier": "app.yaak.proxy",
+  "identifier": "com.nyssance.apicub.proxy",
   "build": {
     "beforeBuildCommand": "npm --prefix ../.. run proxy:tauri-before-build",
     "beforeDevCommand": "npm --prefix ../.. run proxy:tauri-before-dev",

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { Icon, type IconProps } from "@yaakapp-internal/ui";
 import classNames from "classnames";
 import { forwardRef, type ReactNode } from "react";
@@ -67,7 +68,7 @@ export const PathList = forwardRef<HTMLDivElement, Props>(function PathList(
               size="xs"
               icon="trash"
               iconColor="secondary"
-              title={`Remove ${name}`}
+              title={t("Remove {{p0}}", { p0: String(name) })}
               disabled={disabled}
               className="shrink-0"
               onClick={() => onRemove(item.path)}

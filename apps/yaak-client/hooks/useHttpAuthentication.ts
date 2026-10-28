@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useQuery } from "@tanstack/react-query";
 import type { GetHttpAuthenticationSummaryResponse } from "@yaakapp-internal/plugins";
 import { atom, useAtomValue } from "jotai";
@@ -40,7 +41,7 @@ export function useSubscribeHttpAuthentication() {
       } catch (err) {
         showErrorToast({
           id: "http-authentication-error",
-          title: "HTTP Authentication Error",
+          title: t("HTTP Authentication Error"),
           message: err,
         });
       }

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { InlineCode } from "@yaakapp-internal/ui";
 import { Link } from "../components/core/Link";
@@ -24,20 +25,24 @@ export function confirmWebProxy(): Promise<boolean> {
 
   const confirmation = showConfirm({
     id: "web-proxy-consent",
-    title: "Requests in Yaak Web use a proxy",
-    confirmText: "Send via Proxy",
+    title: t("Requests in Yaak Web use a proxy"),
+    confirmText: t("Send via Proxy"),
     description: (
       <div className="space-y-3">
         <p>
-          Yaak Web sends requests through a hosted proxy. Request and response data, including
-          credentials, pass through the server shown below.
+          {t(
+            "Yaak Web sends requests through a hosted proxy. Request and response data, including credentials, pass through the server shown below.",
+          )}
         </p>
         <p>
           <InlineCode className="break-all">{proxyUrl}</InlineCode>
         </p>
         <p>
-          Learn more about{" "}
-          <Link href="https://yaak.app/docs/getting-started/web-proxy">how the proxy works</Link>.
+          {t("Learn more about")}{" "}
+          <Link href="https://yaak.app/docs/getting-started/web-proxy">
+            {t("how the proxy works")}
+          </Link>
+          .
         </p>
       </div>
     ),

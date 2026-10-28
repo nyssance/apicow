@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { AnyModel } from "@yaakapp-internal/models";
 import { patchModel } from "@yaakapp-internal/models";
 import { Icon } from "@yaakapp-internal/ui";
@@ -134,7 +135,7 @@ export function SettingValue({
         />
       ))}
       {enableCopy && textToCopy != null && (
-        <CopyIconButton size="2xs" text={textToCopy} title="Copy value" />
+        <CopyIconButton size="2xs" text={textToCopy} title={t("Copy value")} />
       )}
     </>
   );
@@ -219,7 +220,13 @@ export function SettingSnippet({
           {snippet}
         </span>
       </div>
-      <CopyIconButton size="sm" variant="border" title="Copy" text={snippet} className="shrink-0" />
+      <CopyIconButton
+        size="sm"
+        variant="border"
+        title={t("Copy")}
+        text={snippet}
+        className="shrink-0"
+      />
     </div>
   );
 }

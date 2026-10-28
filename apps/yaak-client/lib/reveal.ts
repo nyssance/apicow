@@ -1,9 +1,10 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 
 const os = platform.osType();
 export const revealInFinderText =
   os === "macos"
-    ? "Reveal in Finder"
+    ? t("Reveal in Finder")
     : os === "windows"
-      ? "Show in Explorer"
-      : "Show in File Manager";
+      ? t("Show in Explorer")
+      : t("Show in File Manager");

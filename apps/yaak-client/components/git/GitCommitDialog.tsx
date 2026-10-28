@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GitStatus, GitStatusEntry } from "@yaakapp-internal/git";
 import { useGit } from "@yaakapp-internal/git";
 import type {
@@ -72,7 +73,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
     } catch (err) {
       showErrorToast({
         id: "git-commit-and-push-error",
-        title: "Error committing and pushing",
+        title: t("Error committing and pushing"),
         message: String(err),
       });
     } finally {
@@ -184,9 +185,9 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
     async (entry: GitStatusEntry) => {
       const confirmed = await showConfirm({
         id: "git-restore-commit-entry",
-        title: "Discard Changes",
-        description: "Do you really want to discard uncommitted changes for the selected item?",
-        confirmText: "Discard",
+        title: t("Discard Changes"),
+        description: t("Do you really want to discard uncommitted changes for the selected item?"),
+        confirmText: t("Discard"),
         color: "danger",
       });
       if (!confirmed) return;
@@ -205,7 +206,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
   if (!hasAnythingToAdd) {
     return (
       <div className="h-full px-6 pb-4">
-        <EmptyStateText>No changes since last commit</EmptyStateText>
+        <EmptyStateText>{t("No changes since last commit")}</EmptyStateText>
       </div>
     );
   }
@@ -218,7 +219,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
         defaultRatio={0.6}
         firstSlot={({ style }) => (
           <div style={style} className="h-full px-4 flex flex-col gap-3">
-            <CommercialUseBanner source="git-commit" title="Using Git for work?" />
+            <CommercialUseBanner source="git-commit" title={t("Using Git for work?")} />
             <SplitLayout
               className="min-h-0 flex-1"
               storageKey="commit-vertical"
@@ -244,7 +245,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
                   />
                   {externalEntries.find((e) => e.status !== "current") && (
                     <>
-                      <Separator className="mt-3 mb-1">Other files</Separator>
+                      <Separator className="mt-3 mb-1">{t("Other files")}</Separator>
                       {externalEntries.map((entry) => (
                         <ExternalTreeNode
                           key={entry.relaPath + entry.status}
@@ -261,10 +262,10 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
                 <div style={innerStyle} className="grid grid-rows-[minmax(0,1fr)_auto] gap-3 pb-2">
                   <Input
                     className="text-base! font-sans rounded-md"
-                    placeholder="Commit message..."
+                    placeholder={t("Commit message...")}
                     onChange={setMessage}
                     stateKey={null}
-                    label="Commit message"
+                    label={t("Commit message")}
                     fullHeight
                     multiLine
                     hideLabel
@@ -280,7 +281,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
                         disabled={!hasAddedAnything || message.trim().length === 0}
                         isLoading={isPushing}
                       >
-                        Commit
+                        {t("Commit")}
                       </Button>
                       <Button
                         color="primary"
@@ -289,7 +290,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
                         onClick={handleCreateCommitAndPush}
                         isLoading={isPushing}
                       >
-                        Commit and Push
+                        {t("Commit and Push")}
                       </Button>
                     </HStack>
                   </HStack>
@@ -303,7 +304,7 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
             {selectedEntry ? (
               <DiffPanel entry={selectedEntry} onDiscardChanges={handleDiscardChanges} />
             ) : (
-              <EmptyStateText>Select a change to view diff</EmptyStateText>
+              <EmptyStateText>{t("Select a change to view diff")}</EmptyStateText>
             )}
           </div>
         )}
@@ -456,7 +457,7 @@ function DiffPanel({
           variant="border"
           onClick={() => onDiscardChanges(entry)}
         >
-          Discard Changes
+          {t("Discard Changes")}
         </Button>
       </div>
       <DiffViewer original={prevYaml ?? ""} modified={nextYaml ?? ""} className="flex-1 min-h-0" />

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 
@@ -32,7 +33,7 @@ export function ImageViewer({ className, mimeType, ...props }: Props) {
   return (
     <img
       src={src}
-      alt="Response preview"
+      alt={t("Response preview")}
       className={classNames(className, "max-w-full max-h-full")}
     />
   );

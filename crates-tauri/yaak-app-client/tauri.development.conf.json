@@ -1,6 +1,6 @@
 {
-  "productName": "Daak",
-  "identifier": "app.yaak.desktop.dev",
+  "productName": "ApiCub Dev",
+  "identifier": "com.nyssance.apicub.dev",
   "bundle": {
     "icon": [
       "icons/dev/32x32.png",
@@ -9,5 +9,12 @@
       "icons/dev/icon.icns",
       "icons/dev/icon.ico"
     ]
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["apicub-dev"]
+      }
+    }
   }
 }

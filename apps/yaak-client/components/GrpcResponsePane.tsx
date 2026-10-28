@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GrpcEvent, GrpcRequest } from "@yaakapp-internal/models";
 import {
   HStack,
@@ -75,7 +76,9 @@ export function GrpcResponsePane({ style, methodType, activeRequest }: Props) {
   const header = (
     <HStack className="pl-3 mb-1 font-mono text-sm text-text-subtle overflow-x-auto hide-scrollbars">
       <HStack space={2}>
-        <span className="whitespace-nowrap">{events.length} Messages</span>
+        <span className="whitespace-nowrap">
+          {events.length} {" " + t("Messages")}
+        </span>
         {activeConnection.state !== "closed" && (
           <LoadingIcon size="sm" className="text-text-subtlest" />
         )}
@@ -175,7 +178,7 @@ function GrpcEventDetail({
         />
         {!showLarge && event.content.length > 1000 * 1000 ? (
           <VStack space={2} className="italic text-text-subtlest">
-            Message previews larger than 1MB are hidden
+            {t("Message previews larger than 1MB are hidden")}
             <div>
               <Button
                 onClick={() => {
@@ -190,7 +193,7 @@ function GrpcEventDetail({
                 variant="border"
                 size="xs"
               >
-                Try Showing
+                {t("Try Showing")}
               </Button>
             </div>
           </VStack>
@@ -219,7 +222,8 @@ function GrpcEventDetail({
       <div className="py-2 h-full">
         {Object.keys(event.metadata).length === 0 ? (
           <EmptyStateText>
-            No {event.eventType === "connection_end" ? "trailers" : "metadata"}
+            {t("No")}
+            {event.eventType === "connection_end" ? t("trailers") : t("metadata")}
           </EmptyStateText>
         ) : (
           <KeyValueRows>
@@ -240,16 +244,16 @@ function getEventDisplay(
   status: GrpcEvent["status"],
 ): { icon: IconProps["icon"]; color: IconProps["color"]; title: string } {
   if (eventType === "server_message") {
-    return { icon: "arrow_big_down_dash", color: "info", title: "Server message" };
+    return { icon: "arrow_big_down_dash", color: "info", title: t("Server message") };
   }
   if (eventType === "client_message") {
-    return { icon: "arrow_big_up_dash", color: "primary", title: "Client message" };
+    return { icon: "arrow_big_up_dash", color: "primary", title: t("Client message") };
   }
   if (eventType === "error" || (status != null && status > 0)) {
-    return { icon: "alert_triangle", color: "danger", title: "Error" };
+    return { icon: "alert_triangle", color: "danger", title: t("Error") };
   }
   if (eventType === "connection_end") {
-    return { icon: "check", color: "success", title: "Connection response" };
+    return { icon: "check", color: "success", title: t("Connection response") };
   }
-  return { icon: "info", color: undefined, title: "Event" };
+  return { icon: "info", color: undefined, title: t("Event") };
 }

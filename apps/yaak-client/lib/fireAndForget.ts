@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { showErrorToast } from "./toast";
 
 /**
@@ -9,7 +10,7 @@ export function fireAndForget(promise: Promise<unknown>) {
     console.error("Unhandled async error:", err);
     showErrorToast({
       id: "async-error",
-      title: "Unexpected Error",
+      title: t("Unexpected Error"),
       message: err instanceof Error ? err.message : String(err),
     });
   });

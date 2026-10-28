@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useMutation } from "@tanstack/react-query";
 import { uninstallPlugin } from "@yaakapp-internal/plugins";
 import { InlineCode } from "@yaakapp-internal/ui";
@@ -13,11 +14,12 @@ export function usePromptUninstallPlugin(pluginId: string | null, name: string) 
 
       const confirmed = await showConfirmDelete({
         id: `uninstall-plugin-${pluginId}`,
-        title: "Uninstall Plugin",
-        confirmText: "Uninstall",
+        title: t("Uninstall Plugin"),
+        confirmText: t("Uninstall"),
         description: (
           <>
-            Permanently uninstall <InlineCode>{name}</InlineCode>?
+            {t("Permanently uninstall")}
+            <InlineCode>{name}</InlineCode>?
           </>
         ),
       });

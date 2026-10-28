@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useTimedBoolean } from "@yaakapp-internal/ui";
 import { copyToClipboard } from "../lib/copy";
 import { showToast } from "../lib/toast";
@@ -19,7 +20,7 @@ export function CopyButton({ text, ...props }: Props) {
           showToast({
             id: "failed-to-copy",
             color: "danger",
-            message: "Failed to copy",
+            message: t("Failed to copy"),
           });
         } else {
           copyToClipboard(content, { disableToast: true });
@@ -27,7 +28,7 @@ export function CopyButton({ text, ...props }: Props) {
         }
       }}
     >
-      {copied ? "Copied" : "Copy"}
+      {copied ? t("Copied") : t("Copy")}
     </Button>
   );
 }

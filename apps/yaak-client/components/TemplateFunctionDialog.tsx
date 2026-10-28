@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { EditorView } from "@codemirror/view";
 import type {
   Folder,
@@ -172,7 +173,7 @@ function InitializedTemplateFunctionDialog({
         {name === "secure" ? (
           <PlainInput
             required
-            label="Value"
+            label={t("Value")}
             name="value"
             type="password"
             placeholder="••••••••••••"
@@ -194,14 +195,14 @@ function InitializedTemplateFunctionDialog({
         <div className="w-full grid grid-cols-1 grid-rows-[auto_auto] border-t border-t-border pt-3">
           <HStack space={0.5}>
             <HStack className="text-sm text-text-subtle" space={1.5}>
-              Rendered Preview
+              {t("Rendered Preview")}
               {rendered.isLoading && <LoadingIcon size="xs" />}
             </HStack>
             <IconButton
               size="xs"
               iconSize="sm"
               icon={showSecretsInPreview ? "lock" : "lock_open"}
-              title={showSecretsInPreview ? "Show preview" : "Hide preview"}
+              title={showSecretsInPreview ? t("Show preview") : t("Hide preview")}
               onClick={toggleShowSecretsInPreview}
               className={classNames(
                 "ml-auto text-text-subtlest",
@@ -222,7 +223,7 @@ function InitializedTemplateFunctionDialog({
                 </em>
               ) : dataContainsSecrets && !showSecretsInPreview ? (
                 <span className="italic text-text-subtle">
-                  ------ sensitive values hidden ------
+                  {t("------ sensitive values hidden ------")}
                 </span>
               ) : tooLarge ? (
                 "too large to preview"
@@ -235,7 +236,7 @@ function InitializedTemplateFunctionDialog({
                 size="xs"
                 icon="refresh"
                 className="text-text-subtle"
-                title="Refresh preview"
+                title={t("Refresh preview")}
                 spin={rendered.isPending}
                 onClick={() => {
                   setRenderKey(new Date().toISOString());
@@ -250,9 +251,9 @@ function InitializedTemplateFunctionDialog({
       <DialogFooter
         actions={[
           ...(templateFunction.data.name === "secure"
-            ? [{ label: "Reveal Encryption Key", onClick: setupOrConfigureEncryption }]
+            ? [{ label: t("Reveal Encryption Key"), onClick: setupOrConfigureEncryption }]
             : []),
-          { label: "Save", color: "primary", form: formId },
+          { label: t("Save"), color: "primary", form: formId },
         ]}
       />
     </form>
@@ -271,7 +272,7 @@ TemplateFunctionDialog.show = (
     size: "md",
     className: "h-240",
     title: <InlineCode>{fn.name}(…)</InlineCode>,
-    description: fn.description,
+    description: fn.description ? t(fn.description) : undefined,
     render: ({ hide }) => {
       const model = jotaiStore.get(activeWorkspaceAtom);
       if (model == null) return null;

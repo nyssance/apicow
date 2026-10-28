@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { WebsocketRequest } from "@yaakapp-internal/models";
 import {
   flushAllModelWrites,
@@ -115,23 +116,23 @@ export function WebsocketRequestPane({ style, fullHeight, className, activeReque
     return [
       {
         value: TAB_MESSAGE,
-        label: "Message",
+        label: t("Message"),
       } as TabItem,
       {
         value: TAB_PARAMS,
         rightSlot: <CountBadge count={urlParameterPairs.length} />,
-        label: "Params",
+        label: t("Params"),
       },
       ...headersTab,
       ...authTab,
       {
         value: TAB_SETTINGS,
-        label: "Settings",
+        label: t("Settings"),
         rightSlot: <CountBadge count={numSettingsOverrides} />,
       },
       {
         value: TAB_DESCRIPTION,
-        label: "Info",
+        label: t("Info"),
         rightSlot: hasDescription && <CountBadge count={true} />,
       },
     ];
@@ -221,7 +222,7 @@ export function WebsocketRequestPane({ style, fullHeight, className, activeReque
                 isLoading && (
                   <IconButton
                     size="xs"
-                    title="Close connection"
+                    title={t("Close connection")}
                     icon="x"
                     iconColor="secondary"
                     className="w-8 mr-0.5 h-full!"
@@ -241,7 +242,7 @@ export function WebsocketRequestPane({ style, fullHeight, className, activeReque
           </div>
           <Tabs
             ref={tabsRef}
-            label="Request"
+            label={t("Request")}
             tabs={tabs}
             tabListClassName="mt-1 mb-1.5!"
             storageKey={TABS_STORAGE_KEY}
@@ -286,7 +287,7 @@ export function WebsocketRequestPane({ style, fullHeight, className, activeReque
             <TabContent value={TAB_DESCRIPTION}>
               <div className="grid grid-rows-[auto_minmax(0,1fr)] h-full">
                 <PlainInput
-                  label="Request Name"
+                  label={t("Request Name")}
                   hideLabel
                   forceUpdateKey={forceUpdateKey}
                   defaultValue={activeRequest.name}
@@ -297,7 +298,7 @@ export function WebsocketRequestPane({ style, fullHeight, className, activeReque
                 />
                 <MarkdownEditor
                   name="request-description"
-                  placeholder="Request description"
+                  placeholder={t("Request description")}
                   defaultValue={activeRequest.description}
                   stateKey={`description.${activeRequest.id}`}
                   forceUpdateKey={forceUpdateKey}

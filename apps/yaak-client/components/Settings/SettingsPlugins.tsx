@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import type { Plugin } from "@yaakapp-internal/models";
 import { patchModel, pluginsAtom } from "@yaakapp-internal/models";
@@ -50,18 +51,18 @@ export function SettingsPlugins({ defaultSubtab }: SettingsPluginsProps) {
     <div className="h-full">
       <Tabs
         defaultValue={defaultSubtab}
-        label="Plugins"
+        label={t("Plugins")}
         addBorders
         tabListClassName="px-6 pt-2"
         tabs={[
-          { label: "Discover", value: "search" },
+          { label: t("Discover"), value: "search" },
           {
-            label: "Installed",
+            label: t("Installed"),
             value: "installed",
             rightSlot: <CountBadge count={installedPlugins.length} />,
           },
           {
-            label: "Bundled",
+            label: t("Bundled"),
             value: "bundled",
             rightSlot: <CountBadge count={bundledPlugins.length} />,
           },
@@ -93,20 +94,20 @@ export function SettingsPlugins({ defaultSubtab }: SettingsPluginsProps) {
                       setDirectory(null);
                     }}
                   >
-                    Add Plugin
+                    {t("Add Plugin")}
                   </Button>
                 )}
                 <IconButton
                   size="sm"
                   icon="refresh"
-                  title="Reload plugins"
+                  title={t("Reload plugins")}
                   spin={refreshPlugins.isPending}
                   onClick={() => refreshPlugins.mutate()}
                 />
                 <IconButton
                   size="sm"
                   icon="help"
-                  title="View documentation"
+                  title={t("View documentation")}
                   onClick={() =>
                     platform.openUrl("https://yaak.app/docs/plugin-development/plugins-quick-start")
                   }
@@ -209,7 +210,7 @@ function PluginTableRow({
         <TableCell className="py-0!">
           <Checkbox
             hideLabel
-            title={plugin?.enabled ? "Disable plugin" : "Enable plugin"}
+            title={plugin?.enabled ? t("Disable plugin") : t("Enable plugin")}
             checked={plugin?.enabled ?? false}
             disabled={plugin == null}
             onChange={async (enabled) => {
@@ -250,34 +251,34 @@ function PluginTableRow({
             <Button
               variant="border"
               color="success"
-              title={`Update to ${latestVersion}`}
+              title={t("Update to {{p0}}", { p0: String(latestVersion) })}
               size="xs"
               isLoading={installPluginMutation.isPending}
               onClick={() => installPluginMutation.mutate(name)}
             >
-              Update
+              {t("Update")}
             </Button>
           ) : plugin == null ? (
             <Button
               variant="border"
               color="primary"
-              title={`Install ${version}`}
+              title={t("Install {{p0}}", { p0: String(version) })}
               size="xs"
               isLoading={installPluginMutation.isPending}
               onClick={() => installPluginMutation.mutate(name)}
             >
-              Install
+              {t("Install")}
             </Button>
           ) : null}
           {showUninstall && uninstall != null && (
             <Button
               size="xs"
-              title="Uninstall plugin"
+              title={t("Uninstall plugin")}
               variant="border"
               isLoading={uninstall.isPending}
               onClick={() => uninstall.mutate()}
             >
-              Uninstall
+              {t("Uninstall")}
             </Button>
           )}
         </HStack>
@@ -302,8 +303,8 @@ function PluginSearch() {
       <HStack space={1.5}>
         <PlainInput
           hideLabel
-          label="Search"
-          placeholder="Search plugins..."
+          label={t("Search")}
+          placeholder={t("Search plugins...")}
           onChange={setQuery}
           defaultValue={query}
         />
@@ -314,14 +315,14 @@ function PluginSearch() {
             <LoadingIcon size="xl" className="text-text-subtlest" />
           </EmptyStateText>
         ) : (results.data.plugins ?? []).length === 0 ? (
-          <EmptyStateText>No plugins found</EmptyStateText>
+          <EmptyStateText>{t("No plugins found")}</EmptyStateText>
         ) : (
           <Table scrollable>
             <TableHead>
               <TableRow>
-                <TableHeaderCell>Display Name</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Version</TableHeaderCell>
+                <TableHeaderCell>{t("Display Name")}</TableHeaderCell>
+                <TableHeaderCell>{t("Name")}</TableHeaderCell>
+                <TableHeaderCell>{t("Version")}</TableHeaderCell>
                 <TableHeaderCell />
               </TableRow>
             </TableHead>
@@ -341,9 +342,9 @@ function InstalledPlugins({ plugins, className }: { plugins: Plugin[]; className
   return plugins.length === 0 ? (
     <div className={classNames(className, "pb-4")}>
       <EmptyStateText className="text-center">
-        Plugins extend the functionality of Yaak.
+        {t("Plugins extend the functionality of Yaak.")}
         <br />
-        Add your first plugin to get started.
+        {t("Add your first plugin to get started.")}
       </EmptyStateText>
     </div>
   ) : (
@@ -353,9 +354,9 @@ function InstalledPlugins({ plugins, className }: { plugins: Plugin[]; className
         <TableHead>
           <TableRow>
             <TableHeaderCell className="w-0" />
-            <TableHeaderCell>Display Name</TableHeaderCell>
-            <TableHeaderCell>Name</TableHeaderCell>
-            <TableHeaderCell>Version</TableHeaderCell>
+            <TableHeaderCell>{t("Display Name")}</TableHeaderCell>
+            <TableHeaderCell>{t("Name")}</TableHeaderCell>
+            <TableHeaderCell>{t("Version")}</TableHeaderCell>
             <TableHeaderCell />
           </TableRow>
         </TableHead>
@@ -404,18 +405,21 @@ export function DeprecatedPluginBanner({
   return (
     <Banner color="info" className="flex items-center gap-4">
       <div className="min-w-0 flex-1">
-        <div className="text text-text">The {name} plugin is deprecated.</div>
+        <div className="text text-text">
+          {t("The") + " "}
+          {name} {" " + t("plugin is deprecated.")}
+        </div>
         <p className="mt-1 text-sm text-text-subtle">{children}</p>
       </div>
       <Button
         size="xs"
         variant="border"
-        title="Uninstall plugin"
+        title={t("Uninstall plugin")}
         className="shrink-0"
         isLoading={uninstall?.isPending}
         onClick={() => uninstall?.mutate()}
       >
-        Uninstall
+        {t("Uninstall")}
       </Button>
     </Banner>
   );
@@ -424,16 +428,16 @@ export function DeprecatedPluginBanner({
 function BundledPlugins({ plugins }: { plugins: Plugin[] }) {
   return plugins.length === 0 ? (
     <div className="pb-4">
-      <EmptyStateText className="text-center">No bundled plugins found.</EmptyStateText>
+      <EmptyStateText className="text-center">{t("No bundled plugins found.")}</EmptyStateText>
     </div>
   ) : (
     <Table scrollable>
       <TableHead>
         <TableRow>
           <TableHeaderCell className="w-0" />
-          <TableHeaderCell>Display Name</TableHeaderCell>
-          <TableHeaderCell>Name</TableHeaderCell>
-          <TableHeaderCell>Version</TableHeaderCell>
+          <TableHeaderCell>{t("Display Name")}</TableHeaderCell>
+          <TableHeaderCell>{t("Name")}</TableHeaderCell>
+          <TableHeaderCell>{t("Version")}</TableHeaderCell>
           <TableHeaderCell />
         </TableRow>
       </TableHead>

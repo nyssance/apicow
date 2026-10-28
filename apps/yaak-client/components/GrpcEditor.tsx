@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { linter } from "@codemirror/lint";
 import type { EditorView } from "@codemirror/view";
 import { jsoncLanguage } from "@shopify/lang-jsonc";
@@ -65,10 +66,11 @@ export function GrpcEditor({
       return {
         type: "error",
         id: "grpc-find-service-error",
-        title: "Couldn't Find Service",
+        title: t("Couldn't Find Service"),
         body: (
           <>
-            Failed to find service <InlineCode>{request.service}</InlineCode> in schema
+            {t("Failed to find service")}
+            <InlineCode>{request.service}</InlineCode> {t("in schema")}
           </>
         ),
         log: ["Failed to find service", { service: request.service, services }],
@@ -80,11 +82,12 @@ export function GrpcEditor({
       return {
         type: "error",
         id: "grpc-find-schema-error",
-        title: "Couldn't Find Method",
+        title: t("Couldn't Find Method"),
         body: (
           <>
-            Failed to find method <InlineCode>{request.method}</InlineCode> for{" "}
-            <InlineCode>{request.service}</InlineCode> in schema
+            {t("Failed to find method")}
+            <InlineCode>{request.method}</InlineCode> {" " + t("for")}{" "}
+            <InlineCode>{request.service}</InlineCode> {t("in schema")}
           </>
         ),
         log: ["Failed to find method", { method: request.method, methods: s.methods }],
@@ -97,11 +100,12 @@ export function GrpcEditor({
       return {
         type: "error",
         id: "grpc-parse-schema-error",
-        title: "Failed to Parse Schema",
+        title: t("Failed to Parse Schema"),
         body: (
           <VStack space={4}>
             <p>
-              For service <InlineCode>{request.service}</InlineCode> and method{" "}
+              {t("For service")}
+              <InlineCode>{request.service}</InlineCode> {" " + t("and method")}{" "}
               <InlineCode>{request.method}</InlineCode>
             </p>
             <FormattedError>{String(err)}</FormattedError>
@@ -147,9 +151,9 @@ export function GrpcEditor({
     if (request.message.trim() !== "") {
       const confirmed = await showConfirm({
         id: "grpc-generate-example",
-        title: "Generate Example",
-        description: "The current message will be replaced with an example.",
-        confirmText: "Generate",
+        title: t("Generate Example"),
+        description: t("The current message will be replaced with an example."),
+        confirmText: t("Generate"),
       });
       if (!confirmed) return;
     }
@@ -171,7 +175,7 @@ export function GrpcEditor({
   const handleShowReflectionError = useCallback(() => {
     showDialog({
       id: "grpc-reflection-error",
-      title: "Reflection Failed",
+      title: t("Reflection Failed"),
       size: "sm",
       render: ({ hide }) => (
         <>
@@ -186,7 +190,7 @@ export function GrpcEditor({
                 await handleReloadSchema();
               }}
             >
-              Retry
+              {t("Retry")}
             </Button>
           </div>
         </>
@@ -207,37 +211,37 @@ export function GrpcEditor({
               type: "content",
               label: (
                 <Banner color="danger">
-                  <p className="mb-1">Reflection failed</p>
+                  <p className="mb-1">{t("Reflection failed")}</p>
                   <Button
                     size="xs"
                     color="danger"
                     variant="border"
                     onClick={handleShowReflectionError}
                   >
-                    View Error
+                    {t("View Error")}
                   </Button>
                 </Banner>
               ),
             },
             {
-              label: "Generate Example Message",
+              label: t("Generate Example Message"),
               leftSlot: <Icon icon="magic_wand" />,
               disabled: methodSchema.type !== "schema",
               onSelect: handleGenerateExample,
             },
             { type: "separator" },
             {
-              label: "Reload Schema",
+              label: t("Reload Schema"),
               leftSlot: <Icon icon="refresh" spin={reflectionLoading} />,
               keepOpenOnSelect: true,
               onSelect: handleReloadSchema,
             },
             {
-              label: protoFiles.length > 0 ? "Select Proto Files\u2026" : "Configure Schema\u2026",
+              label: protoFiles.length > 0 ? t("Select Proto Files…") : t("Configure Schema…"),
               leftSlot: <Icon icon="settings" />,
               onSelect: () => {
                 showDialog({
-                  title: "Configure Schema",
+                  title: t("Configure Schema"),
                   size: "md",
                   className: "h-[30rem]",
                   id: "grpc-configure-schema",
@@ -250,22 +254,22 @@ export function GrpcEditor({
           <Button
             size="sm"
             variant="border"
-            title="Schema"
+            title={t("Schema")}
             forDropdown
             isLoading={reflectionLoading}
             color={reflectionUnavailable ? "info" : reflectionError ? "danger" : "default"}
           >
             {reflectionLoading
-              ? "Inspecting Schema"
+              ? t("Inspecting Schema")
               : reflectionUnavailable
-                ? "Select Proto Files"
+                ? t("Select Proto Files")
                 : reflectionError
-                  ? "Server Error"
+                  ? t("Server Error")
                   : protoFiles.length > 0
                     ? pluralizeCount("File", protoFiles.length)
                     : services != null
-                      ? "Schema Detected"
-                      : "Select Schema"}
+                      ? t("Schema Detected")
+                      : t("Select Schema")}
           </Button>
         </Dropdown>
       </div>,

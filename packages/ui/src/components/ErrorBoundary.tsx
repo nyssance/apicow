@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { ErrorInfo, ReactNode } from "react";
 import { Component } from "react";
 import { Banner } from "./Banner";
@@ -40,7 +41,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return (
       <Banner color="danger" className="flex items-center gap-2 overflow-auto">
         <div>
-          Error rendering <InlineCode>{name}</InlineCode> component
+          {t("Error rendering")}
+          <InlineCode>{name}</InlineCode> {t("component")}
           {onShowError == null && `: ${error instanceof Error ? error.message : String(error)}`}
         </div>
         {onShowError && (
@@ -51,7 +53,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             size="2xs"
             onClick={() => onShowError(error)}
           >
-            Show
+            {t("Show")}
           </Button>
         )}
       </Banner>

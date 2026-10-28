@@ -79,9 +79,9 @@ mod ws_ext;
 compile_error!("Enable one Tauri runtime feature: `cef` or `wry`.");
 
 #[cfg(feature = "cef")]
-type TauriRuntime = tauri::Cef;
+type RuntimeBackend = tauri_runtime_cef::Cef;
 #[cfg(all(not(feature = "cef"), feature = "wry"))]
-type TauriRuntime = tauri::Wry;
+type RuntimeBackend = tauri_runtime_wry::Wry;
 
 fn setup_window_menu<R: Runtime>(win: &WebviewWindow<R>) -> Result<()> {
     #[allow(unused_variables)]
@@ -179,7 +179,7 @@ async fn cmd_metadata<R: Runtime>(app_handle: AppHandle<R>) -> YaakResult<AppMet
     let app_log_dir = app_handle.path().app_log_dir()?;
     let vendored_plugin_dir =
         app_handle.path().resolve("vendored/plugins", BaseDirectory::Resource)?;
-    let default_project_dir = app_handle.path().home_dir()?.join("YaakProjects");
+    let default_project_dir = app_handle.path().home_dir()?.join("ApiCubProjects");
     let cli_version = detect_cli_version().await;
     Ok(AppMetaData {
         is_dev: is_dev(),
@@ -1202,7 +1202,7 @@ async fn cmd_check_for_updates<R: Runtime>(
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
-#[cfg_attr(feature = "cef", tauri::cef_entry_point)]
+#[cfg_attr(feature = "cef", tauri_runtime_cef::cef_entry_point)]
 pub fn run() {
     // GUI apps launched via Finder/launchd inherit a 256 open-file soft limit on macOS
     // (1024 on most Linux desktops). SQLite WAL connections hold ~3 fds each, so raise
@@ -1212,7 +1212,7 @@ pub fn run() {
         eprintln!("Failed to raise open-file limit: {e}");
     }
 
-    let mut builder = tauri::Builder::<TauriRuntime>::default().plugin(
+    let mut builder = tauri::Builder::default().runtime(RuntimeBackend::default()).plugin(
         Builder::default()
             .targets([
                 Target::new(TargetKind::Stdout),
@@ -1278,6 +1278,24 @@ pub fn run() {
 
     builder
         .setup(|app| {
+            let locale_handle = app.handle().clone();
+            app.listen("apicub-locale", move |event| {
+                if let Ok(locale) = serde_json::from_str::<String>(event.payload()) {
+                    if locale != "en" && locale != "zh-CN" {
+                        return;
+                    }
+                    window_menu::set_locale(&locale);
+                    let handle = locale_handle.clone();
+                    let _ = locale_handle.run_on_main_thread(move || {
+                        if let Ok(menu) = window_menu::app_menu(&handle) {
+                            #[cfg(not(target_os = "linux"))]
+                            if let Err(error) = handle.set_menu(menu) {
+                                log::warn!("Failed to update menu language: {error}");
+                            }
+                        }
+                    });
+                }
+            });
             let lifecycle_host = yaak_lifecycle::Host::owner()
                 .with_responses_dir(app.path().app_data_dir()?.join("responses"));
             if let Err(e) = app
@@ -1288,7 +1306,7 @@ pub fn run() {
 
             // The RPC command registry — every frontend command dispatches
             // through this via the single `rpc` Tauri command
-            app.manage(rpc_ext::build_rpc_router::<TauriRuntime>());
+            app.manage(rpc_ext::build_rpc_router::<tauri::DynRuntime>());
 
             // Initialize HTTP connection manager
             app.manage(yaak_http::manager::HttpConnectionManager::new());

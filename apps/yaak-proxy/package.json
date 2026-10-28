@@ -11,8 +11,8 @@
   "dependencies": {
     "@tanstack/react-query": "^5.104.2",
     "@tanstack/react-virtual": "^3.14.17",
-    "@tauri-apps/api": "^2.12.3",
-    "@tauri-apps/plugin-os": "^2.4.0",
+    "@tauri-apps/api": "^3.0.0-alpha.3",
+    "@tauri-apps/plugin-os": "^3.0.0-alpha.3",
     "@yaakapp-internal/model-store": "^1.0.0",
     "@yaakapp-internal/proxy-lib": "^1.0.0",
     "@yaakapp-internal/theme": "^1.0.0",

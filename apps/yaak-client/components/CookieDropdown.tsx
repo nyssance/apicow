@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { cookieJarsAtom, patchModel } from "@yaakapp-internal/models";
 import { useAtomValue } from "jotai";
 import { memo, useMemo } from "react";
@@ -31,7 +32,7 @@ export const CookieDropdown = memo(function CookieDropdown() {
             { type: "separator", label: activeCookieJar.name },
             {
               key: "manage",
-              label: "Manage Cookies",
+              label: t("Manage Cookies"),
               leftSlot: <Icon icon="cookie" />,
               onSelect: () => {
                 if (activeCookieJar == null) return;
@@ -40,20 +41,21 @@ export const CookieDropdown = memo(function CookieDropdown() {
             },
             {
               key: "rename",
-              label: "Rename",
+              label: t("Rename"),
               leftSlot: <Icon icon="pencil" />,
               onSelect: async () => {
                 const name = await showPrompt({
                   id: "rename-cookie-jar",
-                  title: "Rename Cookie Jar",
+                  title: t("Rename Cookie Jar"),
                   description: (
                     <>
-                      Enter a new name for <InlineCode>{activeCookieJar?.name}</InlineCode>
+                      {t("Enter a new name for")}
+                      <InlineCode>{activeCookieJar?.name}</InlineCode>
                     </>
                   ),
-                  label: "Name",
-                  confirmText: "Save",
-                  placeholder: "New name",
+                  label: t("Name"),
+                  confirmText: t("Save"),
+                  placeholder: t("New name"),
                   defaultValue: activeCookieJar?.name,
                 });
                 if (name == null) return;
@@ -63,7 +65,7 @@ export const CookieDropdown = memo(function CookieDropdown() {
             ...(((cookieJars ?? []).length > 1 // Never delete the last one
               ? [
                   {
-                    label: "Delete",
+                    label: t("Delete"),
                     leftSlot: <Icon icon="trash" />,
                     color: "danger",
                     onSelect: async () => {
@@ -77,7 +79,7 @@ export const CookieDropdown = memo(function CookieDropdown() {
       { type: "separator" },
       {
         key: "create-cookie-jar",
-        label: "New Cookie Jar",
+        label: t("New Cookie Jar"),
         leftSlot: <Icon icon="plus" />,
         onSelect: () => createCookieJar.mutate(),
       },
@@ -86,7 +88,7 @@ export const CookieDropdown = memo(function CookieDropdown() {
 
   return (
     <Dropdown items={items}>
-      <IconButton size="sm" icon="cookie" iconColor="secondary" title="Cookie Jar" />
+      <IconButton size="sm" icon="cookie" iconColor="secondary" title={t("Cookie Jar")} />
     </Dropdown>
   );
 });

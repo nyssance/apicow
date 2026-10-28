@@ -1,6 +1,6 @@
 {
-  "productName": "Yaak Proxy Dev",
-  "identifier": "app.yaak.proxy.dev",
+  "productName": "ApiCub Proxy Dev",
+  "identifier": "com.nyssance.apicub.proxy.dev",
   "bundle": {
     "icon": [
       "../yaak-app-client/icons/dev/32x32.png",

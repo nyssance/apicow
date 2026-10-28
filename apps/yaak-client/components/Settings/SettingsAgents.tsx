@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { platform } from "@yaakapp-internal/platform";
 import type { AgentSetupStatus, AppMetaData } from "@yaakapp-internal/rpc-schema";
@@ -15,12 +16,7 @@ import { appInfo } from "../../lib/appInfo";
 import { rpc } from "../../lib/rpc";
 import { Link } from "../core/Link";
 import { SegmentedControl } from "../core/SegmentedControl";
-import {
-  SettingCommand,
-  SettingSnippet,
-  SettingsList,
-  SettingsSection,
-} from "../core/SettingRow";
+import { SettingCommand, SettingSnippet, SettingsList, SettingsSection } from "../core/SettingRow";
 import { DeprecatedPluginBanner } from "./SettingsPlugins";
 
 const CLI_INSTALL_COMMAND = "npm install -g @yaakapp/cli";
@@ -59,9 +55,9 @@ export function SettingsAgents() {
   return (
     <VStack space={1.5} className="mb-4">
       <div className="mb-3">
-        <Heading>Agents</Heading>
+        <Heading>{t("Agents")}</Heading>
         <p className="text-text-subtle">
-          Connect AI coding agents like Claude Code and Cursor to Yaak.
+          {t("Connect AI coding agents like Claude Code and Cursor to Yaak.")}
         </p>
       </div>
       <SettingsList>
@@ -69,7 +65,7 @@ export function SettingsAgents() {
           <div className="pb-4 border-b border-border-subtle">
             <SegmentedControl
               name="agents_setup_client"
-              label="Agent"
+              label={t("Agent")}
               hideLabel
               value={client}
               onChange={setClient}
@@ -80,7 +76,7 @@ export function SettingsAgents() {
             <div className="flex items-center gap-2 py-3 text-sm text-text-subtle border-b border-border-subtle">
               <Icon icon="check" size="sm" color="success" />
               <span>
-                Yaak CLI <span className="text-text">{cliVersion.data}</span> is installed.
+                Yaak CLI <span className="text-text">{cliVersion.data}</span> {t("is installed.")}
               </span>
             </div>
           ) : (
@@ -88,16 +84,16 @@ export function SettingsAgents() {
               <Banner color="info">
                 <div className="flex items-center gap-2 text text-text">
                   <Icon icon="square_terminal" color="info" />
-                  Install the Yaak CLI first
+                  {t("Install the Yaak CLI first")}
                 </div>
                 <p className="mt-1 text-sm text-text-subtle">
-                  Agents launch it to reach Yaak, even with the app closed.
+                  {t("Agents launch it to reach Yaak, even with the app closed.")}
                 </p>
                 <SettingSnippet className="mt-3" language="shell" snippet={CLI_INSTALL_COMMAND} />
                 <div className="mt-3 mb-1 flex items-center gap-4 text-sm">
-                  <Link href="https://yaak.app/docs/cli">Docs</Link>
+                  <Link href="https://yaak.app/docs/cli">{t("Docs")}</Link>
                   <span className="text-text-subtlest">
-                    Checks again when you come back to Yaak.
+                    {t("Checks again when you come back to Yaak.")}
                   </span>
                 </div>
               </Banner>
@@ -109,12 +105,12 @@ export function SettingsAgents() {
                 plugin={mcpServerPlugin.plugin}
                 name={mcpServerPlugin.info.displayName}
               >
-                The two steps below replace it. Uninstall it once your agent is connected.
+                {t("The two steps below replace it. Uninstall it once your agent is connected.")}
               </DeprecatedPluginBanner>
             </div>
           )}
           <SettingCommand
-            title="Add the MCP server"
+            title={t("Add the MCP server")}
             description={cli.where}
             snippet={cli.snippet}
             language={cli.language}
@@ -122,10 +118,12 @@ export function SettingsAgents() {
             done={setupStatus.data?.mcpServer ? "Added" : null}
           />
           <SettingCommand
-            title="Install the skill"
+            title={t("Install the skill")}
             description={
               <>
-                Lets {clientLabel} run the <InlineCode>yaak</InlineCode> command directly.
+                {t("Lets")}
+                {clientLabel} {" " + t("run the") + " "}
+                <InlineCode>yaak</InlineCode> {t("command directly.")}
               </>
             }
             snippet={skillInstallCommand(client)}

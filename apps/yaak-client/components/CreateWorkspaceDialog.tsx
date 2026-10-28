@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { gitMutations } from "@yaakapp-internal/git";
 import type { WorkspaceMeta } from "@yaakapp-internal/models";
 import { createGlobalModel, updateModel } from "@yaakapp-internal/models";
@@ -53,7 +54,7 @@ export function CreateWorkspaceDialog({ hide }: Props) {
             .catch((err) => {
               showErrorToast({
                 id: "git-init-error",
-                title: "Error initializing Git",
+                title: t("Error initializing Git"),
                 message: String(err),
               });
             });
@@ -72,7 +73,7 @@ export function CreateWorkspaceDialog({ hide }: Props) {
         }
       }}
     >
-      <PlainInput required label="Name" defaultValue={name} onChange={setName} />
+      <PlainInput required label={t("Name")} defaultValue={name} onChange={setName} />
 
       <SyncToFilesystemSetting
         onChange={setSyncConfig}
@@ -81,15 +82,15 @@ export function CreateWorkspaceDialog({ hide }: Props) {
       />
       <div>
         <Label htmlFor={null} help={<EncryptionHelp />}>
-          Workspace encryption
+          {t("Workspace encryption")}
         </Label>
         <Checkbox
           checked={setupEncryption}
           onChange={setSetupEncryption}
-          title="Enable Encryption"
+          title={t("Enable Encryption")}
         />
       </div>
-      <DialogFooter actions={[{ label: "Create Workspace", color: "primary", form: formId }]} />
+      <DialogFooter actions={[{ label: t("Create Workspace"), color: "primary", form: formId }]} />
     </VStack>
   );
 }

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useEffect, useState } from "react";
 
 interface Props {
@@ -25,6 +26,10 @@ export function SvgViewer({ text, className }: Props) {
   }
 
   return (
-    <img src={src} alt="Response preview" className={className ?? "max-w-full max-h-full pb-2"} />
+    <img
+      src={src}
+      alt={t("Response preview")}
+      className={className ?? "max-w-full max-h-full pb-2"}
+    />
   );
 }

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { getModel } from "@yaakapp-internal/models";
 import mime from "mime";
@@ -23,7 +24,7 @@ export function useSaveResponse(response: HttpResponse | null) {
       const slug = slugify(request.name || "response", { lower: true });
       const filepath = await platform.dialog.save({
         defaultPath: ext ? `${slug}.${ext}` : slug,
-        title: "Save Response",
+        title: t("Save Response"),
       });
       if (filepath == null) {
         return; // Cancelled
@@ -33,7 +34,8 @@ export function useSaveResponse(response: HttpResponse | null) {
       showToast({
         message: (
           <>
-            Response saved to <InlineCode>{filepath}</InlineCode>
+            {t("Response saved to")}
+            <InlineCode>{filepath}</InlineCode>
           </>
         ),
       });

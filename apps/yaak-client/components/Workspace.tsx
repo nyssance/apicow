@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { settingsAtom, workspacesAtom } from "@yaakapp-internal/models";
 import { Banner, HeaderSize, HStack, SidebarLayout } from "@yaakapp-internal/ui";
@@ -163,8 +164,10 @@ function WorkspaceBody() {
         transition={{ delay: 0.5 }}
       >
         <Banner color="warning" className="max-w-120">
-          The active workspace was not found. Select a workspace from the header menu or report this
-          bug to <FeedbackLink />
+          {t(
+            "The active workspace was not found. Select a workspace from the header menu or report this bug to",
+          )}
+          <FeedbackLink />
         </Banner>
       </m.div>
     );
@@ -189,11 +192,11 @@ function WorkspaceBody() {
       bottomSlot={
         <HStack space={1} justifyContent="center" className="mt-3">
           <Button variant="border" size="sm" onClick={() => importData.mutate()}>
-            Import
+            {t("Import")}
           </Button>
           <CreateDropdown hideFolder>
             <Button variant="border" forDropdown size="sm">
-              New Request
+              {t("New Request")}
             </Button>
           </CreateDropdown>
         </HStack>

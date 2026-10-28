@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { InlineCode } from "@yaakapp-internal/ui";
@@ -22,7 +23,7 @@ export function useActiveWorkspaceChangedToast() {
       timeout: 3000,
       message: (
         <>
-          Activated workspace{" "}
+          {t("Activated workspace")}{" "}
           <InlineCode className="whitespace-nowrap">{activeWorkspace.name}</InlineCode>
         </>
       ),

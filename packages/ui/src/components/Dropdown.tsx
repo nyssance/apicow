@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { generateId } from "@yaakapp-internal/lib/generateId";
 import classNames from "classnames";
 import { atom, createStore } from "jotai";
@@ -226,7 +227,7 @@ export const Dropdown = forwardRef<DropdownRef, DropdownProps>(function Dropdown
   return (
     <>
       {child}
-      <ErrorBoundary name={"Dropdown Menu"}>
+      <ErrorBoundary name={t("Dropdown Menu")}>
         <Menu
           ref={menuRef}
           showTriangle
@@ -784,7 +785,7 @@ const Menu = forwardRef<Omit<DropdownRef, "open" | "isOpen" | "toggle" | "items"
             </HStack>
           )}
           {filteredItems.length === 0 && (
-            <span className="text-text-subtlest text-center px-2 py-1">No matches</span>
+            <span className="text-text-subtlest text-center px-2 py-1">{t("No matches")}</span>
           )}
           {filteredItems.map((item, i) => {
             if (item.hidden) {
@@ -1019,7 +1020,7 @@ function MenuItem({
           tabIndex={-1}
           icon="ellipsis_vertical"
           iconColor="secondary"
-          title="More actions"
+          title={t("More actions")}
           className="h-full! w-7!"
           onMouseDown={(e) => {
             // Prevent the trigger from stealing focus, which would unhighlight the row

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpRequest, WebsocketRequest } from "@yaakapp-internal/models";
 import type { GrpcRequest } from "@yaakapp-internal/sync";
 import { useAtomValue } from "jotai";
@@ -104,7 +105,7 @@ export function getCreateDropdownItems({
       : [
           { type: "separator" },
           {
-            label: "Folder",
+            label: t("Folder"),
             leftSlot: hideIcons ? undefined : <Icon icon="plus" />,
             onSelect: async () => {
               const id = await createFolder.mutateAsync({ folderId });

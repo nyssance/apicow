@@ -1,0 +1,44 @@
+import zhCN from "./locales/zh-CN.json";
+
+export type Locale = "en" | "zh-CN";
+export const localeStorageKey = "apicub.locale";
+
+export function resolveLocale(saved: string | null, languages: readonly string[]): Locale {
+  if (saved === "en" || saved === "zh-CN") return saved;
+  return languages[0]?.toLowerCase().startsWith("zh") ? "zh-CN" : "en";
+}
+
+export function getLocale(): Locale {
+  let saved: string | null = null;
+  try {
+    saved = globalThis.localStorage?.getItem(localeStorageKey) ?? null;
+  } catch {
+    /* Storage may be unavailable in an embedded view. */
+  }
+  return resolveLocale(saved, typeof navigator === "undefined" ? [] : navigator.languages);
+}
+
+const englishBranding: Record<string, string> = {
+  Yaak: "ApiCub",
+  "Yaak Settings": "ApiCub Settings",
+  "Relaunch Yaak": "Relaunch ApiCub",
+  "Try Yaak with a real API": "Try ApiCub with a real API",
+  "Yaak response preview": "ApiCub response preview",
+};
+
+/** Translate explicit UI copy only. Request payloads, IDs and user text never pass through this API. */
+export function translate(
+  locale: Locale,
+  source: string,
+  values: Record<string, string | number> = {},
+): string {
+  const translated = locale === "zh-CN" ? (zhCN as Record<string, string>)[source] : undefined;
+  return (translated ?? englishBranding[source] ?? source).replace(
+    /\{\{(\w+)\}\}/g,
+    (match, name: string) => String(values[name] ?? match),
+  );
+}
+
+export function t(source: string, values?: Record<string, string | number>): string {
+  return translate(getLocale(), source, values);
+}

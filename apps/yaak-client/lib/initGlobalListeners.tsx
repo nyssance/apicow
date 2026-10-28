@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { debounce } from "@yaakapp-internal/lib";
 import type {
   FormInput,
@@ -41,7 +42,7 @@ export function initGlobalListeners() {
         id: `plugin-init-error-${name}`,
         color: "danger",
         timeout: null,
-        message: `Failed to load plugin "${name}": ${err}`,
+        message: t('Failed to load plugin "{{p0}}": {{p1}}', { p0: String(name), p1: String(err) }),
         action: ({ hide }) => (
           <Button
             size="xs"
@@ -52,7 +53,7 @@ export function initGlobalListeners() {
               openSettings.mutate("plugins:installed");
             }}
           >
-            Manage Plugins
+            {t("Manage Plugins")}
           </Button>
         ),
       });
@@ -157,8 +158,11 @@ function showUpdateInstalledToast(version: string) {
     timeout: null,
     message: (
       <VStack>
-        <h2 className="font-semibold">Yaak {version} was installed</h2>
-        <p className="text-text-subtle text-sm">Start using the new version now?</p>
+        <h2 className="font-semibold">
+          {t("Yaak") + " "}
+          {version} {" " + t("was installed")}
+        </h2>
+        <p className="text-text-subtle text-sm">{t("Start using the new version now?")}</p>
       </VStack>
     ),
     action: ({ hide }) => (
@@ -172,7 +176,7 @@ function showUpdateInstalledToast(version: string) {
           setTimeout(() => rpc("cmd_restart", {}), 200);
         }}
       >
-        Relaunch Yaak
+        {t("Relaunch Yaak")}
       </ButtonInfiniteLoading>
     ),
   });
@@ -194,7 +198,7 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
         await platform.openUrl(`https://yaak.app/changelog/${version}`);
       }}
     >
-      What&apos;s New
+      {t("What's New")}
     </Button>
   );
 
@@ -207,11 +211,15 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
       timeout: null,
       message: (
         <VStack>
-          <h2 className="font-semibold">Yaak {version} is available</h2>
+          <h2 className="font-semibold">
+            {t("Yaak") + " "}
+            {version} {" " + t("is available")}
+          </h2>
           <p className="text-text-subtle text-sm">
             {flatpak ? (
               <>
-                Update with <InlineCode>flatpak update</InlineCode> or your software center.
+                {t("Update with")}
+                <InlineCode>flatpak update</InlineCode> {t("or your software center.")}
               </>
             ) : (
               "Download the new version to upgrade."
@@ -230,7 +238,7 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
                 await platform.openUrl("https://yaak.app/download");
               }}
             >
-              Download
+              {t("Download")}
             </Button>
           )}
           {whatsNewButton}
@@ -249,9 +257,12 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
     timeout: null,
     message: (
       <VStack>
-        <h2 className="font-semibold">Yaak {version} is available</h2>
+        <h2 className="font-semibold">
+          {t("Yaak") + " "}
+          {version} {" " + t("is available")}
+        </h2>
         <p className="text-text-subtle text-sm">
-          {downloaded ? "Do you want to install" : "Download and install"} the update?
+          {downloaded ? t("Do you want to install") : t("Download and install")} {t("the update?")}
         </p>
       </VStack>
     ),
@@ -269,7 +280,7 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
             } satisfies UpdateResponse);
           }}
         >
-          {downloaded ? "Install Now" : "Download and Install"}
+          {downloaded ? t("Install Now") : t("Download and Install")}
         </ButtonInfiniteLoading>
         {whatsNewButton}
       </HStack>
@@ -289,7 +300,8 @@ function showPluginUpdatesToast(updateInfo: PluginUpdateNotification) {
     message: (
       <VStack>
         <h2 className="font-semibold">
-          {count === 1 ? "1 plugin update" : `${count} plugin updates`} available
+          {count === 1 ? t("1 plugin update") : t("{{p0}} plugin updates", { p0: String(count) })}{" "}
+          {t("available")}
         </h2>
         <p className="text-text-subtle text-sm">
           {count === 1
@@ -311,12 +323,15 @@ function showPluginUpdatesToast(updateInfo: PluginUpdateNotification) {
             if (updated.length > 0) {
               showToast({
                 color: "success",
-                message: `Successfully updated ${updated.length} plugin${updated.length === 1 ? "" : "s"}`,
+                message: t("Successfully updated {{p0}} plugin{{p1}}", {
+                  p0: String(updated.length),
+                  p1: String(updated.length === 1 ? "" : "s"),
+                }),
               });
             }
           }}
         >
-          Update All
+          {t("Update All")}
         </ButtonInfiniteLoading>
         <Button
           size="xs"
@@ -327,7 +342,7 @@ function showPluginUpdatesToast(updateInfo: PluginUpdateNotification) {
             openSettings.mutate("plugins:installed");
           }}
         >
-          View Updates
+          {t("View Updates")}
         </Button>
       </HStack>
     ),

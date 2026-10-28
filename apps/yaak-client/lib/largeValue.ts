@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { Icon } from "@yaakapp-internal/ui";
 import mime from "mime";
 import { createElement } from "react";
@@ -53,7 +54,7 @@ export function largeValueActions({
 
   if (onView != null) {
     items.push({
-      label: sniffed == null ? "View" : `View ${sniffed.label}`,
+      label: sniffed == null ? t("View") : t("View {{p0}}", { p0: String(sniffed.label) }),
       leftSlot: createElement(Icon, { icon: "eye" }),
       onSelect: onView,
     });
@@ -64,14 +65,14 @@ export function largeValueActions({
   const image = isCopyableImage(sniffed);
   if (image) {
     items.push({
-      label: "Copy Image",
+      label: t("Copy Image"),
       leftSlot: createElement(Icon, { icon: "copy" }),
       onSelect: () => copyImage(value(), sniffed, copyText()),
     });
   }
 
   items.push({
-    label: sniffed?.encoding === "base64" ? "Copy Base64" : "Copy",
+    label: sniffed?.encoding === "base64" ? t("Copy Base64") : t("Copy"),
     // Second of a pair reads as one thing with two options, so it keeps the indent without
     // repeating the icon above it
     leftSlot: createElement(Icon, { icon: image ? "empty" : "copy" }),
@@ -79,7 +80,7 @@ export function largeValueActions({
   });
 
   items.push({
-    label: "Save to File",
+    label: t("Save to File"),
     leftSlot: createElement(Icon, { icon: "download" }),
     onSelect: () =>
       fireAndForget(saveValue(value(), sniffed, sniffed?.label.toLowerCase() ?? "value")),
@@ -200,7 +201,7 @@ export function copyImage(text: string, sniffed: SniffedValue, fallback: string)
         color: "success",
         icon: "copy",
         // Says PNG because that is what lands on the clipboard, whatever the value held
-        message: "Copied as PNG",
+        message: t("Copied as PNG"),
       }),
     )
     .catch((err: unknown) => {
@@ -232,5 +233,5 @@ export async function saveValue(text: string, sniffed: SniffedValue | null, name
     return; // Cancelled
   }
 
-  showToast({ message: `Saved to ${savedTo}` });
+  showToast({ message: t("Saved to {{p0}}", { p0: String(savedTo) }) });
 }

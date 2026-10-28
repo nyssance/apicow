@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useMutation } from "@tanstack/react-query";
 import { InlineCode } from "@yaakapp-internal/ui";
 import { showAlert } from "../lib/alert";
@@ -13,10 +14,11 @@ export function useCheckForUpdates() {
       if (!hasUpdate) {
         showAlert({
           id: "no-updates",
-          title: "No Update Available",
+          title: t("No Update Available"),
           body: (
             <>
-              You are currently on the latest version <InlineCode>{appInfo.version}</InlineCode>
+              {t("You are currently on the latest version")}
+              <InlineCode>{appInfo.version}</InlineCode>
             </>
           ),
         });

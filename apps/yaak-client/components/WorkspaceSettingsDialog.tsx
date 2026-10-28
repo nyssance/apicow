@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { patchModel, workspaceMetasAtom, workspacesAtom } from "@yaakapp-internal/models";
 import { Banner, HStack, InlineCode, CountBadge } from "@yaakapp-internal/ui";
 import { useAtomValue } from "jotai";
@@ -51,7 +52,7 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
   if (workspace == null) {
     return (
       <Banner color="danger">
-        <InlineCode>Workspace</InlineCode> not found
+        <InlineCode>{t("Workspace")}</InlineCode> {t("not found")}
       </Banner>
     );
   }
@@ -59,22 +60,22 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
   if (workspaceMeta == null)
     return (
       <Banner color="danger">
-        <InlineCode>WorkspaceMeta</InlineCode> not found for workspace
+        <InlineCode>WorkspaceMeta</InlineCode> {t("not found for workspace")}
       </Banner>
     );
 
   return (
     <Tabs
       defaultValue={tab ?? DEFAULT_TAB}
-      label="Folder Settings"
+      label={t("Folder Settings")}
       className="pt-4 pb-2 px-3"
       tabListClassName="pl-4"
       addBorders
       tabs={[
-        { value: TAB_GENERAL, label: "Workspace" },
+        { value: TAB_GENERAL, label: t("Workspace") },
         {
           value: TAB_SETTINGS,
-          label: "Settings",
+          label: t("Settings"),
         },
         ...headersTab,
         ...authTab,
@@ -123,8 +124,8 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
           <PlainInput
             required
             hideLabel
-            placeholder="Workspace Name"
-            label="Name"
+            placeholder={t("Workspace Name")}
+            label={t("Name")}
             defaultValue={workspace.name}
             className="text-base! font-sans"
             onChange={(name) => patchModel(workspace, { name })}
@@ -132,7 +133,7 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
 
           <MarkdownEditor
             name="workspace-description"
-            placeholder="Workspace description"
+            placeholder={t("Workspace description")}
             className="border border-border px-2"
             defaultValue={workspace.description}
             stateKey={`description.${workspace.id}`}
@@ -155,7 +156,7 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
               variant="border"
               size="xs"
             >
-              Delete Workspace
+              {t("Delete Workspace")}
             </Button>
             <InlineCode className="flex gap-1 items-center text-primary pl-2.5">
               {workspaceId}
@@ -163,7 +164,7 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
                 className="opacity-70 text-primary!"
                 size="2xs"
                 iconSize="sm"
-                title="Copy workspace ID"
+                title={t("Copy workspace ID")}
                 text={workspaceId}
               />
             </InlineCode>

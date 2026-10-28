@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useMemo } from "react";
 
 interface Props {
@@ -17,7 +18,7 @@ export function WebPageViewer({ html, baseUrl }: Props) {
     <div className="h-full pb-3">
       <iframe
         key={html ? "has-body" : "no-body"}
-        title="Yaak response preview"
+        title={t("Yaak response preview")}
         srcDoc={contentForIframe}
         sandbox="allow-scripts allow-forms"
         referrerPolicy="no-referrer"

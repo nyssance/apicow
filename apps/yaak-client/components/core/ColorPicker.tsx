@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import classNames from "classnames";
 import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
@@ -25,7 +26,7 @@ export function ColorPicker({ onChange, color, className }: Props) {
       />
       <PlainInput
         hideLabel
-        label="Plain Color"
+        label={t("Plain Color")}
         forceUpdateKey={updateKey}
         defaultValue={color ?? ""}
         onChange={onChange}
@@ -104,7 +105,7 @@ export function ColorPickerWithThemeColors({ onChange, color, className }: Props
           />
           <PlainInput
             hideLabel
-            label="Plain Color"
+            label={t("Plain Color")}
             forceUpdateKey={updateKey}
             defaultValue={color ?? ""}
             onChange={onChange}

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { formatSize } from "@yaakapp-internal/lib/formatSize";
 import {
   Banner,
@@ -42,8 +43,8 @@ export function LargeValueDialog({ text, sniffed }: Props) {
       <PagedText text={text}>
         {sniffed != null && (
           <Banner color="info" className="mb-3">
-            {sniffed.label} content cannot be previewed, so it is shown as it appears in the
-            response.
+            {sniffed.label}{" "}
+            {t("content cannot be previewed, so it is shown as it appears in the response.")}
           </Banner>
         )}
       </PagedText>
@@ -62,7 +63,9 @@ export function LargeValueDialog({ text, sniffed }: Props) {
     return (
       <PagedText text={text}>
         <Banner color="danger" className="mb-3">
-          Failed to decode this {sniffed.label} value: {decoded.error}
+          {t("Failed to decode this")}
+          {sniffed.label} {" " + t("value:") + " "}
+          {decoded.error}
         </Banner>
       </PagedText>
     );
@@ -129,7 +132,7 @@ function LargeValueActions({ text, sniffed }: Props) {
   return (
     <Dropdown items={items}>
       <Button size="xs" variant="border" forDropdown>
-        Actions
+        {t("Actions")}
       </Button>
     </Dropdown>
   );
@@ -214,7 +217,8 @@ function PagedText({ text, children }: { text: string; children?: ReactNode }) {
       <pre className="overflow-auto font-mono text-sm text-text-subtle select-text">{body}</pre>
       <HStack space={2} alignItems="center" className="text-sm text-text-subtle">
         <span>
-          {(to - from).toLocaleString()} of {text.length.toLocaleString()} characters
+          {(to - from).toLocaleString()} {" " + t("of") + " "}
+          {text.length.toLocaleString()} {t("characters")}
         </span>
         {pages > 1 && (
           <HStack space={2} alignItems="center" className="ml-auto">
@@ -224,10 +228,12 @@ function PagedText({ text, children }: { text: string; children?: ReactNode }) {
               disabled={page === 0}
               onClick={() => setPage((p) => p - 1)}
             >
-              Previous
+              {t("Previous")}
             </Button>
             <span>
-              Page {page + 1} of {pages.toLocaleString()}
+              {t("Page")}
+              {page + 1} {" " + t("of") + " "}
+              {pages.toLocaleString()}
             </span>
             <Button
               size="xs"
@@ -235,7 +241,7 @@ function PagedText({ text, children }: { text: string; children?: ReactNode }) {
               disabled={page >= pages - 1}
               onClick={() => setPage((p) => p + 1)}
             >
-              Next
+              {t("Next")}
             </Button>
           </HStack>
         )}
@@ -269,7 +275,7 @@ export function showLargeValueDialog({ text, sniffed }: Props) {
     title: (
       <HStack space={3} alignItems="center">
         <span>
-          {sniffed == null ? "Hidden Value" : sniffed.label} · {formatSize(text.length)}
+          {sniffed == null ? t("Hidden Value") : sniffed.label} · {formatSize(text.length)}
         </span>
         <LargeValueActions text={text} sniffed={sniffed} />
       </HStack>

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Extension } from "@codemirror/state";
 import { Compartment } from "@codemirror/state";
 import { debounce } from "@yaakapp-internal/lib";
@@ -53,10 +54,7 @@ import { deepEqualAtom } from "../lib/atoms";
 import { showConfirm } from "../lib/confirm";
 import { deleteModelWithConfirm } from "../lib/deleteModelWithConfirm";
 import { showDialog } from "../lib/dialog";
-import {
-  gitWorktreeStatusByModelIdAtom,
-  gitWorktreeStatusFamily,
-} from "../lib/gitWorktreeStatus";
+import { gitWorktreeStatusByModelIdAtom, gitWorktreeStatusFamily } from "../lib/gitWorktreeStatus";
 import { jotaiStore } from "../lib/jotai";
 import { resolvedModelName } from "../lib/resolvedModelName";
 import { isSidebarFocused } from "../lib/scopes";
@@ -421,13 +419,13 @@ function Sidebar({ className }: { className?: string }) {
 
       const initialItems: ContextMenuProps["items"] = [
         {
-          label: "Folder Settings",
+          label: t("Folder Settings"),
           hidden: !(items.length === 1 && child.model === "folder"),
           leftSlot: <Icon icon="folder_cog" />,
           onSelect: () => openFolderSettings(child.id),
         },
         {
-          label: "Send",
+          label: t("Send"),
           hotKeyAction: "request.send",
           hotKeyLabelOnly: true,
           hidden: !onlyHttpRequests,
@@ -499,7 +497,7 @@ function Sidebar({ className }: { className?: string }) {
         ...gitItems,
         { type: "separator", hidden: gitItems.length === 0 },
         {
-          label: "Rename",
+          label: t("Rename"),
           leftSlot: <Icon icon="pencil" />,
           hidden: items.length > 1,
           hotKeyAction: "sidebar.selected.rename",
@@ -507,14 +505,17 @@ function Sidebar({ className }: { className?: string }) {
           onSelect: () => handleRenameSelected(items),
         },
         {
-          label: "Duplicate",
+          label: t("Duplicate"),
           hotKeyAction: "model.duplicate",
           hotKeyLabelOnly: true, // Would trigger for every request (bad)
           leftSlot: <Icon icon="copy" />,
           onSelect: () => handleDuplicateSelected(items),
         },
         {
-          label: items.length <= 1 ? "Move" : `Move ${requestItems.length} Requests`,
+          label:
+            items.length <= 1
+              ? t("Move")
+              : t("Move {{p0}} Requests", { p0: String(requestItems.length) }),
           hotKeyAction: "sidebar.selected.move",
           hotKeyLabelOnly: true,
           leftSlot: <Icon icon="arrow_right_circle" />,
@@ -526,7 +527,7 @@ function Sidebar({ className }: { className?: string }) {
         },
         {
           color: "danger",
-          label: "Delete",
+          label: t("Delete"),
           hotKeyAction: "sidebar.selected.delete",
           hotKeyLabelOnly: true,
           leftSlot: <Icon icon="trash" />,
@@ -583,9 +584,9 @@ function Sidebar({ className }: { className?: string }) {
               hideLabel
               setRef={setFilterRef}
               size="sm"
-              label="filter"
+              label={t("filter")}
               language={null} // Explicitly disable
-              placeholder="Search"
+              placeholder={t("Search")}
               onChange={handleFilterChange}
               defaultValue={filterText.text}
               forceUpdateKey={filterText.key}
@@ -598,7 +599,7 @@ function Sidebar({ className }: { className?: string }) {
                   <IconButton
                     className="bg-transparent! h-auto! min-h-full opacity-50 hover:opacity-100 -mr-1"
                     icon="x"
-                    title="Clear filter"
+                    title={t("Clear filter")}
                     onClick={clearFilterText}
                   />
                 )
@@ -607,7 +608,7 @@ function Sidebar({ className }: { className?: string }) {
             <Dropdown
               items={[
                 {
-                  label: "Focus Active Request",
+                  label: t("Focus Active Request"),
                   leftSlot: <Icon icon="crosshair" />,
                   onSelect: () => {
                     const activeId = jotaiStore.get(activeIdAtom);
@@ -631,14 +632,14 @@ function Sidebar({ className }: { className?: string }) {
                   },
                 },
                 {
-                  label: "Expand All Folders",
+                  label: t("Expand All Folders"),
                   leftSlot: <Icon icon="chevrons_up_down" />,
                   onSelect: () => jotaiStore.set(collapsedFamily(treeId), {}),
                   hotKeyAction: "sidebar.expand_all",
                   hotKeyLabelOnly: true,
                 },
                 {
-                  label: "Collapse All Folders",
+                  label: t("Collapse All Folders"),
                   leftSlot: <Icon icon="chevrons_down_up" />,
                   onSelect: () => {
                     if (tree == null) return;
@@ -665,7 +666,7 @@ function Sidebar({ className }: { className?: string }) {
                 size="xs"
                 className="ml-0.5 text-text-subtle hover:text-text"
                 icon="ellipsis_vertical"
-                title="Show sidebar actions menu"
+                title={t("Show sidebar actions menu")}
               />
             </Dropdown>
           </>
@@ -679,7 +680,7 @@ function Sidebar({ className }: { className?: string }) {
               className="h-auto! py-3 px-3 text-text-subtle! text-sm leading-relaxed text-center"
             >
               <div>
-                No results, but found matches for{" "}
+                {t("No results, but found matches for")}{" "}
                 {emptyFilterSuggestions?.map((suggestion, i) => (
                   <span key={suggestion.field}>
                     {i > 0 && " or "}
@@ -702,7 +703,7 @@ function Sidebar({ className }: { className?: string }) {
               className="h-auto! py-3 px-3 text-text-subtle! text-sm leading-relaxed text-center"
             >
               <div>
-                No results for{" "}
+                {t("No results for")}{" "}
                 <InlineCode className="inline-block max-w-36 truncate align-middle">
                   {filterText.text}
                 </InlineCode>
@@ -760,7 +761,7 @@ function getGitContextMenuItems({
 
   return [
     {
-      label: "View History",
+      label: t("View History"),
       leftSlot: <Icon icon="history" />,
       hidden: historyPath == null,
       onSelect: () => {
@@ -768,7 +769,7 @@ function getGitContextMenuItems({
         showDialog({
           id: "git-history",
           size: "lg",
-          title: "File History",
+          title: t("File History"),
           noPadding: true,
           noScroll: true,
           render: () => <FileHistoryDialog dir={syncDir} relaPath={historyPath} />,
@@ -776,18 +777,20 @@ function getGitContextMenuItems({
       },
     },
     {
-      label: "Restore Changes",
+      label: t("Restore Changes"),
       leftSlot: <Icon icon="rotate_ccw" />,
       hidden: gitStatusEntries.length === 0,
       async onSelect() {
         const confirmed = await showConfirm({
           id: "git-restore-sidebar-items",
-          title: "Restore Changes",
+          title: t("Restore Changes"),
           description:
             gitStatusEntries.length === 1
-              ? "This will discard uncommitted changes for the selected item."
-              : `This will discard uncommitted changes for ${gitStatusEntries.length} selected items.`,
-          confirmText: "Restore",
+              ? t("This will discard uncommitted changes for the selected item.")
+              : t("This will discard uncommitted changes for {{p0}} selected items.", {
+                  p0: String(gitStatusEntries.length),
+                }),
+          confirmText: t("Restore"),
           color: "danger",
         });
         if (!confirmed) return;
@@ -1044,7 +1047,10 @@ const sidebarGitStatusByModelIdAtom = atom<Record<string, GitStatus>>((get) => {
 
 const sidebarGitStatusFamily = atomFamily(
   (modelId: string) =>
-    selectAtom(sidebarGitStatusByModelIdAtom, (statusByModelId) => statusByModelId[modelId] ?? null),
+    selectAtom(
+      sidebarGitStatusByModelIdAtom,
+      (statusByModelId) => statusByModelId[modelId] ?? null,
+    ),
   Object.is,
 );
 

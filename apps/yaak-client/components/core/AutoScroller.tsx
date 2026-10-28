@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useVirtualizer, type Virtualizer } from "@tanstack/react-virtual";
 import type { ReactElement, ReactNode, UIEvent } from "react";
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
@@ -67,7 +68,7 @@ export function AutoScroller<T>({
       {!autoScroll && (
         <div className="absolute bottom-0 right-0 m-2">
           <IconButton
-            title="Lock scroll to bottom"
+            title={t("Lock scroll to bottom")}
             icon="arrow_down"
             size="sm"
             iconSize="md"

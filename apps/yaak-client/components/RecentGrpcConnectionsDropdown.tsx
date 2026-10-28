@@ -1,13 +1,8 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GrpcConnection } from "@yaakapp-internal/models";
 import { deleteModel } from "@yaakapp-internal/models";
 import { HStack, Icon, formatMillis } from "@yaakapp-internal/ui";
-import {
-  differenceInHours,
-  differenceInMinutes,
-  format,
-  isToday,
-  isYesterday,
-} from "date-fns";
+import { differenceInHours, differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import { useDeleteGrpcConnections } from "../hooks/useDeleteGrpcConnections";
 import { Dropdown, type DropdownItem } from "./core/Dropdown";
 import { IconButton } from "./core/IconButton";
@@ -45,7 +40,8 @@ export function RecentGrpcConnectionsDropdown({
     else if (hoursAgo < 6) historyGroup = "3 hours ago";
     else if (isToday(createdAtDate)) historyGroup = "Today";
     else if (isYesterday(createdAtDate)) historyGroup = "Yesterday";
-    else if (createdAtDate.getFullYear() === now.getFullYear()) historyGroup = format(createdAtDate, "MMM d");
+    else if (createdAtDate.getFullYear() === now.getFullYear())
+      historyGroup = format(createdAtDate, "MMM d");
     const absoluteTime = format(createdAt, "MMM d, yyyy, h:mm:ss a O");
 
     if (historyGroup === "Just now") {
@@ -53,7 +49,11 @@ export function RecentGrpcConnectionsDropdown({
     } else if (!hasRecentConnections && !hasShownRecentEmptyState) {
       connectionHistoryItems.push({
         type: "content",
-        label: <span className="block px-4 py-1 text-sm text-text-subtle">No recent connections</span>,
+        label: (
+          <span className="block px-4 py-1 text-sm text-text-subtle">
+            {t("No recent connections")}
+          </span>
+        ),
       });
       hasShownRecentEmptyState = true;
     }
@@ -80,7 +80,11 @@ export function RecentGrpcConnectionsDropdown({
   if (!hasRecentConnections && !hasShownRecentEmptyState) {
     connectionHistoryItems.push({
       type: "content",
-      label: <span className="block px-4 py-1 text-sm text-text-subtle">No recent connections</span>,
+      label: (
+        <span className="block px-4 py-1 text-sm text-text-subtle">
+          {t("No recent connections")}
+        </span>
+      ),
     });
   }
 
@@ -88,22 +92,24 @@ export function RecentGrpcConnectionsDropdown({
     <Dropdown
       items={[
         {
-          label: "Clear Connection",
+          label: t("Clear Connection"),
           onSelect: () => deleteModel(activeConnection),
           disabled: connections.length === 0,
         },
         {
-          label: `Clear ${pluralizeCount("Connection", connections.length)}`,
+          label: t("Clear {{p0}}", {
+            p0: String(pluralizeCount("Connection", connections.length)),
+          }),
           onSelect: deleteAllConnections.mutate,
           hidden: connections.length <= 1,
           disabled: connections.length === 0,
         },
-        { type: "separator", label: "History" },
+        { type: "separator", label: t("History") },
         ...connectionHistoryItems,
       ]}
     >
       <IconButton
-        title="Show connection history"
+        title={t("Show connection history")}
         icon={activeConnection?.id === latestConnectionId ? "history" : "pin"}
         className="m-0.5 text-text-subtle"
         size="sm"

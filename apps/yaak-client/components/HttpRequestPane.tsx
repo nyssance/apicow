@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpRequest } from "@yaakapp-internal/models";
 import { getModel, patchModel, patchModelDebounced } from "@yaakapp-internal/models";
 import type { GenericCompletionOption } from "@yaakapp-internal/plugins";
@@ -173,21 +174,21 @@ export function HttpRequestPane({ style, fullHeight, className, activeRequest }:
         options: {
           value: activeRequest.bodyType,
           items: [
-            { type: "separator", label: "Form Data" },
-            { label: "Url Encoded", value: BODY_TYPE_FORM_URLENCODED },
-            { label: "Multi-Part", value: BODY_TYPE_FORM_MULTIPART },
-            { type: "separator", label: "Text Content" },
+            { type: "separator", label: t("Form Data") },
+            { label: t("Url Encoded"), value: BODY_TYPE_FORM_URLENCODED },
+            { label: t("Multi-Part"), value: BODY_TYPE_FORM_MULTIPART },
+            { type: "separator", label: t("Text Content") },
             { label: "GraphQL", value: BODY_TYPE_GRAPHQL },
             { label: "JSON", value: BODY_TYPE_JSON },
             { label: "XML", value: BODY_TYPE_XML },
             {
-              label: "Other",
+              label: t("Other"),
               value: BODY_TYPE_OTHER,
               shortLabel: nameOfContentTypeOr(contentType, "Other"),
             },
-            { type: "separator", label: "Other" },
-            { label: "Binary File", value: BODY_TYPE_BINARY },
-            { label: "No Body", shortLabel: "Body", value: BODY_TYPE_NONE },
+            { type: "separator", label: t("Other") },
+            { label: t("Binary File"), value: BODY_TYPE_BINARY },
+            { label: t("No Body"), shortLabel: t("Body"), value: BODY_TYPE_NONE },
           ],
           onChange: async (bodyType) => {
             if (bodyType === activeRequest.bodyType) return;
@@ -198,7 +199,8 @@ export function HttpRequestPane({ style, fullHeight, className, activeRequest }:
                 id: "switched-method",
                 message: (
                   <>
-                    Request method switched to <InlineCode>POST</InlineCode>
+                    {t("Request method switched to")}
+                    <InlineCode>POST</InlineCode>
                   </>
                 ),
               });
@@ -248,18 +250,18 @@ export function HttpRequestPane({ style, fullHeight, className, activeRequest }:
       {
         value: TAB_PARAMS,
         rightSlot: <CountBadge count={urlParameterPairs.length} />,
-        label: "Params",
+        label: t("Params"),
       },
       ...headersTab,
       ...authTab,
       {
         value: TAB_SETTINGS,
-        label: "Settings",
+        label: t("Settings"),
         rightSlot: <CountBadge count={numSettingsOverrides} />,
       },
       {
         value: TAB_DESCRIPTION,
-        label: "Info",
+        label: t("Info"),
         rightSlot: hasDescription && <CountBadge count={true} />,
       },
     ],
@@ -362,7 +364,7 @@ export function HttpRequestPane({ style, fullHeight, className, activeRequest }:
           />
           <Tabs
             ref={tabsRef}
-            label="Request"
+            label={t("Request")}
             tabs={tabs}
             tabListClassName="mt-1 -mb-1.5"
             storageKey={TABS_STORAGE_KEY}
@@ -453,14 +455,14 @@ export function HttpRequestPane({ style, fullHeight, className, activeRequest }:
                     stateKey={`other.${activeRequest.id}`}
                   />
                 ) : (
-                  <EmptyStateText>No Body</EmptyStateText>
+                  <EmptyStateText>{t("No Body")}</EmptyStateText>
                 )}
               </ConfirmLargeRequestBody>
             </TabContent>
             <TabContent value={TAB_DESCRIPTION}>
               <div className="grid grid-rows-[auto_minmax(0,1fr)] h-full">
                 <PlainInput
-                  label="Request Name"
+                  label={t("Request Name")}
                   hideLabel
                   forceUpdateKey={updateKey}
                   defaultValue={activeRequest.name}
@@ -471,7 +473,7 @@ export function HttpRequestPane({ style, fullHeight, className, activeRequest }:
                 />
                 <MarkdownEditor
                   name="request-description"
-                  placeholder="Request description"
+                  placeholder={t("Request description")}
                   defaultValue={activeRequest.description}
                   stateKey={`description.${activeRequest.id}`}
                   forceUpdateKey={updateKey}

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { AgentClient } from "@yaakapp-internal/rpc-schema";
 
 export type { AgentClient };
@@ -7,7 +8,7 @@ export const AGENT_CLIENTS: { label: string; value: AgentClient }[] = [
   { label: "Codex", value: "codex" },
   { label: "Cursor", value: "cursor" },
   { label: "VS Code", value: "vscode" },
-  { label: "Other", value: "other" },
+  { label: t("Other"), value: "other" },
 ];
 
 export interface AgentSetup {

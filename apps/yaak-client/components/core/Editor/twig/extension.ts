@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { LanguageSupport } from "@codemirror/language";
 import { LRLanguage } from "@codemirror/language";
 import type { Extension } from "@codemirror/state";
@@ -37,7 +38,7 @@ export function twig({
       value: v.variable.value,
       type: "variable",
       label: v.variable.name,
-      description: `Inherited from ${v.source}`,
+      description: t("Inherited from {{p0}}", { p0: String(v.source) }),
       onClick: (rawTag: string, startPos: number) => onClickVariable(v, rawTag, startPos),
     })) ?? [];
 

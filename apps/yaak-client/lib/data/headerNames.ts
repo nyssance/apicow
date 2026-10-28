@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GenericCompletionOption } from "@yaakapp-internal/plugins";
 
 export const headerNames: (GenericCompletionOption | string)[] = [
@@ -13,7 +14,7 @@ export const headerNames: (GenericCompletionOption | string)[] = [
   },
   {
     type: "constant",
-    label: "Accept",
+    label: t("Accept"),
     info:
       "The content types, expressed as MIME types, the client is able to understand. " +
       "The server uses content negotiation to select one of the proposals and informs " +
@@ -39,7 +40,7 @@ export const headerNames: (GenericCompletionOption | string)[] = [
   },
   {
     type: "constant",
-    label: "Authorization",
+    label: t("Authorization"),
     info: "Provide credentials that authenticate a user agent with a server, allowing access to a protected resource.",
   },
   "Cache-Control",

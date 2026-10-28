@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { DragEndEvent, DragMoveEvent, DragStartEvent } from "@dnd-kit/core";
 import {
   DndContext,
@@ -404,7 +405,8 @@ function PairEditorInner({
           })}
           {!showAll && pairs.length > MAX_INITIAL_PAIRS && (
             <Button onClick={toggleShowAll} variant="border" className="m-2" size="xs">
-              Show {pairs.length - MAX_INITIAL_PAIRS} More
+              {t("Show")}
+              {pairs.length - MAX_INITIAL_PAIRS} {t("More")}
             </Button>
           )}
           <DragOverlay dropAnimation={null}>
@@ -606,7 +608,12 @@ export function PairEditorRow({
       showDialog({
         id: "pair-edit-multiline",
         size: "dynamic",
-        title: <>Edit {pair.name}</>,
+        title: (
+          <>
+            {t("Edit") + " "}
+            {pair.name}
+          </>
+        ),
         render: ({ hide }) => (
           <MultilineEditDialog
             hide={hide}
@@ -622,12 +629,12 @@ export function PairEditorRow({
   const defaultItems = useMemo(
     (): DropdownItem[] => [
       {
-        label: "Edit Multi-line",
+        label: t("Edit Multi-line"),
         onSelect: handleEditMultiLineValue,
         hidden: !allowMultilineValues,
       },
       {
-        label: "Delete",
+        label: t("Delete"),
         onSelect: handleDelete,
         color: "danger",
       },
@@ -670,7 +677,7 @@ export function PairEditorRow({
     >
       <Checkbox
         hideLabel
-        title={pair.enabled ? "Disable item" : "Enable item"}
+        title={pair.enabled ? t("Disable item") : t("Enable item")}
         disabled={isLast || disabled}
         checked={isLast ? false : !!pair.enabled}
         className={classNames(isLast && "opacity-disabled!")}
@@ -711,7 +718,7 @@ export function PairEditorRow({
           forceUpdateKey={forceUpdateKey}
           containerClassName={classNames("bg-surface", isLast && "border-dashed")}
           defaultValue={pair.name}
-          label="Name"
+          label={t("Name")}
           name={`name[${index}]`}
           onBlur={handleBlurName}
           onChange={handleChangeName}
@@ -756,7 +763,7 @@ export function PairEditorRow({
               forcedEnvironmentId={forcedEnvironmentId}
               forceUpdateKey={forceUpdateKey}
               defaultValue={pair.value}
-              label="Value"
+              label={t("Value")}
               name={`value[${index}]`}
               onChange={handleChangeValueText}
               onFocus={handleFocusValue}
@@ -788,7 +795,7 @@ export function PairEditorRow({
             // Ellipsis rather than a chevron: the name and value fields now carry chevrons for
             // picking a suggestion, and this menu acts on the row instead of filling in a field.
             icon={isLast || disabled ? "empty" : "ellipsis_vertical"}
-            title="More actions"
+            title={t("More actions")}
             className="text-text-subtlest"
           />
         </Dropdown>
@@ -798,8 +805,8 @@ export function PairEditorRow({
 }
 
 const fileItems: RadioDropdownItem<string>[] = [
-  { label: "Text", value: "text" },
-  { label: "File", value: "file" },
+  { label: t("Text"), value: "text" },
+  { label: t("File"), value: "file" },
 ];
 
 function FileActionsDropdown({
@@ -830,51 +837,51 @@ function FileActionsDropdown({
   const itemsAfter = useMemo<DropdownItem[]>(
     () => [
       {
-        label: "Edit Multi-Line",
+        label: t("Edit Multi-Line"),
         leftSlot: <Icon icon="file_code" />,
         hidden: pair.isFile,
         onSelect: editMultiLine,
       },
       {
-        label: "Set Content-Type",
+        label: t("Set Content-Type"),
         leftSlot: <Icon icon="pencil" />,
         onSelect: async () => {
           const contentType = await showPrompt({
             id: "content-type",
-            title: "Override Content-Type",
+            title: t("Override Content-Type"),
             label: "Content-Type",
             required: false,
             placeholder: "text/plain",
             defaultValue: pair.contentType ?? "",
-            confirmText: "Set",
-            description: "Leave blank to auto-detect",
+            confirmText: t("Set"),
+            description: t("Leave blank to auto-detect"),
           });
           if (contentType == null) return;
           onChangeContentType(contentType);
         },
       },
       {
-        label: "Set File Name",
+        label: t("Set File Name"),
         leftSlot: <Icon icon="file_code" />,
         onSelect: async () => {
           console.log("PAIR", pair);
           const defaultFilename = await platform.files.basename(pair.value ?? "");
           const filename = await showPrompt({
             id: "filename",
-            title: "Override Filename",
-            label: "Filename",
+            title: t("Override Filename"),
+            label: t("Filename"),
             required: false,
             placeholder: defaultFilename ?? "myfile.png",
             defaultValue: pair.filename,
-            confirmText: "Set",
-            description: "Leave blank to use the name of the selected file",
+            confirmText: t("Set"),
+            description: t("Leave blank to use the name of the selected file"),
           });
           if (filename == null) return;
           onChangeFilename(filename);
         },
       },
       {
-        label: "Unset File",
+        label: t("Unset File"),
         leftSlot: <Icon icon="x" />,
         hidden: pair.isFile,
         onSelect: async () => {
@@ -882,7 +889,7 @@ function FileActionsDropdown({
         },
       },
       {
-        label: "Delete",
+        label: t("Delete"),
         onSelect: onDelete,
         variant: "danger",
         leftSlot: <Icon icon="trash" />,
@@ -914,7 +921,7 @@ function FileActionsDropdown({
         size="xs"
         // Matches the plain row menu, so the actions column reads the same for file and text rows
         icon="ellipsis_vertical"
-        title="Select form data type"
+        title={t("Select form data type")}
         className="text-text-subtlest"
       />
     </RadioDropdown>
@@ -962,7 +969,7 @@ function MultilineEditDialog({
             hide();
           }}
         >
-          Done
+          {t("Done")}
         </Button>
       </div>
     </div>

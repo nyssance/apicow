@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { patchModel, settingsAtom } from "@yaakapp-internal/models";
 import {
   Heading,
@@ -96,14 +97,14 @@ export function SettingsHotkeys() {
   return (
     <VStack space={3} className="mb-4">
       <div className="mb-3">
-        <Heading>Keyboard Shortcuts</Heading>
+        <Heading>{t("Keyboard Shortcuts")}</Heading>
         <p className="text-text-subtle">
-          Click the menu button to add, remove, or reset keyboard shortcuts.
+          {t("Click the menu button to add, remove, or reset keyboard shortcuts.")}
         </p>
       </div>
       <PlainInput
-        label="Filter"
-        placeholder="Filter shortcuts..."
+        label={t("Filter")}
+        placeholder={t("Filter shortcuts...")}
         defaultValue={filter}
         onChange={setFilter}
         hideLabel
@@ -112,9 +113,9 @@ export function SettingsHotkeys() {
       <Table>
         <TableHead>
           <TableRow>
-            <TableHeaderCell>Scope</TableHeaderCell>
-            <TableHeaderCell>Action</TableHeaderCell>
-            <TableHeaderCell>Shortcut</TableHeaderCell>
+            <TableHeaderCell>{t("Scope")}</TableHeaderCell>
+            <TableHeaderCell>{t("Action")}</TableHeaderCell>
+            <TableHeaderCell>{t("Shortcut")}</TableHeaderCell>
             <TableHeaderCell></TableHeaderCell>
           </TableRow>
         </TableHead>
@@ -197,7 +198,7 @@ function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: Hotkey
   // Build dropdown items dynamically
   const dropdownItems: DropdownItem[] = [
     {
-      label: "Add Keyboard Shortcut",
+      label: t("Add Keyboard Shortcut"),
       leftSlot: <Icon icon="plus" />,
       onSelect: handleStartRecording,
     },
@@ -209,7 +210,7 @@ function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: Hotkey
       dropdownItems.push({
         label: (
           <HStack space={1.5}>
-            <span>Remove</span>
+            <span>{t("Remove")}</span>
             <HotkeyRaw labelParts={formatHotkeyString(key)} variant="with-bg" className="text-xs" />
           </HStack>
         ),
@@ -224,7 +225,7 @@ function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: Hotkey
           type: "separator",
         },
         {
-          label: "Remove All Shortcuts",
+          label: t("Remove All Shortcuts"),
           leftSlot: <Icon icon="trash" />,
           onSelect: handleClearAll,
         },
@@ -237,7 +238,7 @@ function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: Hotkey
       type: "separator",
     });
     dropdownItems.push({
-      label: "Reset to Default",
+      label: t("Reset to Default"),
       leftSlot: <Icon icon="refresh" />,
       onSelect: onReset,
     });
@@ -254,7 +255,7 @@ function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: Hotkey
       <TableCell>
         <HStack space={1.5} className="py-1">
           {isDisabled ? (
-            <span className="text-text-subtlest">Disabled</span>
+            <span className="text-text-subtlest">{t("Disabled")}</span>
           ) : (
             currentKeys.map((k) => (
               <HotkeyRaw key={k} labelParts={formatHotkeyString(k)} variant="with-bg" />
@@ -267,7 +268,7 @@ function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: Hotkey
           <IconButton
             icon="ellipsis_vertical"
             size="sm"
-            title="Hotkey actions"
+            title={t("Hotkey actions")}
             className="ml-auto text-text-subtlest"
           />
         </Dropdown>
@@ -327,12 +328,13 @@ function RecordHotkeyDialog({ label, onSave, onCancel }: RecordHotkeyDialogProps
     <VStack space={4}>
       <div>
         <p className="text-text-subtle mb-2">
-          Record a key combination for <span className="font-semibold">{label}</span>
+          {t("Record a key combination for")}
+          <span className="font-semibold">{label}</span>
         </p>
         <button
           type="button"
           data-disable-hotkey
-          aria-label="Keyboard shortcut input"
+          aria-label={t("Keyboard shortcut input")}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           onClick={(e) => {
@@ -348,16 +350,16 @@ function RecordHotkeyDialog({ label, onSave, onCancel }: RecordHotkeyDialogProps
           {recordedKey ? (
             <HotkeyRaw labelParts={formatHotkeyString(recordedKey)} />
           ) : (
-            <span className="text-text-subtlest">Press keys...</span>
+            <span className="text-text-subtlest">{t("Press keys...")}</span>
           )}
         </button>
       </div>
       <HStack space={2} justifyContent="end">
         <Button color="secondary" onClick={onCancel}>
-          Cancel
+          {t("Cancel")}
         </Button>
         <Button color="primary" onClick={handleSave} disabled={!recordedKey}>
-          Save
+          {t("Save")}
         </Button>
       </HStack>
     </VStack>

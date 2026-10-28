@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { DialogSize } from "@yaakapp-internal/plugins";
 import { Heading, HStack, Overlay } from "@yaakapp-internal/ui";
 import classNames from "classnames";
@@ -122,8 +123,8 @@ export function Dialog({
               <IconButton
                 className="opacity-70 hover:opacity-100"
                 onClick={onClose}
-                title="Close dialog (Esc)"
-                aria-label="Close"
+                title={t("Close dialog (Esc)")}
+                aria-label={t("Close")}
                 size="sm"
                 icon="x"
               />

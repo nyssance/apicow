@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { AnyModel } from "@yaakapp-internal/models";
 import { deleteModel, modelTypeLabel } from "@yaakapp-internal/models";
 import { InlineCode } from "@yaakapp-internal/ui";
@@ -22,18 +23,18 @@ export async function deleteModelWithConfirm(
     models.length === 1 ? modelTypeLabel(firstModel) : pluralizeCount("Item", models.length);
   const confirmed = await showConfirmDelete({
     id: `delete-model-${models.map((m) => m.id).join(",")}`,
-    title: `Delete ${descriptor}`,
+    title: t("Delete {{p0}}", { p0: String(descriptor) }),
     requireTyping: options.confirmName,
     description: (
       <>
-        Permanently delete{" "}
+        {t("Permanently delete")}{" "}
         {models.length === 1 ? (
           <>
             <InlineCode>{resolvedModelName(firstModel)}</InlineCode>?
           </>
         ) : models.length < 10 ? (
           <>
-            the following?
+            {t("the following?")}
             <Prose className="mt-2">
               <ul className="space-y-1">
                 {models.map((m) => (

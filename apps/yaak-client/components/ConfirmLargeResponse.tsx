@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { Banner, HStack, InlineCode, SizeTag } from "@yaakapp-internal/ui";
 import { type ReactNode, useMemo } from "react";
@@ -30,18 +31,18 @@ export function ConfirmLargeResponse({ children, response }: Props) {
     return (
       <Banner color="primary" className="flex flex-col gap-3">
         <p>
-          Showing responses over{" "}
+          {t("Showing responses over")}{" "}
           <InlineCode>
             <SizeTag contentLength={LARGE_BYTES} />
           </InlineCode>{" "}
-          may impact performance
+          {t("may impact performance")}
         </p>
         <HStack wrap space={2}>
           <Button color="primary" size="xs" onClick={toggleShowLargeResponse}>
-            Reveal Response
+            {t("Reveal Response")}
           </Button>
           <Button color="secondary" variant="border" size="xs" onClick={() => saveResponse()}>
-            Save to File
+            {t("Save to File")}
           </Button>
           {isProbablyText && (
             <CopyButton

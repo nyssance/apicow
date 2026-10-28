@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Cookie } from "@yaakapp-internal/models";
 import { cookieJarsAtom, patchModel } from "@yaakapp-internal/models";
 import { formatDate } from "date-fns/format";
@@ -113,7 +114,7 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
       if (expires == null) {
         showAlert({
           id: "invalid-cookie-expires",
-          title: "Invalid Cookie",
+          title: t("Invalid Cookie"),
           body: "Cookie expiration must be a valid date.",
         });
         return;
@@ -139,7 +140,7 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
   };
 
   if (cookieJar == null) {
-    return <div>No cookie jar selected</div>;
+    return <div>{t("No cookie jar selected")}</div>;
   }
 
   return (
@@ -147,9 +148,9 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
       <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
         <PlainInput
           name="cookie-filter"
-          label="Filter cookies"
+          label={t("Filter cookies")}
           hideLabel
-          placeholder="Filter cookies"
+          placeholder={t("Filter cookies")}
           defaultValue={filter}
           forceUpdateKey={filterUpdateKey}
           onChange={setFilter}
@@ -158,7 +159,7 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
               <IconButton
                 className="bg-transparent! h-auto! min-h-full opacity-50 hover:opacity-100 -mr-1"
                 icon="x"
-                title="Clear filter"
+                title={t("Clear filter")}
                 onClick={() => {
                   setFilter("");
                   setFilterUpdateKey((key) => key + 1);
@@ -167,14 +168,14 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
             )
           }
         />
-        <IconButton icon="plus" size="sm" title="Add cookie" onClick={handleAddCookie} />
+        <IconButton icon="plus" size="sm" title={t("Add cookie")} onClick={handleAddCookie} />
       </div>
       {cookieJar.cookies.length === 0 && detailCookie == null ? (
         <EmptyStateText>
-          Cookies will appear when a response includes a Set-Cookie header.
+          {t("Cookies will appear when a response includes a Set-Cookie header.")}
         </EmptyStateText>
       ) : filteredCookies.length === 0 && detailCookie == null ? (
-        <EmptyStateText>No cookies match the current filter.</EmptyStateText>
+        <EmptyStateText>{t("No cookies match the current filter.")}</EmptyStateText>
       ) : (
         <SplitLayout
           layout="vertical"
@@ -185,27 +186,27 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
           firstSlot={({ style }) =>
             filteredCookies.length === 0 ? (
               <div style={style}>
-                <EmptyStateText>No cookies match the current filter.</EmptyStateText>
+                <EmptyStateText>{t("No cookies match the current filter.")}</EmptyStateText>
               </div>
             ) : (
               <Table scrollable style={style} className="pr-0.5">
                 <TableHead>
                   <TableRow>
-                    <TableHeaderCell>Name</TableHeaderCell>
-                    <TableHeaderCell>Value</TableHeaderCell>
-                    <TableHeaderCell>Domain</TableHeaderCell>
-                    <TableHeaderCell>Path</TableHeaderCell>
-                    <TableHeaderCell>Expires</TableHeaderCell>
-                    <TableHeaderCell>Size</TableHeaderCell>
-                    <TableHeaderCell>HTTP Only</TableHeaderCell>
-                    <TableHeaderCell>Secure</TableHeaderCell>
-                    <TableHeaderCell>Same Site</TableHeaderCell>
+                    <TableHeaderCell>{t("Name")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Value")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Domain")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Path")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Expires")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Size")}</TableHeaderCell>
+                    <TableHeaderCell>{t("HTTP Only")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Secure")}</TableHeaderCell>
+                    <TableHeaderCell>{t("Same Site")}</TableHeaderCell>
                     <TableHeaderCell>
                       <IconButton
                         icon="list_x"
                         size="sm"
                         className="text-text-subtle"
-                        title="Clear all cookies"
+                        title={t("Clear all cookies")}
                         onClick={() => {
                           setSelectedCookieKey(null);
                           setEditingCookieKey(null);
@@ -265,7 +266,7 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
                             icon="trash"
                             size="xs"
                             iconSize="sm"
-                            title="Delete"
+                            title={t("Delete")}
                             className="text-text-subtlest ml-auto group-hover/tr:text-text transition-colors"
                             onClick={(event) => {
                               event.stopPropagation();
@@ -303,26 +304,26 @@ export const CookieDialog = ({ cookieJarId }: Props) => {
                     style={style}
                   >
                     <EventDetailHeader
-                      title={isCreatingCookie ? "New Cookie" : detailCookie.name || "Cookie"}
+                      title={isCreatingCookie ? t("New Cookie") : detailCookie.name || "Cookie"}
                       copyText={isEditingCookie ? undefined : detailCookie.value}
                       actions={
                         isEditingCookie
                           ? [
                               {
                                 key: "save",
-                                label: isCreatingCookie ? "Create" : "Save",
+                                label: isCreatingCookie ? t("Create") : t("Save"),
                                 onClick: () => editorFormRef.current?.requestSubmit(),
                               },
                               {
                                 key: "cancel",
-                                label: "Cancel",
+                                label: t("Cancel"),
                                 onClick: handleCancelEdit,
                               },
                             ]
                           : [
                               {
                                 key: "edit",
-                                label: "Edit",
+                                label: t("Edit"),
                                 onClick: handleEditCookie,
                               },
                             ]
@@ -384,14 +385,14 @@ CookieDialog.show = (cookieJarId: string | null) => {
     showAlert({
       id: "invalid-jar",
       body: `Failed to find cookie jar for ID: ${cookieJarId}`,
-      title: "Invalid Cookie Jar",
+      title: t("Invalid Cookie Jar"),
     });
     return;
   }
 
   showDialog({
     id: "cookies",
-    title: `${cookieJar.name} Cookies`,
+    title: t("{{p0}} Cookies", { p0: String(cookieJar.name) }),
     size: "full",
     render: () => <CookieDialog cookieJarId={cookieJarId} />,
   });
@@ -401,18 +402,22 @@ function CookieDetails({ cookie }: { cookie: Cookie }) {
   return (
     <div className="overflow-y-auto">
       <KeyValueRows selectable>
-        <CookieKeyValueRow label="Name">{cookie.name}</CookieKeyValueRow>
-        <CookieKeyValueRow label="Value" enableCopy copyText={cookie.value}>
+        <CookieKeyValueRow label={t("Name")}>{cookie.name}</CookieKeyValueRow>
+        <CookieKeyValueRow label={t("Value")} enableCopy copyText={cookie.value}>
           <pre className="whitespace-pre-wrap break-all">{cookie.value}</pre>
         </CookieKeyValueRow>
-        <CookieKeyValueRow label="Domain">{cookieDomain(cookie)}</CookieKeyValueRow>
-        <CookieKeyValueRow label="Path">{cookie.path}</CookieKeyValueRow>
-        <CookieKeyValueRow label="Expires">{cookieExpires(cookie)}</CookieKeyValueRow>
-        <CookieKeyValueRow label="Size">{cookieSize(cookie)}</CookieKeyValueRow>
-        <CookieKeyValueRow label="HTTP Only">{cookie.httpOnly ? "Yes" : "No"}</CookieKeyValueRow>
-        <CookieKeyValueRow label="Secure">{cookie.secure ? "Yes" : "No"}</CookieKeyValueRow>
+        <CookieKeyValueRow label={t("Domain")}>{cookieDomain(cookie)}</CookieKeyValueRow>
+        <CookieKeyValueRow label={t("Path")}>{cookie.path}</CookieKeyValueRow>
+        <CookieKeyValueRow label={t("Expires")}>{cookieExpires(cookie)}</CookieKeyValueRow>
+        <CookieKeyValueRow label={t("Size")}>{cookieSize(cookie)}</CookieKeyValueRow>
+        <CookieKeyValueRow label={t("HTTP Only")}>
+          {cookie.httpOnly ? t("Yes") : t("No")}
+        </CookieKeyValueRow>
+        <CookieKeyValueRow label={t("Secure")}>
+          {cookie.secure ? t("Yes") : t("No")}
+        </CookieKeyValueRow>
         {cookie.sameSite && (
-          <CookieKeyValueRow label="Same Site">{cookie.sameSite}</CookieKeyValueRow>
+          <CookieKeyValueRow label={t("Same Site")}>{cookie.sameSite}</CookieKeyValueRow>
         )}
       </KeyValueRows>
     </div>
@@ -435,7 +440,7 @@ function CookieEditor({
   return (
     <div className="overflow-y-auto">
       <KeyValueRows>
-        <CookieKeyValueRow align="middle" label="Name">
+        <CookieKeyValueRow align="middle" label={t("Name")}>
           <CookieTextInput
             required
             autoFocus
@@ -444,13 +449,13 @@ function CookieEditor({
             onChange={(name) => onChange({ ...cookie, name })}
           />
         </CookieKeyValueRow>
-        <CookieKeyValueRow label="Value">
+        <CookieKeyValueRow label={t("Value")}>
           <CookieTextarea
             value={cookie.value}
             onChange={(value) => onChange({ ...cookie, value })}
           />
         </CookieKeyValueRow>
-        <CookieKeyValueRow align="middle" label="Domain">
+        <CookieKeyValueRow align="middle" label={t("Domain")}>
           <CookieTextInput
             required
             pattern={NON_EMPTY_INPUT_PATTERN}
@@ -459,18 +464,18 @@ function CookieEditor({
             onChange={(domain) => onChange(cookieWithDomain(cookie, domain))}
           />
         </CookieKeyValueRow>
-        <CookieKeyValueRow align="middle" label="Path">
+        <CookieKeyValueRow align="middle" label={t("Path")}>
           <CookieTextInput
             value={cookie.path}
             placeholder="/"
             onChange={(path) => onChange({ ...cookie, path })}
           />
         </CookieKeyValueRow>
-        <CookieKeyValueRow label="Expires">
+        <CookieKeyValueRow label={t("Expires")}>
           <div className="grid gap-1">
             <Checkbox
               checked={sessionCookie}
-              title="Session cookie"
+              title={t("Session cookie")}
               onChange={(checked) => {
                 if (checked) {
                   onChange({ ...cookie, expires: "SessionEnd" });
@@ -503,36 +508,36 @@ function CookieEditor({
             />
           </div>
         </CookieKeyValueRow>
-        <CookieKeyValueRow label="Size">{cookieSize(cookie)}</CookieKeyValueRow>
-        <CookieKeyValueRow align="middle" label="HTTP Only">
+        <CookieKeyValueRow label={t("Size")}>{cookieSize(cookie)}</CookieKeyValueRow>
+        <CookieKeyValueRow align="middle" label={t("HTTP Only")}>
           <Checkbox
             hideLabel
-            title="HTTP Only"
+            title={t("HTTP Only")}
             checked={cookie.httpOnly}
             onChange={(httpOnly) => onChange({ ...cookie, httpOnly })}
           />
         </CookieKeyValueRow>
-        <CookieKeyValueRow align="middle" label="Secure">
+        <CookieKeyValueRow align="middle" label={t("Secure")}>
           <Checkbox
             hideLabel
-            title="Secure"
+            title={t("Secure")}
             checked={cookie.secure}
             onChange={(secure) => onChange({ ...cookie, secure })}
           />
         </CookieKeyValueRow>
-        <CookieKeyValueRow align="middle" label="Same Site">
+        <CookieKeyValueRow align="middle" label={t("Same Site")}>
           <Select
             hideLabel
             name="cookie-same-site"
-            label="Same Site"
+            label={t("Same Site")}
             value={cookie.sameSite ?? ""}
             size="xs"
             className="w-full"
             options={[
-              { label: "n/a", value: "" },
-              { label: "Lax", value: "Lax" },
-              { label: "Strict", value: "Strict" },
-              { label: "None", value: "None" },
+              { label: t("n/a"), value: "" },
+              { label: t("Lax"), value: "Lax" },
+              { label: t("Strict"), value: "Strict" },
+              { label: t("None"), value: "None" },
             ]}
             onChange={(sameSite) =>
               onChange({

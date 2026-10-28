@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { showToast } from "./toast";
 import { platform } from "@yaakapp-internal/platform";
 
@@ -16,7 +17,7 @@ export function copyToClipboard(
       id: "copied",
       color: "success",
       icon: "copy",
-      message: "Copied to clipboard",
+      message: t("Copied to clipboard"),
     });
   }
 }

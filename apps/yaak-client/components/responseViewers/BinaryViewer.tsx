@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { useSaveResponse } from "../../hooks/useSaveResponse";
 import { getContentTypeFromHeaders } from "../../lib/model_util";
@@ -25,11 +26,12 @@ export function BinaryViewer({ response }: Props) {
   return (
     <Banner color="primary" className="h-full flex flex-col gap-3">
       <p>
-        Content type <InlineCode>{contentType}</InlineCode> cannot be previewed
+        {t("Content type")}
+        <InlineCode>{contentType}</InlineCode> {t("cannot be previewed")}
       </p>
       <div>
         <Button variant="border" size="sm" onClick={() => saveResponse.mutate()}>
-          Save to File
+          {t("Save to File")}
         </Button>
       </div>
     </Banner>

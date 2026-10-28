@@ -1,7 +1,7 @@
 {
-  "productName": "Yaak",
+  "productName": "ApiCub",
   "version": "0.0.0",
-  "identifier": "app.yaak.desktop",
+  "identifier": "com.nyssance.apicub",
   "build": {
     "beforeBuildCommand": "npm --prefix ../.. run client:tauri-before-build",
     "beforeDevCommand": "npm --prefix ../.. run client:tauri-before-dev",
@@ -23,7 +23,7 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["yaak"]
+        "schemes": ["apicub"]
       }
     }
   },

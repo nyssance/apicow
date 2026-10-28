@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import classNames from "classnames";
 import { useKeyValue } from "../../hooks/useKeyValue";
 import { BulkPairEditor } from "./BulkPairEditor";
@@ -24,7 +25,7 @@ export function PairOrBulkEditor({ preferenceName, ...props }: Props) {
         <IconButton
           size="sm"
           variant="border"
-          title={useBulk ? "Enable form edit" : "Enable bulk edit"}
+          title={useBulk ? t("Enable form edit") : t("Enable bulk edit")}
           className={classNames(
             "transition-opacity opacity-0 group-hover:opacity-80 hover:opacity-100! shadow",
             "bg-surface hover:text group-hover/wrapper:opacity-100",

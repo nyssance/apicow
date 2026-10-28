@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { DivergedStrategy } from "@yaakapp-internal/git";
 import { InlineCode } from "@yaakapp-internal/ui";
 import { useState } from "react";
@@ -36,11 +37,11 @@ function DivergedDialog({ remote, branch, onResult, onHide }: DivergedDialogProp
   return (
     <div className="flex flex-col gap-4">
       <p className="text-text-subtle">
-        Your local branch has diverged from{" "}
+        {t("Your local branch has diverged from")}{" "}
         <InlineCode>
           {remote}/{branch}
         </InlineCode>
-        . How would you like to resolve this?
+        {t(". How would you like to resolve this?")}
       </p>
       <RadioCards
         name="diverged-strategy"
@@ -49,22 +50,22 @@ function DivergedDialog({ remote, branch, onResult, onHide }: DivergedDialogProp
         options={[
           {
             value: "merge",
-            label: "Merge Commit",
-            description: "Combining local and remote changes into a single merge commit",
+            label: t("Merge Commit"),
+            description: t("Combining local and remote changes into a single merge commit"),
           },
           {
             value: "force_reset",
-            label: "Force Pull",
-            description: "Discard local commits and reset to match the remote branch",
+            label: t("Force Pull"),
+            description: t("Discard local commits and reset to match the remote branch"),
           },
         ]}
       />
       <DialogFooter
         inline
         actions={[
-          { label: "Cancel", onClick: handleCancel },
+          { label: t("Cancel"), onClick: handleCancel },
           {
-            label: selected != null ? resolutionLabel[selected] : "Select an option",
+            label: selected != null ? resolutionLabel[selected] : t("Select an option"),
             color: selected === "force_reset" ? "danger" : "primary",
             disabled: selected == null,
             onClick: handleSubmit,
@@ -85,7 +86,7 @@ export async function promptDivergedStrategy({
   return new Promise((resolve) => {
     showDialog({
       id: "git-diverged",
-      title: "Branches Diverged",
+      title: t("Branches Diverged"),
       size: "sm",
       disableClose: true,
       render: ({ hide }) =>

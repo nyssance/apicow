@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { HStack, Label } from "@yaakapp-internal/ui";
 import classNames from "classnames";
@@ -93,7 +94,9 @@ export function Select<T extends string>({
               "leading-none rounded-none", // Center the text better vertically
             )}
           >
-            {isInvalidSelection && <option value={"__NONE__"}>-- Select an Option --</option>}
+            {isInvalidSelection && (
+              <option value={"__NONE__"}>{t("-- Select an Option --")}</option>
+            )}
             {options.map((o) => {
               if (o.type === "separator") return null;
               return (
@@ -114,7 +117,14 @@ export function Select<T extends string>({
           items={options.map((o) =>
             o.type === "separator" || o.value !== defaultValue
               ? o
-              : { ...o, label: <>{o.label} (default)</> },
+              : {
+                  ...o,
+                  label: (
+                    <>
+                      {o.label} {" " + t("(default)")}
+                    </>
+                  ),
+                },
           )}
         >
           <Button

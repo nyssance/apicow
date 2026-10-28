@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { ErrorBoundary as BaseErrorBoundary } from "@yaakapp-internal/ui";
 import type { ReactNode } from "react";
 import { useEffect } from "react";
@@ -21,5 +22,5 @@ export function ErrorBoundaryTestThrow() {
     throw new Error("test error");
   });
 
-  return <div>Hello</div>;
+  return <div>{t("Hello")}</div>;
 }

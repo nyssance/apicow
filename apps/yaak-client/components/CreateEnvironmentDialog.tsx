@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { createWorkspaceModel } from "@yaakapp-internal/models";
 import { useId, useState } from "react";
 import { useToggle } from "../hooks/useToggle";
@@ -39,25 +40,27 @@ export function CreateEnvironmentDialog({ workspaceId, hide, onCreate }: Props) 
       }}
     >
       <PlainInput
-        label="Name"
+        label={t("Name")}
         required
         defaultValue={name}
         onChange={setName}
-        placeholder="Production"
+        placeholder={t("Production")}
       />
       <Checkbox
         checked={sharable}
-        title="Share this environment"
-        help="Sharable environments are included in data export and directory sync."
+        title={t("Share this environment")}
+        help={t("Sharable environments are included in data export and directory sync.")}
         onChange={toggleSharable}
       />
       <div>
         <Label
           htmlFor="color"
           className="mb-1.5"
-          help="Select a color to be displayed when this environment is active, to help identify it."
+          help={t(
+            "Select a color to be displayed when this environment is active, to help identify it.",
+          )}
         >
-          Color
+          {t("Color")}
         </Label>
         <ColorPickerWithThemeColors onChange={setColor} color={color} />
       </div>
@@ -65,7 +68,7 @@ export function CreateEnvironmentDialog({ workspaceId, hide, onCreate }: Props) 
         inline
         actions={[
           {
-            label: "Create Environment",
+            label: t("Create Environment"),
             color: "secondary",
             form: formId,
             leftSlot: color != null ? <ColorIndicator color={color} /> : undefined,

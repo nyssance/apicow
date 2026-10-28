@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { lazy, Suspense } from "react";
 import { useHttpRequestBody } from "../hooks/useHttpRequestBody";
@@ -40,11 +41,16 @@ function RequestBodyViewerInner({ response }: Props) {
   }
 
   if (error) {
-    return <EmptyStateText>Error loading request body: {error.message}</EmptyStateText>;
+    return (
+      <EmptyStateText>
+        {t("Error loading request body:") + " "}
+        {error.message}
+      </EmptyStateText>
+    );
   }
 
   if (data?.bodyText == null || data.bodyText.length === 0) {
-    return <EmptyStateText>No request body</EmptyStateText>;
+    return <EmptyStateText>{t("No request body")}</EmptyStateText>;
   }
 
   const { bodyText, body } = data;

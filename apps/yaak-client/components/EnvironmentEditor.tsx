@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Environment } from "@yaakapp-internal/models";
 import { patchModel } from "@yaakapp-internal/models";
 import type { GenericCompletionOption } from "@yaakapp-internal/plugins";
@@ -114,16 +115,16 @@ export function EnvironmentEditor({ environment, hideName, className, setRef }: 
           {isEncryptionEnabled ? (
             !allVariableAreEncrypted ? (
               <PillButton color="notice" onClick={() => encryptEnvironment(environment)}>
-                Encrypt All Variables
+                {t("Encrypt All Variables")}
               </PillButton>
             ) : (
               <PillButton color="secondary" onClick={setupOrConfigureEncryption}>
-                Encryption Settings
+                {t("Encryption Settings")}
               </PillButton>
             )
           ) : (
             <PillButton color="secondary" onClick={() => valueVisibility.set((v) => !v)}>
-              {valueVisibility.value ? "Hide Values" : "Show Values"}
+              {valueVisibility.value ? t("Hide Values") : t("Show Values")}
             </PillButton>
           )}
           <PillButton
@@ -133,7 +134,7 @@ export function EnvironmentEditor({ environment, hideName, className, setRef }: 
               await patchModel(environment, { public: !environment.public });
             }}
           >
-            {environment.public ? "Sharable" : "Private"}
+            {environment.public ? t("Sharable") : t("Private")}
           </PillButton>
         </Heading>
         {environment.public && (!isEncryptionEnabled || !allVariableAreEncrypted) && (
@@ -143,13 +144,13 @@ export function EnvironmentEditor({ environment, hideName, className, setRef }: 
             className="mr-3"
             actions={[
               {
-                label: "Encrypt Variables",
+                label: t("Encrypt Variables"),
                 onClick: () => encryptEnvironment(environment),
                 color: "success",
               },
             ]}
           >
-            This sharable environment contains plain-text secrets
+            {t("This sharable environment contains plain-text secrets")}
           </DismissibleBanner>
         )}
       </div>

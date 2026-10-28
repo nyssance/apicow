@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { Icon } from "../Icon";
 import classNames from "classnames";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -89,7 +90,7 @@ export function ResponseBreadcrumbBar({
         ) : (
           <Crumb
             label="$"
-            tooltip="Clear filter"
+            tooltip={t("Clear filter")}
             isApplied={isFiltered}
             onClick={appliedDepth != null && appliedDepth > 0 ? () => onSelect(0) : null}
           />
@@ -98,7 +99,7 @@ export function ResponseBreadcrumbBar({
           <IconButton
             size="xs"
             icon="chevron_left"
-            title="Scroll breadcrumbs left"
+            title={t("Scroll breadcrumbs left")}
             iconColor="secondary"
             onClick={() => scrollBy(-1)}
             className="shrink-0 h-auto!"
@@ -124,8 +125,8 @@ export function ResponseBreadcrumbBar({
                   label={segment.kind === "index" ? `[${segment.index}]` : segment.key}
                   tooltip={
                     segment.kind === "index"
-                      ? `Filter to element ${segment.index}`
-                      : `Filter to ${segment.key}`
+                      ? t("Filter to element {{p0}}", { p0: String(segment.index) })
+                      : t("Filter to {{p0}}", { p0: String(segment.key) })
                   }
                   isApplied={isApplied}
                   onClick={isClickable ? () => onSelect(count) : null}
@@ -138,7 +139,7 @@ export function ResponseBreadcrumbBar({
           <IconButton
             size="xs"
             icon="chevron_right"
-            title="Scroll breadcrumbs right"
+            title={t("Scroll breadcrumbs right")}
             iconColor="secondary"
             onClick={() => scrollBy(1)}
             className="shrink-0 h-auto!"

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { LicenseCheckStatus } from "@yaakapp-internal/license";
 import { useLicense } from "@yaakapp-internal/license";
 import { settingsAtom } from "@yaakapp-internal/models";
@@ -27,15 +28,15 @@ function getDetail(
     case "active":
       return null;
     case "personal_use":
-      return { label: "Personal Use", color: "notice" };
+      return { label: t("Personal Use"), color: "notice" };
     case "trialing":
-      return { label: "Commercial Trial", color: "secondary" };
+      return { label: t("Commercial Trial"), color: "secondary" };
     case "error":
-      return { label: "Error", color: "danger" };
+      return { label: t("Error"), color: "danger" };
     case "inactive":
-      return { label: "Personal Use", color: "notice" };
+      return { label: t("Personal Use"), color: "notice" };
     case "past_due":
-      return { label: "Past Due", color: "danger" };
+      return { label: t("Past Due"), color: "danger" };
     case "expired":
       // Don't show the expired message if it's been less than 14 days since the last dismissal
       if (dismissedAt && differenceInCalendarDays(new Date(), dismissedAt) < 14) {
@@ -44,10 +45,10 @@ function getDetail(
 
       return {
         color: "notice",
-        label: data.data.changes > 0 ? "Updates Paused" : "License Expired",
+        label: data.data.changes > 0 ? t("Updates Paused") : t("License Expired"),
         options: [
           {
-            label: `${data.data.changes} New Updates`,
+            label: t("{{p0}} New Updates", { p0: String(data.data.changes) }),
             color: "success",
             leftSlot: <Icon icon="gift" />,
             rightSlot: <Icon icon="external_link" size="sm" className="opacity-disabled" />,
@@ -56,24 +57,26 @@ function getDetail(
           },
           {
             type: "separator",
-            label: `License expired ${formatDate(data.data.periodEnd, "MMM dd, yyyy")}`,
+            label: t("License expired {{p0}}", {
+              p0: String(formatDate(data.data.periodEnd, "MMM dd, yyyy")),
+            }),
           },
           {
-            label: <div className="min-w-48">Renew License</div>,
+            label: <div className="min-w-48">{t("Renew License")}</div>,
             leftSlot: <Icon icon="refresh" />,
             rightSlot: <Icon icon="external_link" size="sm" className="opacity-disabled" />,
             hidden: data.data.changesUrl == null,
             onSelect: () => platform.openUrl(data.data.billingUrl),
           },
           {
-            label: "Enter License Key",
+            label: t("Enter License Key"),
             leftSlot: <Icon icon="key_round" />,
             hidden: data.data.changesUrl == null,
             onSelect: openLicenseDialog,
           },
           { type: "separator" },
           {
-            label: <span className="text-text-subtle">Remind me Later</span>,
+            label: <span className="text-text-subtle">{t("Remind me Later")}</span>,
             leftSlot: <Icon icon="alarm_clock" className="text-text-subtle" />,
             onSelect: () => jotaiStore.set(dismissedAtom, new Date().toISOString()),
           },

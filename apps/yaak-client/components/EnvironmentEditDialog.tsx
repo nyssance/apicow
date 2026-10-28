@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Environment, Workspace } from "@yaakapp-internal/models";
 import { duplicateModel, patchModel } from "@yaakapp-internal/models";
 import type { TreeHandle, TreeNode, TreeProps } from "@yaakapp-internal/ui";
@@ -79,8 +80,9 @@ export function EnvironmentEditDialog({ initialEnvironmentId, setRef }: Props) {
           {baseEnvironments.length > 1 ? (
             <div className="p-3">
               <Banner color="notice">
-                There are multiple base environments for this workspace. Please delete the
-                environments you no longer need.
+                {t(
+                  "There are multiple base environments for this workspace. Please delete the environments you no longer need.",
+                )}
               </Banner>
             </div>
           ) : (
@@ -89,7 +91,8 @@ export function EnvironmentEditDialog({ initialEnvironmentId, setRef }: Props) {
           {selectedEnvironment == null ? (
             <div className="p-3 mt-10">
               <Banner color="danger">
-                Failed to find selected environment <InlineCode>{selectedEnvironmentId}</InlineCode>
+                {t("Failed to find selected environment")}
+                <InlineCode>{selectedEnvironmentId}</InlineCode>
               </Banner>
             </div>
           ) : (
@@ -111,7 +114,7 @@ const sharableTooltip = (
     tabIndex={-1}
     icon="eye"
     iconSize="sm"
-    content="This environment will be included in Directory Sync and data exports"
+    content={t("This environment will be included in Directory Sync and data exports")}
   />
 );
 
@@ -236,7 +239,7 @@ function EnvironmentEditDialogSidebar({
     (items: TreeModel[]): ContextMenuProps["items"] => {
       const environment = items[0];
       const addEnvironmentItem: DropdownItem = {
-        label: "Create Sub Environment",
+        label: t("Create Sub Environment"),
         leftSlot: <Icon icon="plus" />,
         onSelect: handleCreateSubEnvironment,
       };
@@ -255,7 +258,7 @@ function EnvironmentEditDialogSidebar({
 
       const menuItems: DropdownItem[] = [
         {
-          label: "Rename",
+          label: t("Rename"),
           leftSlot: <Icon icon="pencil" />,
           hidden: isBaseEnvironment(environment) || !singleEnvironment,
           hotKeyAction: "sidebar.selected.rename",
@@ -267,7 +270,7 @@ function EnvironmentEditDialogSidebar({
           },
         },
         {
-          label: "Duplicate",
+          label: t("Duplicate"),
           leftSlot: <Icon icon="copy" />,
           hidden: isBaseEnvironment(environment),
           hotKeyAction: "sidebar.selected.duplicate",
@@ -275,13 +278,13 @@ function EnvironmentEditDialogSidebar({
           onSelect: () => handleDuplicateSelected(items),
         },
         {
-          label: environment.color ? "Change Color" : "Assign Color",
+          label: environment.color ? t("Change Color") : t("Assign Color"),
           leftSlot: <Icon icon="palette" />,
           hidden: isBaseEnvironment(environment) || !singleEnvironment,
           onSelect: async () => showColorPicker(environment),
         },
         {
-          label: `Make ${environment.public ? "Private" : "Sharable"}`,
+          label: t("Make {{p0}}", { p0: String(environment.public ? "Private" : "Sharable") }),
           leftSlot: <Icon icon={environment.public ? "eye_closed" : "eye"} />,
           rightSlot: <EnvironmentSharableTooltip />,
           hidden: items.length > 1,
@@ -291,7 +294,7 @@ function EnvironmentEditDialogSidebar({
         },
         {
           color: "danger",
-          label: "Delete",
+          label: t("Delete"),
           hotKeyAction: "sidebar.selected.delete",
           hotKeyLabelOnly: true,
           hidden: !canDeleteEnvironment,
@@ -462,7 +465,7 @@ function ItemRightSlot({ item }: { item: TreeModel }) {
           iconSize="sm"
           icon="plus_circle"
           className="opacity-50 hover:opacity-100"
-          title="Add Sub-Environment"
+          title={t("Add Sub-Environment")}
           onClick={handleCreateSubEnvironment}
         />
       )}
@@ -486,7 +489,7 @@ function ItemInner({ item }: { item: TreeModel }) {
 function getEditOptions(item: TreeModel) {
   const options: ReturnType<NonNullable<TreeProps<TreeModel>["getEditOptions"]>> = {
     defaultValue: item.name,
-    placeholder: "Name",
+    placeholder: t("Name"),
     async onChange(item, name) {
       await patchModel(item, { name });
     },

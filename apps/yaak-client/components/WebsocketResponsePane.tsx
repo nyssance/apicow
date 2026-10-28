@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { WebsocketEvent, WebsocketRequest } from "@yaakapp-internal/models";
 import {
   HStack,
@@ -54,7 +55,9 @@ export function WebsocketResponsePane({ activeRequest }: Props) {
         )}
         <WebsocketStatusTag connection={activeConnection} />
         <span>&bull;</span>
-        <span>{events.length} Messages</span>
+        <span>
+          {events.length} {" " + t("Messages")}
+        </span>
       </HStack>
       <HStack space={0.5} className="ml-auto">
         <RecentWebsocketConnectionsDropdown
@@ -122,10 +125,10 @@ function WebsocketEventRow({
     messageType === "error"
       ? "alert_triangle"
       : messageType === "close" || messageType === "open"
-      ? "info"
-      : isServer
-        ? "arrow_big_down_dash"
-        : "arrow_big_up_dash";
+        ? "info"
+        : isServer
+          ? "arrow_big_down_dash"
+          : "arrow_big_up_dash";
 
   const content =
     messageType === "close" ? (
@@ -135,7 +138,7 @@ function WebsocketEventRow({
     ) : messageType === "error" ? (
       <span className="text-warning">{message}</span>
     ) : message === "" ? (
-      <em className="italic text-text-subtlest">No content</em>
+      <em className="italic text-text-subtlest">{t("No content")}</em>
     ) : (
       <span className="text-xs">{message.slice(0, 1000)}</span>
     );
@@ -194,7 +197,7 @@ function WebsocketEventDetail({
       ? [
           {
             key: "toggle-hexdump",
-            label: hexDump ? "Show Message" : "Show Hexdump",
+            label: hexDump ? t("Show Message") : t("Show Hexdump"),
             onClick: () => setHexDump(!hexDump),
           },
         ]
@@ -211,7 +214,7 @@ function WebsocketEventDetail({
       />
       {!showLarge && event.message.length > 1000 * 1000 ? (
         <VStack space={2} className="italic text-text-subtlest">
-          Message previews larger than 1MB are hidden
+          {t("Message previews larger than 1MB are hidden")}
           <div>
             <Button
               onClick={() => {
@@ -226,12 +229,12 @@ function WebsocketEventDetail({
               variant="border"
               size="xs"
             >
-              Try Showing
+              {t("Try Showing")}
             </Button>
           </div>
         </VStack>
       ) : event.message.length === 0 ? (
-        <EmptyStateText>No Content</EmptyStateText>
+        <EmptyStateText>{t("No Content")}</EmptyStateText>
       ) : (
         <Editor
           language={language}

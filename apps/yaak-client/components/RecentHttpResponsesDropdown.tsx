@@ -1,13 +1,8 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { deleteModel } from "@yaakapp-internal/models";
 import { HStack, Icon, formatMillis, HttpStatusTag, SizeTag } from "@yaakapp-internal/ui";
-import {
-  differenceInHours,
-  differenceInMinutes,
-  format,
-  isToday,
-  isYesterday,
-} from "date-fns";
+import { differenceInHours, differenceInMinutes, format, isToday, isYesterday } from "date-fns";
 import { useDeleteHttpResponses } from "../hooks/useDeleteHttpResponses";
 import { useKeyValue } from "../hooks/useKeyValue";
 import { DismissibleBanner } from "./core/DismissibleBanner";
@@ -53,7 +48,8 @@ export const RecentHttpResponsesDropdown = function ResponsePane({
     else if (hoursAgo < 6) historyGroup = "3 hours ago";
     else if (isToday(createdAtDate)) historyGroup = "Today";
     else if (isYesterday(createdAtDate)) historyGroup = "Yesterday";
-    else if (createdAtDate.getFullYear() === now.getFullYear()) historyGroup = format(createdAtDate, "MMM d");
+    else if (createdAtDate.getFullYear() === now.getFullYear())
+      historyGroup = format(createdAtDate, "MMM d");
     const absoluteTime = format(createdAt, "MMM d, yyyy, h:mm:ss a O");
 
     if (historyGroup === "Just now") {
@@ -61,7 +57,11 @@ export const RecentHttpResponsesDropdown = function ResponsePane({
     } else if (!hasRecentResponses && !hasShownRecentEmptyState) {
       responseHistoryItems.push({
         type: "content",
-        label: <span className="block px-4 py-1 text-sm text-text-subtle">No recent requests</span>,
+        label: (
+          <span className="block px-4 py-1 text-sm text-text-subtle">
+            {t("No recent requests")}
+          </span>
+        ),
       });
       hasShownRecentEmptyState = true;
     }
@@ -79,7 +79,7 @@ export const RecentHttpResponsesDropdown = function ResponsePane({
         <HStack space={2} className="text-sm" title={absoluteTime}>
           <HttpStatusTag short className="text-xs" response={r} />
           <span className="text-text-subtlest">&bull;</span>
-          <span className="font-mono">{r.elapsed >= 0 ? formatMillis(r.elapsed) : "n/a"}</span>
+          <span className="font-mono">{r.elapsed >= 0 ? formatMillis(r.elapsed) : t("n/a")}</span>
           <span className="text-text-subtlest">&bull;</span>
           <SizeTag
             className="text-xs"
@@ -98,7 +98,9 @@ export const RecentHttpResponsesDropdown = function ResponsePane({
   if (!hasRecentResponses && !hasShownRecentEmptyState) {
     responseHistoryItems.push({
       type: "content",
-      label: <span className="block px-4 py-1 text-sm text-text-subtle">No recent requests</span>,
+      label: (
+        <span className="block px-4 py-1 text-sm text-text-subtle">{t("No recent requests")}</span>
+      ),
     });
   }
 
@@ -106,18 +108,18 @@ export const RecentHttpResponsesDropdown = function ResponsePane({
     <Dropdown
       items={[
         {
-          label: "Delete",
+          label: t("Delete"),
           leftSlot: <Icon icon="trash" />,
           onSelect: () => deleteModel(activeResponse),
         },
         {
-          label: "Delete all",
+          label: t("Delete all"),
           leftSlot: <Icon icon="trash" />,
           onSelect: deleteAllResponses.mutate,
           disabled: responses.length === 0,
         },
         {
-          label: "Unpin Response",
+          label: t("Unpin Response"),
           onSelect: () => onPinnedResponseId(activeResponse.id),
           leftSlot: <Icon icon="unpin" />,
           hidden: latestResponseId === activeResponse.id,
@@ -133,19 +135,19 @@ export const RecentHttpResponsesDropdown = function ResponsePane({
               size="xs"
               className="max-w-72"
             >
-              <p>Copy and save actions moved to the Response tab menu.</p>
+              <p>{t("Copy and save actions moved to the Response tab menu.")}</p>
             </DismissibleBanner>
           ),
         },
         {
           type: "separator",
-          label: "Recent",
+          label: t("Recent"),
         },
         ...responseHistoryItems,
       ]}
     >
       <IconButton
-        title="Show response history"
+        title={t("Show response history")}
         icon={activeResponse?.id === latestResponseId ? "history" : "pin"}
         className="m-0.5 text-text-subtle"
         size="sm"

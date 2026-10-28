@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { HStack, VStack } from "@yaakapp-internal/ui";
 import { useRef, useState } from "react";
 import type { FeedbackFeature } from "../lib/featureFeedbackConstants";
@@ -36,7 +37,7 @@ export function FeedbackToast({ feature, onDone }: Props) {
       id: `feature-feedback-${feature}`,
       timeout: 3000,
       color: "success",
-      message: "Thanks for the feedback!",
+      message: t("Thanks for the feedback!"),
     });
   };
 
@@ -49,18 +50,18 @@ export function FeedbackToast({ feature, onDone }: Props) {
           // The editor forces its mono font on the scroller, so the override
           // has to target it directly
           className="[&_.cm-scroller]:font-sans! [&_.cm-scroller]:text-sm!"
-          label="Feedback"
+          label={t("Feedback")}
           hideLabel
           stateKey={null}
           multiLine
           fullHeight
-          placeholder="Your thoughts..."
+          placeholder={t("Your thoughts...")}
           onChange={setText}
         />
       </div>
       <HStack space={1.5} justifyContent="end">
         <Button size="xs" color="secondary" variant="border" onClick={handleDismiss}>
-          Dismiss
+          {t("Dismiss")}
         </Button>
         <Button
           size="xs"
@@ -68,7 +69,7 @@ export function FeedbackToast({ feature, onDone }: Props) {
           disabled={sent || text.trim().length === 0}
           onClick={handleSend}
         >
-          Send
+          {t("Send")}
         </Button>
       </HStack>
     </VStack>

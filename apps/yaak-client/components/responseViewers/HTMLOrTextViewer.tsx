@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { useQueryClient } from "@tanstack/react-query";
 import { languageFromContentType, type TextFilterApi, WebPageViewer } from "@yaakapp-internal/ui";
@@ -32,7 +33,7 @@ export function HTMLOrTextViewer({ response, pretty, textViewerClassName }: Prop
     return <WebPageViewer html={rawTextBody.data ?? ""} baseUrl={response.url} />;
   }
   if (rawTextBody.data == null) {
-    return <EmptyStateText>Empty response</EmptyStateText>;
+    return <EmptyStateText>{t("Empty response")}</EmptyStateText>;
   }
   return (
     <HttpTextViewer
@@ -94,7 +95,7 @@ function HttpTextViewer({ response, text, language, pretty, className }: HttpTex
           key="save"
           size="sm"
           icon="save"
-          title="Save response to file"
+          title={t("Save response to file")}
           disabled={actionsDisabled}
           onClick={() => saveResponse.mutate()}
           className="border !border-border-subtle"
@@ -103,7 +104,7 @@ function HttpTextViewer({ response, text, language, pretty, className }: HttpTex
           key="copy"
           size="sm"
           icon="copy"
-          title="Copy response body"
+          title={t("Copy response body")}
           disabled={actionsDisabled}
           onClick={() => copyResponse.mutate()}
           className="border !border-border-subtle"

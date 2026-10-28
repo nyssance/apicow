@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useState } from "react";
 import { ColorIndicator } from "./ColorIndicator";
 import { Banner } from "@yaakapp-internal/ui";
@@ -21,12 +22,12 @@ export function EnvironmentColorPicker({
       }}
     >
       <Banner color="secondary">
-        This color will be used to color the interface when this environment is active
+        {t("This color will be used to color the interface when this environment is active")}
       </Banner>
       <ColorPickerWithThemeColors color={color} onChange={setColor} />
       <Button type="submit" color="secondary">
         {color != null && <ColorIndicator color={color} />}
-        Save
+        {t("Save")}
       </Button>
     </form>
   );

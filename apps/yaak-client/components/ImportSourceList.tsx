@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { Icon, LoadingIcon } from "@yaakapp-internal/ui";
 import classNames from "classnames";
@@ -98,7 +99,7 @@ export function ImportSourceList({
   const pick = async (directory: boolean) => {
     try {
       const selected = await platform.dialog.open({
-        title: directory ? "Select Import Folder" : "Select Import Files",
+        title: directory ? t("Select Import Folder") : t("Select Import Files"),
         multiple: true,
         directory,
       });
@@ -122,22 +123,22 @@ export function ImportSourceList({
   const pathInputEl = (
     <PlainInput
       ref={pathInputRef}
-      label="URL or file path"
+      label={t("URL or file path")}
       hideLabel
       size="sm"
       autoFocus
       disabled={disabled}
-      placeholder="Paste a URL or a file path"
+      placeholder={t("Paste a URL or a file path")}
       onChange={setPathInput}
       onKeyDownCapture={handlePathKeyDown}
       rightSlot={
         <div className="flex items-center gap-1 my-1 mr-1">
           {trimmedPath !== "" && (
             <Button size="xs" variant="border" onClick={addPath}>
-              Add
+              {t("Add")}
             </Button>
           )}
-          <IconButton size="xs" icon="x" title="Cancel" onClick={closePathInput} />
+          <IconButton size="xs" icon="x" title={t("Cancel")} onClick={closePathInput} />
         </div>
       }
     />
@@ -155,26 +156,26 @@ export function ImportSourceList({
         >
           <Icon icon="folder_input" className="text-text-subtlest w-10! h-10! mb-1" />
           {isHovering ? (
-            <span>Drop to add</span>
+            <span>{t("Drop to add")}</span>
           ) : (
             <span>
-              Choose{" "}
+              {t("Choose")}{" "}
               <InlineButton disabled={disabled} onClick={() => pick(false)}>
-                files
+                {t("files")}
               </InlineButton>
-              , a{" "}
+              {t(", a")}{" "}
               <InlineButton disabled={disabled} onClick={() => pick(true)}>
-                folder
+                {t("folder")}
               </InlineButton>
-              , or a{" "}
+              {t(", or a")}{" "}
               <InlineButton disabled={disabled} onClick={openPathInput}>
                 URL
               </InlineButton>
-              , or drag them here
+              {t(", or drag them here")}
             </span>
           )}
           <span className="text-xs text-text-subtlest">
-            Supports OpenAPI, Swagger, Postman, Insomnia, Bruno, curl, and Yaak exports
+            {t("Supports OpenAPI, Swagger, Postman, Insomnia, Bruno, curl, and Yaak exports")}
           </span>
         </div>
         {showPathInput && pathInputEl}
@@ -191,9 +192,9 @@ export function ImportSourceList({
       addLabel="Add files, a folder, or a URL"
       addHint="or drop them here"
       addItems={[
-        { label: "Files", icon: "file", onSelect: () => pick(false) },
-        { label: "Folder", icon: "folder", onSelect: () => pick(true) },
-        { label: "URL or file path", icon: "globe", onSelect: openPathInput },
+        { label: t("Files"), icon: "file", onSelect: () => pick(false) },
+        { label: t("Folder"), icon: "folder", onSelect: () => pick(true) },
+        { label: t("URL or file path"), icon: "globe", onSelect: openPathInput },
       ]}
       items={sources.map((source) => {
         const detection = detections[source.path];
@@ -222,7 +223,7 @@ function DetectionSubtitle({
     return (
       <>
         <LoadingIcon size="xs" />
-        Detecting format
+        {t("Detecting format")}
       </>
     );
   }

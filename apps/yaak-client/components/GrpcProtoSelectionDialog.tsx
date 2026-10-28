@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GrpcRequest } from "@yaakapp-internal/models";
 import { Banner, InlineCode, VStack } from "@yaakapp-internal/ui";
 import { useActiveRequest } from "../hooks/useActiveRequest";
@@ -46,7 +47,8 @@ function GrpcProtoSelectionDialogWithRequest({
         {reflectError && (
           <Banner color="warning">
             <h1 className="font-bold">
-              Reflection failed on URL <InlineCode>{request.url || "n/a"}</InlineCode>
+              {t("Reflection failed on URL")}
+              <InlineCode>{request.url || "n/a"}</InlineCode>
             </h1>
             <p>{reflectError.trim()}</p>
           </Banner>
@@ -54,12 +56,12 @@ function GrpcProtoSelectionDialogWithRequest({
         {!serverReflection && services != null && services.length > 0 && (
           <Banner className="flex flex-col gap-2">
             <p>
-              Found services{" "}
+              {t("Found services")}{" "}
               {services?.slice(0, 5).map((s, i) => {
                 return (
                   <span key={s.name + s.methods.map((m) => m.name).join(",")}>
                     <InlineCode>{s.name}</InlineCode>
-                    {i === services.length - 1 ? "" : i === services.length - 2 ? " and " : ", "}
+                    {i === services.length - 1 ? "" : i === services.length - 2 ? t(" and ") : ", "}
                   </span>
                 );
               })}
@@ -70,17 +72,17 @@ function GrpcProtoSelectionDialogWithRequest({
         {serverReflection && services != null && services.length > 0 && (
           <Banner className="flex flex-col gap-2">
             <p>
-              Server reflection found services
+              {t("Server reflection found services")}
               {services?.map((s, i) => {
                 return (
                   <span key={s.name + s.methods.map((m) => m.name).join(",")}>
                     <InlineCode>{s.name}</InlineCode>
-                    {i === services.length - 1 ? "" : i === services.length - 2 ? " and " : ", "}
+                    {i === services.length - 1 ? "" : i === services.length - 2 ? t(" and ") : ", "}
                   </span>
                 );
               })}
-              . You can override this schema by manually selecting <InlineCode>*.proto</InlineCode>{" "}
-              files.
+              {t(". You can override this schema by manually selecting")}
+              <InlineCode>*.proto</InlineCode> {t("files.")}
             </p>
           </Banner>
         )}
@@ -97,11 +99,11 @@ function GrpcProtoSelectionDialogWithRequest({
           addLabel="Add proto files or an import folder"
           addItems={[
             {
-              label: "Proto files",
+              label: t("Proto files"),
               icon: "file_code",
               onSelect: async () => {
                 const selected = await platform.dialog.open({
-                  title: "Select Proto Files",
+                  title: t("Select Proto Files"),
                   multiple: true,
                   filters: [{ name: "Proto Files", extensions: ["proto"] }],
                 });
@@ -112,11 +114,11 @@ function GrpcProtoSelectionDialogWithRequest({
               },
             },
             {
-              label: "Import folder",
+              label: t("Import folder"),
               icon: "folder_code",
               onSelect: async () => {
                 const selected = await platform.dialog.open({
-                  title: "Select Proto Directory",
+                  title: t("Select Proto Directory"),
                   directory: true,
                 });
                 if (selected == null) return;
@@ -128,23 +130,24 @@ function GrpcProtoSelectionDialogWithRequest({
         />
         {reflectionUnimplemented && protoFiles.length === 0 && (
           <Banner>
-            <InlineCode>{request.url}</InlineCode> doesn&apos;t implement{" "}
+            <InlineCode>{request.url}</InlineCode> {" " + t("doesn't implement")}{" "}
             <Link href="https://github.com/grpc/grpc/blob/9aa3c5835a4ed6afae9455b63ed45c761d695bca/doc/server-reflection.md">
-              Server Reflection
+              {t("Server Reflection")}
             </Link>{" "}
-            . Please manually add the <InlineCode>.proto</InlineCode> file to get started.
+            {t(". Please manually add the")}
+            <InlineCode>.proto</InlineCode> {t("file to get started.")}
           </Banner>
         )}
       </VStack>
       <DialogFooter
         actions={[
           {
-            label: "Refresh Schema",
+            label: t("Refresh Schema"),
             isLoading: grpc.reflect.isFetching,
             disabled: grpc.reflect.isFetching,
             onClick: () => grpc.reflect.refetch(),
           },
-          { label: "Done", color: "primary", onClick: onDone },
+          { label: t("Done"), color: "primary", onClick: onDone },
         ]}
       />
     </>

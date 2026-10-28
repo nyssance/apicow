@@ -96,6 +96,7 @@ async fn rpc(
 
 pub fn run() {
     tauri::Builder::default()
+        .runtime(tauri_runtime_wry::Wry::default())
         .plugin(tauri_plugin_os::init())
         .plugin(yaak_mac_window::init())
         .setup(|app| {

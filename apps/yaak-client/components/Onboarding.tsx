@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Color } from "@yaakapp-internal/plugins";
 import { platform } from "@yaakapp-internal/platform";
 import { settingsAtom } from "@yaakapp-internal/models";
@@ -34,7 +35,7 @@ export function Onboarding() {
     } catch (err) {
       showErrorToast({
         id: "onboarding-failed",
-        title: "Something went wrong",
+        title: t("Something went wrong"),
         message: String(err),
       });
     } finally {
@@ -56,11 +57,11 @@ export function Onboarding() {
       <div className="overflow-auto px-6 py-10 grid">
         <div className="m-auto w-full max-w-lg flex flex-col gap-7">
           <div className="flex flex-col gap-1.5">
-            <Heading>How would you like to get started?</Heading>
+            <Heading>{t("How would you like to get started?")}</Heading>
             <p className="text-text-subtle">
               {canImport
-                ? "Bring over existing work, try a real API, or start fresh."
-                : "Try a real API, or start fresh."}
+                ? t("Bring over existing work, try a real API, or start fresh.")
+                : t("Try a real API, or start fresh.")}
             </p>
           </div>
 
@@ -69,7 +70,7 @@ export function Onboarding() {
               <StartOption
                 color="primary"
                 icon="folder_input"
-                title="Migrate from another tool"
+                title={t("Migrate from another tool")}
                 description="Postman, Insomnia, Bruno, OpenAPI, or curl"
                 busy={busy === "import"}
                 disabled={busy != null}
@@ -79,8 +80,8 @@ export function Onboarding() {
             <StartOption
               color="info"
               icon="flask"
-              title="Try Yaak with a real API"
-              description="Ready-made requests you can send right away"
+              title={t("Try Yaak with a real API")}
+              description={t("Ready-made requests you can send right away")}
               busy={busy === "example"}
               disabled={busy != null}
               onClick={choose("example", createExampleWorkspace)}
@@ -88,8 +89,8 @@ export function Onboarding() {
             <StartOption
               color="success"
               icon="plus"
-              title="Start fresh"
-              description="An empty workspace for your first request"
+              title={t("Start fresh")}
+              description={t("An empty workspace for your first request")}
               busy={busy === "fresh"}
               disabled={busy != null}
               onClick={choose("fresh", createFreshWorkspace)}
@@ -98,7 +99,7 @@ export function Onboarding() {
 
           {showAlreadyUsing && (
             <div className="pt-5 border-t border-dashed border-border-subtle flex flex-col items-start gap-2.5">
-              <span className="text-sm text-text-subtle">Already using Yaak?</span>
+              <span className="text-sm text-text-subtle">{t("Already using Yaak?")}</span>
               <div className="flex flex-wrap gap-2">
                 {capabilities.localFiles && (
                   <Button
@@ -109,7 +110,7 @@ export function Onboarding() {
                     disabled={busy != null}
                     onClick={choose("open_folder", async () => {
                       const dir = await platform.dialog.open({
-                        title: "Select Workspace Directory",
+                        title: t("Select Workspace Directory"),
                         directory: true,
                         multiple: false,
                       });
@@ -117,7 +118,7 @@ export function Onboarding() {
                       await openWorkspaceFromSyncDir.mutateAsync(dir);
                     })}
                   >
-                    Open folder
+                    {t("Open folder")}
                   </Button>
                 )}
                 {capabilities.git && (
@@ -131,12 +132,12 @@ export function Onboarding() {
                       showDialog({
                         id: "clone-git-repository",
                         size: "md",
-                        title: "Clone Git Repository",
+                        title: t("Clone Git Repository"),
                         render: ({ hide }) => <CloneGitRepositoryDialog hide={hide} />,
                       });
                     })}
                   >
-                    Clone repository
+                    {t("Clone repository")}
                   </Button>
                 )}
                 {canImport && (
@@ -148,7 +149,7 @@ export function Onboarding() {
                     disabled={busy != null}
                     onClick={choose("import_yaak", () => importData.mutateAsync())}
                   >
-                    Import
+                    {t("Import")}
                   </Button>
                 )}
               </div>

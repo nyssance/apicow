@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { ShowToastRequest } from "@yaakapp-internal/plugins";
 import { Icon, type IconProps, VStack } from "@yaakapp-internal/ui";
 import classNames from "classnames";
@@ -126,7 +127,7 @@ export function Toast({
             color={color}
             variant="border"
             className="opacity-60 border-0 absolute! top-2 right-2"
-            title="Dismiss"
+            title={t("Dismiss")}
             icon="x"
             onClick={onClose}
           />

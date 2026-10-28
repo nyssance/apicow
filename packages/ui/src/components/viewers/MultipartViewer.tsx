@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { type MultipartPart, parseMultipart } from "@mjackson/multipart-parser";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
@@ -48,7 +49,8 @@ export function MultipartViewer({
   if (error) {
     return (
       <Banner color="danger" className="m-3">
-        Failed to parse multipart data: {error}
+        {t("Failed to parse multipart data:")}
+        {error}
       </Banner>
     );
   }
@@ -56,7 +58,7 @@ export function MultipartViewer({
   if (parts.length === 0) {
     return (
       <Banner color="info" className="m-3">
-        No multipart parts found
+        {t("No multipart parts found")}
       </Banner>
     );
   }
@@ -64,7 +66,7 @@ export function MultipartViewer({
   return (
     <Tabs
       addBorders
-      label="Multipart"
+      label={t("Multipart")}
       layout="horizontal"
       tabListClassName="border-r border-r-border -ml-3"
       tabs={parts.map((part, i) => ({

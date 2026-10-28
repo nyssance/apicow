@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpRequest } from "@yaakapp-internal/models";
 import { patchModelById } from "@yaakapp-internal/models";
 import { activeWorkspaceIdAtom } from "../hooks/useActiveWorkspace";
@@ -46,7 +47,7 @@ export const importCurl = createFastMutation<
 
     showToast({
       color: "success",
-      message: `${verb} request from Curl`,
+      message: t("{{p0}} request from Curl", { p0: String(verb) }),
     });
   },
 });

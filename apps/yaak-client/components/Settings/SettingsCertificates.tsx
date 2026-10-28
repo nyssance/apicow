@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { ClientCertificate } from "@yaakapp-internal/models";
 import { patchModel, settingsAtom } from "@yaakapp-internal/models";
 import { Heading, HStack, InlineCode, VStack } from "@yaakapp-internal/ui";
@@ -59,7 +60,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
             <Checkbox
               className="ml-1"
               checked={certificate.enabled ?? true}
-              title={certificate.enabled ? "Disable certificate" : "Enable certificate"}
+              title={certificate.enabled ? t("Disable certificate") : t("Enable certificate")}
               hideLabel
               onChange={(enabled) => updateField("enabled", enabled)}
             />
@@ -70,14 +71,16 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
                 {certificate.port != null && `:${certificate.port}`}
               </InlineCode>
             ) : (
-              <span className="italic text-sm text-text-subtlest">Configure Certificate</span>
+              <span className="italic text-sm text-text-subtlest">
+                {t("Configure Certificate")}
+              </span>
             )}
             {certType && <InlineCode>{certType}</InlineCode>}
           </HStack>
           <IconButton
             icon="trash"
             size="sm"
-            title="Remove certificate"
+            title={t("Remove certificate")}
             className="text-text-subtlest -mr-2"
             onClick={() => onRemove(index)}
           />
@@ -97,7 +100,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
               if (!/^[a-zA-Z0-9_.-]+$/.test(value)) return false;
               return true;
             }}
-            label="Host"
+            label={t("Host")}
             placeholder="example.com"
             size="sm"
             required
@@ -105,7 +108,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
             onChange={(host) => updateField("host", host)}
           />
           <PlainInput
-            label="Port"
+            label={t("Port")}
             hideLabel
             validate={(value) => {
               if (!value) return true;
@@ -129,7 +132,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
 
         <VStack space={2}>
           <SelectFile
-            label="CRT File"
+            label={t("CRT File")}
             noun="Cert"
             filePath={certificate.crtFile ?? null}
             size="sm"
@@ -137,7 +140,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
             onChange={({ filePath }) => updateField("crtFile", filePath)}
           />
           <SelectFile
-            label="KEY File"
+            label={t("KEY File")}
             noun="Key"
             filePath={certificate.keyFile ?? null}
             size="sm"
@@ -149,7 +152,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
         <Separator className="my-3" />
 
         <SelectFile
-          label="PFX File"
+          label={t("PFX File")}
           noun="Key"
           filePath={certificate.pfxFile ?? null}
           size="sm"
@@ -158,7 +161,7 @@ function CertificateEditor({ certificate, index, onUpdate, onRemove }: Certifica
         />
 
         <PlainInput
-          label="Passphrase"
+          label={t("Passphrase")}
           size="sm"
           type="password"
           defaultValue={certificate.passphrase ?? ""}
@@ -197,10 +200,10 @@ export function SettingsCertificates() {
 
     const confirmed = await showConfirmDelete({
       id: "confirm-remove-certificate",
-      title: "Delete Certificate",
+      title: t("Delete Certificate"),
       description: (
         <>
-          Permanently delete certificate for{" "}
+          {t("Permanently delete certificate for")}{" "}
           <InlineCode>
             {host}
             {port}
@@ -222,18 +225,18 @@ export function SettingsCertificates() {
       <div className="mb-3">
         <HStack justifyContent="between" alignItems="start">
           <div>
-            <Heading>Client Certificates</Heading>
+            <Heading>{t("Client Certificates")}</Heading>
             <p className="text-text-subtle">
-              Add and manage TLS certificates on a per domain basis
+              {t("Add and manage TLS certificates on a per domain basis")}
             </p>
           </div>
           <Button variant="border" size="sm" color="secondary" onClick={handleAdd}>
-            Add Certificate
+            {t("Add Certificate")}
           </Button>
         </HStack>
       </div>
 
-      <CommercialUseBanner source="client-certificates" title="Using certificates for work?" />
+      <CommercialUseBanner source="client-certificates" title={t("Using certificates for work?")} />
 
       {certificates.length > 0 && (
         <VStack space={3}>

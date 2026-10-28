@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import {
   type ImportDestination,
   type ImportPlan,
@@ -330,7 +331,7 @@ function LoadedImportDataDialog({
       <>
         <VStack space={4} className="pb-4">
           <div className="rounded-lg border border-border-subtle divide-y divide-border-subtle">
-            <PreviewRow label="Detected format" value={plan.importer} />
+            <PreviewRow label={t("Detected format")} value={plan.importer} />
             <PreviewRow label={destinationLabel} value={destinationValue} />
           </div>
 
@@ -392,7 +393,7 @@ function LoadedImportDataDialog({
           }
           actions={[
             {
-              label: "Back",
+              label: t("Back"),
               disabled: isLoading,
               onClick: () => {
                 setPlan(null);
@@ -401,10 +402,13 @@ function LoadedImportDataDialog({
             },
             {
               label: isLoading
-                ? "Importing"
+                ? t("Importing")
                 : changeCount > 0
-                  ? `Apply ${changeCount} ${changeCount === 1 ? "Change" : "Changes"}`
-                  : "Done",
+                  ? t("Apply {{p0}} {{p1}}", {
+                      p0: String(changeCount),
+                      p1: String(changeCount === 1 ? "Change" : "Changes"),
+                    })
+                  : t("Done"),
               color: "primary",
               isLoading,
               onClick: handleCommit,
@@ -423,30 +427,30 @@ function LoadedImportDataDialog({
     >
       <Select
         name="import-destination-kind"
-        label="Import into"
+        label={t("Import into")}
         labelPosition="left"
         size="sm"
         value={destinationKind}
         onChange={setDestinationChoice}
         options={[
-          { value: "new", label: "New Workspace" },
+          { value: "new", label: t("New Workspace") },
           ...(currentWorkspace != null
-            ? [{ value: "current" as const, label: "Current Workspace" }]
+            ? [{ value: "current" as const, label: t("Current Workspace") }]
             : []),
-          { value: "other", label: "Other Workspace" },
+          { value: "other", label: t("Other Workspace") },
         ]}
       />
       {destinationKind === "other" && (
         <Select
           name="import-destination-workspace"
-          label="Workspace"
+          label={t("Workspace")}
           hideLabel
           size="sm"
           value={otherWorkspaceId ?? ""}
           onChange={(id) => setOtherWorkspaceId(id === "" ? null : id)}
           filterable
           options={[
-            { value: "", label: "Select a workspace" },
+            { value: "", label: t("Select a workspace") },
             ...workspaces
               .filter((w) => w.id !== currentWorkspace?.id)
               .map((w) => ({ value: w.id, label: w.name })),
@@ -459,7 +463,7 @@ function LoadedImportDataDialog({
   return (
     <>
       <VStack space={4} className="h-full pb-4">
-        <CommercialUseBanner source="data-import" title="Importing work data?" />
+        <CommercialUseBanner source="data-import" title={t("Importing work data?")} />
 
         <ImportSourceList
           sources={sources}
@@ -478,7 +482,8 @@ function LoadedImportDataDialog({
 
         {linkedWorkspace != null && linkedWorkspace.id !== destinationWorkspaceId && (
           <div className="text-xs text-text-subtle">
-            {sources.length === 1 ? "This source was" : "These sources were"} last imported into{" "}
+            {sources.length === 1 ? t("This source was") : t("These sources were")}{" "}
+            {" " + t("last imported into")}{" "}
             <InlineButton
               onClick={() => {
                 if (linkedWorkspace.id === currentWorkspace?.id) {
@@ -497,9 +502,9 @@ function LoadedImportDataDialog({
       <DialogFooter
         leftSlot={destinationPicker}
         actions={[
-          { label: "Cancel", disabled: isLoading, onClick: cancel },
+          { label: t("Cancel"), disabled: isLoading, onClick: cancel },
           {
-            label: isLoading ? "Analyzing" : "Preview Import",
+            label: isLoading ? t("Analyzing") : t("Preview Import"),
             color: "primary",
             disabled:
               sources.length === 0 ||
@@ -530,7 +535,7 @@ function ImportTreeRow({
         )}
         <div className="truncate flex-1">{row.label}</div>
         {row.kind === "destination" && row.isNew && (
-          <ActionChip label="new" help="Created by this import" color="success" />
+          <ActionChip label={t("new")} help={t("Created by this import")} color="success" />
         )}
       </>
     );
@@ -545,15 +550,15 @@ function ImportTreeRow({
         <div className="shrink-0">
           <SegmentedControl
             name={`conflict-${item.modelId}`}
-            label={`Resolve conflict for ${item.name}`}
+            label={t("Resolve conflict for {{p0}}", { p0: String(item.name) })}
             hideLabel
             size="2xs"
             help={actionHelp(item)}
             value={item.resolution ?? "keep_mine"}
             onChange={(v) => onResolveConflict(item.modelId, v)}
             options={[
-              { value: "keep_mine", label: "Keep mine" },
-              { value: "take_source", label: "Take source" },
+              { value: "keep_mine", label: t("Keep mine") },
+              { value: "take_source", label: t("Take source") },
             ]}
           />
         </div>
@@ -710,7 +715,7 @@ function buildItemTree(items: ImportPlanItem[]): CheckboxTreeNode<TreeRow>[] {
   return [
     {
       key: "group:environments",
-      data: { kind: "group", label: "Variables" },
+      data: { kind: "group", label: t("Variables") },
       children: environments.map((e) => toNode(e, new Set())),
     },
     ...nodes,

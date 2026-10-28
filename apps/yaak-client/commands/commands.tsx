@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { createWorkspaceModel, type Folder, modelTypeLabel } from "@yaakapp-internal/models";
 import { applySync, calculateSync } from "@yaakapp-internal/sync";
 import { Button } from "../components/core/Button";
@@ -36,11 +37,11 @@ export const createFolder = createFastMutation<
     if (!patch.name) {
       const name = await showPrompt({
         id: "new-folder",
-        label: "Name",
+        label: t("Name"),
         defaultValue: "Folder",
-        title: "New Folder",
-        confirmText: "Create",
-        placeholder: "Name",
+        title: t("New Folder"),
+        confirmText: t("Create"),
+        placeholder: t("Name"),
       });
       if (name == null) return null;
 
@@ -60,7 +61,7 @@ function showStaleSyncToast() {
   showToast({
     id: "sync-stale",
     color: "warning",
-    message: "Files changed while syncing. Review the changes again.",
+    message: t("Files changed while syncing. Review the changes again."),
   });
 }
 
@@ -110,7 +111,7 @@ export const syncWorkspace = createFastMutation<
 
     showDialog({
       id: "commit-sync",
-      title: "Changes Detected",
+      title: t("Changes Detected"),
       size: "md",
       render: ({ hide }) => (
         <form
@@ -122,21 +123,22 @@ export const syncWorkspace = createFastMutation<
         >
           {isDeletingWorkspace ? (
             <Banner color="danger">
-              🚨 <strong>Changes contain a workspace deletion!</strong>
+              🚨 <strong>{t("Changes contain a workspace deletion!")}</strong>
             </Banner>
           ) : (
             <span />
           )}
           <p>
-            {pluralizeCount("file", dbOps.length)} in the directory{" "}
-            {dbOps.length === 1 ? "has" : "have"} changed. Do you want to update your workspace?
+            {pluralizeCount("file", dbOps.length)} {" " + t("in the directory")}{" "}
+            {dbOps.length === 1 ? t("has") : t("have")}{" "}
+            {t("changed. Do you want to update your workspace?")}
           </p>
           <Table scrollable className="my-4">
             <TableHead>
               <TableRow>
-                <TableHeaderCell>Type</TableHeaderCell>
-                <TableHeaderCell>Name</TableHeaderCell>
-                <TableHeaderCell>Operation</TableHeaderCell>
+                <TableHeaderCell>{t("Type")}</TableHeaderCell>
+                <TableHeaderCell>{t("Name")}</TableHeaderCell>
+                <TableHeaderCell>{t("Operation")}</TableHeaderCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -180,10 +182,10 @@ export const syncWorkspace = createFastMutation<
           </Table>
           <footer className="py-3 flex flex-row-reverse items-center gap-3">
             <Button type="submit" color="primary">
-              Apply Changes
+              {t("Apply Changes")}
             </Button>
             <Button onClick={hide} color="secondary">
-              Cancel
+              {t("Cancel")}
             </Button>
           </footer>
         </form>

@@ -6,7 +6,7 @@ import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { clear, readText, writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { open, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { readDir, readFile, readTextFile } from "@tauri-apps/plugin-fs";
-import { openUrl, revealItemInDir } from "@tauri-apps/plugin-opener";
+import { openUrl, revealItemsInDir } from "@tauri-apps/plugin-opener";
 import { type as osType } from "@tauri-apps/plugin-os";
 import type {
   DragDropEvent,
@@ -221,7 +221,7 @@ export function createTauriPlatform(): Platform {
     emit: (event, payload) => tauriEmit(event, payload),
 
     openUrl: (url) => openUrl(url),
-    revealItemInDir: (path) => revealItemInDir(path),
+    revealItemInDir: (path) => revealItemsInDir([path]),
 
     osType: () => osType(),
     appIdentifier: () => getIdentifier(),

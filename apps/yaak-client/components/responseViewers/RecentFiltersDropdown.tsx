@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { Icon } from "@yaakapp-internal/ui";
 import type { RecentFilter } from "../../hooks/useRecentFilters";
 import { Dropdown, type DropdownItem } from "../core/Dropdown";
@@ -34,13 +35,13 @@ export function RecentFiltersDropdown({
     submenuTrigger: "button",
     submenu: [
       {
-        label: filter.pinned ? "Unpin" : "Pin",
+        label: filter.pinned ? t("Unpin") : t("Pin"),
         icon: filter.pinned ? "unpin" : "pin",
         keepOpenOnSelect: true,
         onSelect: () => onTogglePin(filter.value),
       },
       {
-        label: "Remove",
+        label: t("Remove"),
         icon: "trash",
         color: "danger",
         keepOpenOnSelect: true,
@@ -56,25 +57,25 @@ export function RecentFiltersDropdown({
       type: "content",
       label: (
         <span className="block px-4 py-1 text-sm text-text-subtle">
-          Filters you use are remembered here
+          {t("Filters you use are remembered here")}
         </span>
       ),
     });
   }
 
   if (pinned.length > 0) {
-    items.push({ type: "separator", label: "Pinned" }, ...pinned.map(toItem));
+    items.push({ type: "separator", label: t("Pinned") }, ...pinned.map(toItem));
   }
 
   if (unpinned.length > 0) {
-    items.push({ type: "separator", label: "Recent" }, ...unpinned.map(toItem));
+    items.push({ type: "separator", label: t("Recent") }, ...unpinned.map(toItem));
   }
 
   if (recentFilters.length > 0) {
     items.push(
       { type: "separator" },
       {
-        label: "Clear All",
+        label: t("Clear All"),
         leftSlot: <Icon icon="trash" />,
         color: "danger",
         onSelect: onClear,
@@ -87,7 +88,7 @@ export function RecentFiltersDropdown({
       <IconButton
         size="xs"
         icon="filter"
-        title="Recent filters"
+        title={t("Recent filters")}
         iconColor="secondary"
         className="w-8 ml-0.5 mr-1 h-auto!"
       />

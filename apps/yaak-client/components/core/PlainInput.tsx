@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { HStack, useStateWithDeps, Label } from "@yaakapp-internal/ui";
 import classNames from "classnames";
 import type { FocusEvent, InputHTMLAttributes, ReactNode } from "react";
@@ -220,8 +221,8 @@ export const PlainInput = forwardRef<{ focus: () => void }, PlainInputProps>(fun
           <IconButton
             title={
               obscured
-                ? `Show ${typeof label === "string" ? label : "field"}`
-                : `Obscure ${typeof label === "string" ? label : "field"}`
+                ? t("Show {{p0}}", { p0: String(typeof label === "string" ? label : "field") })
+                : t("Obscure {{p0}}", { p0: String(typeof label === "string" ? label : "field") })
             }
             size="xs"
             className="mr-0.5 group/obscure h-auto! my-0.5"

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { Button, FormattedError, Heading, VStack } from "@yaakapp-internal/ui";
 import { DetailsBanner } from "./core/DetailsBanner";
 
@@ -11,14 +12,14 @@ export default function RouteError({ error }: { error: unknown }) {
   return (
     <div className="flex items-center justify-center h-full">
       <VStack space={5} className="w-200 h-auto!">
-        <Heading>Route Error 🔥</Heading>
+        <Heading>{t("Route Error \ud83d\udd25")}</Heading>
         <FormattedError>
           {message}
           {stack && (
             <DetailsBanner
               color="secondary"
               className="mt-3 select-auto text-xs max-h-[40vh]"
-              summary="Stack Trace"
+              summary={t("Stack Trace")}
             >
               <div className="mt-2 text-xs">{stack}</div>
             </DetailsBanner>
@@ -31,10 +32,10 @@ export default function RouteError({ error }: { error: unknown }) {
               window.location.assign("/");
             }}
           >
-            Go Home
+            {t("Go Home")}
           </Button>
           <Button color="info" onClick={() => window.location.reload()}>
-            Refresh
+            {t("Refresh")}
           </Button>
         </VStack>
       </VStack>

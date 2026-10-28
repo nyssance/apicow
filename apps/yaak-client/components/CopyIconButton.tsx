@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import {
   CopyIconButton as BaseCopyIconButton,
   type CopyIconButtonProps,
@@ -17,6 +18,6 @@ function showCopyFailed() {
   showToast({
     id: "failed-to-copy",
     color: "danger",
-    message: "Failed to copy",
+    message: t("Failed to copy"),
   });
 }

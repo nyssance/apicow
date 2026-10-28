@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { Icon } from "@yaakapp-internal/ui";
 import classNames from "classnames";
 import type { ReactNode } from "react";
@@ -64,7 +65,7 @@ export function CheckboxTree<T>(props: Props<T>) {
         {hasVisibleChildren ? (
           <button
             type="button"
-            aria-label={collapsed ? "Expand" : "Collapse"}
+            aria-label={collapsed ? t("Expand") : t("Collapse")}
             aria-expanded={!collapsed}
             className="shrink-0 text-text-subtlest hocus:text-text"
             onClick={() => setCollapsed((v) => !v)}

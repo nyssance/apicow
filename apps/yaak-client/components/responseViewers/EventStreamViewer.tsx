@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import { extractSseValueAtPath, type ServerSentEvent } from "@yaakapp-internal/sse";
 import { HStack, Icon, InlineCode, SplitLayout, VStack, IconTooltip } from "@yaakapp-internal/ui";
@@ -77,7 +78,7 @@ function ActualEventStreamViewer({ response }: Props) {
   const settingsItems = useMemo<DropdownItem[]>(
     () => [
       {
-        label: "Apply to Previews",
+        label: t("Apply to Previews"),
         keepOpenOnSelect: true,
         onSelect: () => filterEventPreviewsSetting.set(filterEventPreviewsSetting.value !== true),
         leftSlot: (
@@ -91,7 +92,7 @@ function ActualEventStreamViewer({ response }: Props) {
         ),
       },
       {
-        label: "Apply to Details",
+        label: t("Apply to Details"),
         keepOpenOnSelect: true,
         onSelect: () => applyToDetailsSetting.set(applyToDetailsSetting.value !== true),
         leftSlot: (
@@ -105,10 +106,7 @@ function ActualEventStreamViewer({ response }: Props) {
         ),
       },
     ],
-    [
-      applyToDetailsSetting,
-      filterEventPreviewsSetting,
-    ],
+    [applyToDetailsSetting, filterEventPreviewsSetting],
   );
 
   return (
@@ -117,12 +115,12 @@ function ActualEventStreamViewer({ response }: Props) {
         <div className={classNames(summarySettings.enabled ? "w-44 shrink-0" : "min-w-40 flex-1")}>
           <Select
             name={`sse-summary-result-key-path-enabled::${response.requestId}`}
-            label="Extracted text"
+            label={t("Extracted text")}
             hideLabel
             size="xs"
             value={summarySettings.enabled ? "jsonpath" : "off"}
             options={[
-              { label: "Full events", value: "off" },
+              { label: t("Full events"), value: "off" },
               { label: "JSONPath", value: "jsonpath" },
             ]}
             onChange={(value) => summarySettings.setEnabled(value === "jsonpath")}
@@ -132,7 +130,7 @@ function ActualEventStreamViewer({ response }: Props) {
           <>
             <div className="min-w-40 flex-1">
               <Input
-                label="Result JSON path"
+                label={t("Result JSON path")}
                 hideLabel
                 size="xs"
                 autocomplete={sseSummaryResultKeyPathAutocomplete}
@@ -146,7 +144,7 @@ function ActualEventStreamViewer({ response }: Props) {
                         tabIndex={-1}
                         icon="alert_triangle"
                         iconColor="notice"
-                        content="No text fragments matched this JSONPath."
+                        content={t("No text fragments matched this JSONPath.")}
                       />
                     </div>
                   ) : null
@@ -161,7 +159,7 @@ function ActualEventStreamViewer({ response }: Props) {
                 size="xs"
                 variant="border"
                 icon="settings"
-                title="Extracted text settings"
+                title={t("Extracted text settings")}
               />
             </Dropdown>
           </>
@@ -185,7 +183,9 @@ function ActualEventStreamViewer({ response }: Props) {
                 <EventViewerRow
                   isActive={isActive}
                   onClick={onClick}
-                  icon={<Icon color="info" title="Server Message" icon="arrow_big_down_dash" />}
+                  icon={
+                    <Icon color="info" title={t("Server Message")} icon="arrow_big_down_dash" />
+                  }
                   content={
                     <HStack space={2} className="items-center">
                       <EventLabels event={event} index={index} isActive={isActive} />
@@ -257,11 +257,11 @@ function SseSummaryFooter({
     () => [
       {
         key: "sse-summary-format",
-        label: "Extracted text format",
+        label: t("Extracted text format"),
         type: "select" as const,
         value: renderMarkdown ? "markdown" : "text",
         options: [
-          { label: "Text", value: "text" },
+          { label: t("Text"), value: "text" },
           { label: "Markdown", value: "markdown" },
         ],
         onChange: (value: string) => onRenderMarkdownChange(value === "markdown"),
@@ -278,7 +278,7 @@ function SseSummaryFooter({
       <div className="pt-2">
         <EventDetailHeader
           actions={actions}
-          title="Extracted Text"
+          title={t("Extracted Text")}
           copyText={hasSummary ? summary : undefined}
         />
       </div>
@@ -291,7 +291,7 @@ function SseSummaryFooter({
         {error != null ? (
           <span className="text-danger">{error}</span>
         ) : isLoading ? (
-          <span className="italic text-text-subtlest">Loading extracted text...</span>
+          <span className="italic text-text-subtlest">{t("Loading extracted text...")}</span>
         ) : hasSummary ? (
           renderMarkdown ? (
             <div className="min-h-0">
@@ -304,7 +304,8 @@ function SseSummaryFooter({
           )
         ) : (
           <EmptyStateText className="gap-1.5">
-            No fragments for <InlineCode className="py-0">{resultKeyPath}</InlineCode>
+            {t("No fragments for")}
+            <InlineCode className="py-0">{resultKeyPath}</InlineCode>
           </EmptyStateText>
         )}
       </div>
@@ -360,13 +361,13 @@ function EventDetail({
   return (
     <div className="flex flex-col h-full">
       <EventDetailHeader
-        title="Message Received"
+        title={t("Message Received")}
         prefix={<EventLabels event={event} index={index} />}
         onClose={onClose}
       />
       {!showLarge && detailText.length > 1000 * 1000 ? (
         <VStack space={2} className="italic text-text-subtlest">
-          Message previews larger than 1MB are hidden
+          {t("Message previews larger than 1MB are hidden")}
           <div>
             <Button
               onClick={() => {
@@ -381,7 +382,7 @@ function EventDetail({
               variant="border"
               size="xs"
             >
-              Try Showing
+              {t("Try Showing")}
             </Button>
           </div>
         </VStack>

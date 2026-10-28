@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import type { UseStoredValue } from "../hooks/useStoredValue";
@@ -42,7 +43,7 @@ export function HeadersTable({
       }
     >
       {sortedHeaders.length === 0 ? (
-        <span className="text-text-subtlest text-sm italic">No Headers</span>
+        <span className="text-text-subtlest text-sm italic">{t("No Headers")}</span>
       ) : (
         <KeyValueRows>
           {sortedHeaders.map((h, i) => (

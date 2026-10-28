@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { defaultKeymap, historyField, indentWithTab } from "@codemirror/commands";
 import { foldState, forceParsing } from "@codemirror/language";
 import type { EditorStateConfig, Extension } from "@codemirror/state";
@@ -425,7 +426,7 @@ function CodeEditorInner({
           showConfirm
           key="format"
           size="sm"
-          title="Reformat contents"
+          title={t("Reformat contents")}
           icon="magic_wand"
           variant="border"
           className={classNames(actionClassName)}

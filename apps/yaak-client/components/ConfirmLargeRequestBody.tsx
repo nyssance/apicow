@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpRequest } from "@yaakapp-internal/models";
 import { patchModel } from "@yaakapp-internal/models";
 import { Banner, HStack, InlineCode, SizeTag } from "@yaakapp-internal/ui";
@@ -28,22 +29,22 @@ export function ConfirmLargeRequestBody({ children, request }: Props) {
     return (
       <Banner color="primary" className="flex flex-col gap-3">
         <p>
-          Rendering content over{" "}
+          {t("Rendering content over")}{" "}
           <InlineCode>
             <SizeTag contentLength={tooLargeBytes} />
           </InlineCode>{" "}
-          may impact performance.
+          {t("may impact performance.")}
         </p>
         <p>
-          See{" "}
+          {t("See")}{" "}
           <Link href="https://feedback.yaak.app/en/help/articles/1198684-working-with-large-values">
-            Working With Large Values
+            {t("Working With Large Values")}
           </Link>{" "}
-          for tips.
+          {t("for tips.")}
         </p>
         <HStack wrap space={2}>
           <Button color="primary" size="xs" onClick={toggleShowLargeResponse}>
-            Reveal Body
+            {t("Reveal Body")}
           </Button>
           <Button
             color="danger"
@@ -52,9 +53,9 @@ export function ConfirmLargeRequestBody({ children, request }: Props) {
             onClick={async () => {
               const confirm = await showConfirm({
                 id: `delete-body-${request.id}`,
-                confirmText: "Delete Body",
-                title: "Delete Body Text",
-                description: "Are you sure you want to delete the request body text?",
+                confirmText: t("Delete Body"),
+                title: t("Delete Body Text"),
+                description: t("Are you sure you want to delete the request body text?"),
                 color: "danger",
               });
               if (confirm) {
@@ -62,7 +63,7 @@ export function ConfirmLargeRequestBody({ children, request }: Props) {
               }
             }}
           >
-            Delete Body
+            {t("Delete Body")}
           </Button>
         </HStack>
       </Banner>

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Virtualizer } from "@tanstack/react-virtual";
 import { Banner, HStack, SplitLayout } from "@yaakapp-internal/ui";
 import classNames from "classnames";
@@ -283,7 +284,13 @@ export function EventDetailHeader({
           ),
         )}
         {copyText != null && (
-          <CopyIconButton text={copyText} size="xs" title="Copy" variant="border" iconSize="sm" />
+          <CopyIconButton
+            text={copyText}
+            size="xs"
+            title={t("Copy")}
+            variant="border"
+            iconSize="sm"
+          />
         )}
         {formattedTime && (
           <span className="text-text-subtlest font-mono text-editor ml-2">{formattedTime}</span>
@@ -301,7 +308,7 @@ export function EventDetailHeader({
               className="text-text-subtle -mr-3"
               size="xs"
               icon="x"
-              title="Close event panel"
+              title={t("Close event panel")}
               onClick={onClose}
             />
           </div>

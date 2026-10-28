@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { HStack, IconTooltip, Label } from "@yaakapp-internal/ui";
 import classNames from "classnames";
@@ -39,7 +40,7 @@ export function SelectFile({
 }: Props) {
   const handleClick = async () => {
     const filePath = await platform.dialog.open({
-      title: directory ? "Select Folder" : "Select File",
+      title: directory ? t("Select Folder") : t("Select File"),
       multiple: false,
       directory,
     });
@@ -112,7 +113,7 @@ export function SelectFile({
                 size={size === "auto" ? "md" : size}
                 variant="border"
                 icon="x"
-                title={`Unset ${itemLabel}`}
+                title={t("Unset {{p0}}", { p0: String(itemLabel) })}
                 onClick={handleClear}
               />
             )}

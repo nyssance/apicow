@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { showPromptForm } from "../../lib/prompt-form";
 import { Banner, InlineCode } from "@yaakapp-internal/ui";
 
@@ -22,12 +23,13 @@ export async function promptCredentials({
     : "Enter your password or access token for this Git server.";
   const r = await showPromptForm({
     id: "git-credentials",
-    title: "Credentials Required",
+    title: t("Credentials Required"),
     description: error ? (
       <Banner color="danger">{error}</Banner>
     ) : (
       <>
-        Enter credentials for <InlineCode>{remoteUrl}</InlineCode>
+        {t("Enter credentials for")}
+        <InlineCode>{remoteUrl}</InlineCode>
       </>
     ),
     inputs: [

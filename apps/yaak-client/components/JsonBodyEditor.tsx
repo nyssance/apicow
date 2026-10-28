@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { linter } from "@codemirror/lint";
 import type { HttpRequest } from "@yaakapp-internal/models";
 import { patchModel } from "@yaakapp-internal/models";
@@ -74,7 +75,7 @@ export function JsonBodyEditor({ forceUpdateKey, heightMode, request }: Props) {
       showBanner && (
         <Banner color="notice" className="opacity-100! h-sm py-0! px-2! flex items-center text-xs">
           <p className="inline-flex items-center gap-1 min-w-0">
-            <span className="truncate">Auto-fix enabled</span>
+            <span className="truncate">{t("Auto-fix enabled")}</span>
             <Icon icon="arrow_right" size="sm" className="opacity-disabled" />
           </p>
         </Banner>
@@ -85,7 +86,7 @@ export function JsonBodyEditor({ forceUpdateKey, heightMode, request }: Props) {
           items={
             [
               {
-                label: "Automatically Fix JSON",
+                label: t("Automatically Fix JSON"),
                 keepOpenOnSelect: true,
                 onSelect: handleToggleAutoFix,
                 rightSlot: <IconTooltip content={stripMessage} />,
@@ -96,7 +97,7 @@ export function JsonBodyEditor({ forceUpdateKey, heightMode, request }: Props) {
             ] satisfies DropdownItem[]
           }
         >
-          <IconButton size="sm" variant="border" icon="settings" title="JSON Settings" />
+          <IconButton size="sm" variant="border" icon="settings" title={t("JSON Settings")} />
         </Dropdown>
       </div>,
     ],

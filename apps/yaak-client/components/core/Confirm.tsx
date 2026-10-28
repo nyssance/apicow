@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Color } from "@yaakapp-internal/plugins";
 import type { FormEvent } from "react";
 import { useId, useState } from "react";
@@ -48,7 +49,7 @@ export function Confirm({
             <CopyIconButton
               tabIndex={-1}
               text={requireTyping}
-              title="Copy name"
+              title={t("Copy name")}
               className="text-text-subtlest"
               iconSize="sm"
               size="2xs"
@@ -56,7 +57,8 @@ export function Confirm({
           }
           label={
             <>
-              Type <strong>{requireTyping}</strong> to confirm
+              {t("Type")}
+              <strong>{requireTyping}</strong> {t("to confirm")}
             </>
           }
         />
@@ -64,7 +66,7 @@ export function Confirm({
       <DialogFooter
         inline
         actions={[
-          { label: "Cancel", onClick: handleHide },
+          { label: t("Cancel"), onClick: handleHide },
           {
             label: confirmText ?? "Confirm",
             color,

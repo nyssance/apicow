@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { useGitFileDiffForCommit, useGitLog, useGitMutations } from "@yaakapp-internal/git";
 import type { GitCommit } from "@yaakapp-internal/git";
 import { SplitLayout } from "@yaakapp-internal/ui";
@@ -35,9 +36,9 @@ export function FileHistoryDialog({ dir, relaPath }: { dir: string; relaPath: st
     async (commit: GitCommit) => {
       const confirmed = await showConfirm({
         id: "git-restore-file-history-entry",
-        title: "Restore File",
-        description: "This will restore the file to the selected commit.",
-        confirmText: "Restore",
+        title: t("Restore File"),
+        description: t("This will restore the file to the selected commit."),
+        confirmText: t("Restore"),
         color: "warning",
       });
       if (!confirmed) return;
@@ -49,7 +50,7 @@ export function FileHistoryDialog({ dir, relaPath }: { dir: string; relaPath: st
   );
 
   if (commits.length === 0 && !log.isLoading) {
-    return <EmptyStateText>No history for this file</EmptyStateText>;
+    return <EmptyStateText>{t("No history for this file")}</EmptyStateText>;
   }
 
   return (
@@ -75,7 +76,7 @@ export function FileHistoryDialog({ dir, relaPath }: { dir: string; relaPath: st
         secondSlot={({ style }) => (
           <div style={style} className="h-full min-w-0 border-l border-l-border-subtle px-4">
             {selectedCommit == null ? (
-              <EmptyStateText>Select a commit to view diff</EmptyStateText>
+              <EmptyStateText>{t("Select a commit to view diff")}</EmptyStateText>
             ) : (
               <div className="h-full flex flex-col">
                 <div className="mb-2 min-w-0 text-text-subtle grid items-center gap-2 grid-cols-[minmax(0,1fr)_auto]">
@@ -87,7 +88,7 @@ export function FileHistoryDialog({ dir, relaPath }: { dir: string; relaPath: st
                     variant="border"
                     onClick={() => handleRestoreCommit(selectedCommit)}
                   >
-                    Restore File
+                    {t("Restore File")}
                   </Button>
                 </div>
                 <DiffViewer
@@ -124,7 +125,11 @@ function CommitListItem({
     >
       <div className="truncate flex-1">{commit.message || "No message"}</div>
       <div className="text-text-subtle text-sm truncate">
-        {commit.author.name || "Unknown"} - {formatDistanceToNowStrict(commit.when)} ago - <span className="shrink-0 text-2xs text-text-subtle font-mono">{commit.oid.slice(0, 7)}</span>
+        {commit.author.name || "Unknown"} - {formatDistanceToNowStrict(commit.when)}{" "}
+        {" " + t("ago -") + " "}
+        <span className="shrink-0 text-2xs text-text-subtle font-mono">
+          {commit.oid.slice(0, 7)}
+        </span>
       </div>
     </button>
   );

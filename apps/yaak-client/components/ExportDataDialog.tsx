@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Workspace } from "@yaakapp-internal/models";
 import { workspacesAtom } from "@yaakapp-internal/models";
 import { VStack } from "@yaakapp-internal/ui";
@@ -89,7 +90,7 @@ function ExportDataDialogContent({
   return (
     <>
       <VStack space={3} className="pb-4">
-        <CommercialUseBanner source="data-export" title="Exporting work data?" />
+        <CommercialUseBanner source="data-export" title={t("Exporting work data?")} />
 
         <table className="w-full mb-auto min-w-full max-w-full divide-y divide-surface-highlight">
           <thead>
@@ -98,12 +99,12 @@ function ExportDataDialogContent({
                 <Checkbox
                   checked={!allSelected && !noneSelected ? "indeterminate" : allSelected}
                   hideLabel
-                  title="All workspaces"
+                  title={t("All workspaces")}
                   onChange={handleToggleAll}
                 />
               </th>
               <th className="py-2 text-left pl-4" onClick={handleToggleAll}>
-                Workspace
+                {t("Workspace")}
               </th>
             </tr>
           </thead>
@@ -126,31 +127,35 @@ function ExportDataDialogContent({
                     setSelectedWorkspaces((prev) => ({ ...prev, [w.id]: !prev[w.id] }))
                   }
                 >
-                  {w.name} {w.id === activeWorkspace.id ? "(current workspace)" : ""}
+                  {w.name} {w.id === activeWorkspace.id ? t("(current workspace)") : ""}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <DetailsBanner color="secondary" defaultOpen summary="Extra Settings">
+        <DetailsBanner color="secondary" defaultOpen summary={t("Extra Settings")}>
           <Checkbox
             checked={includePrivateEnvironments}
             onChange={setIncludePrivateEnvironments}
-            title="Include private environments"
-            help='Environments marked as "sharable" will be exported by default'
+            title={t("Include private environments")}
+            help={t('Environments marked as "sharable" will be exported by default')}
           />
         </DetailsBanner>
       </VStack>
       <DialogFooter
         leftSlot={
           <Link href="https://yaak.app/button/new" noUnderline className="text-text-subtlest">
-            Create Run Button
+            {t("Create Run Button")}
           </Link>
         }
         actions={[
-          { label: "Cancel", onClick: onHide },
+          { label: t("Cancel"), onClick: onHide },
           {
-            label: `Export ${pluralizeCount("Workspace", numSelected, { omitSingle: true, noneWord: "Nothing" })}`,
+            label: t("Export {{p0}}", {
+              p0: String(
+                pluralizeCount("Workspace", numSelected, { omitSingle: true, noneWord: "Nothing" }),
+              ),
+            }),
             color: "primary",
             disabled: noneSelected,
             onClick: () => handleExport(),

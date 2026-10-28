@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { patchModel, settingsAtom } from "@yaakapp-internal/models";
 import { Heading, HStack, Icon, type IconProps, VStack } from "@yaakapp-internal/ui";
 import { useAtomValue } from "jotai";
@@ -74,32 +75,34 @@ export function SettingsTheme() {
   return (
     <VStack space={1.5} className="mb-4">
       <div className="mb-3">
-        <Heading>Theme</Heading>
+        <Heading>{t("Theme")}</Heading>
         <p className="text-text-subtle">
-          Make Yaak your own by selecting a theme, or{" "}
+          {t("Make Yaak your own by selecting a theme, or")}{" "}
           <Link href="https://yaak.app/docs/plugin-development/plugins-quick-start">
-            Create Your Own
+            {t("Create Your Own")}
           </Link>
         </p>
       </div>
       <SettingsList className="space-y-8">
-        <SettingsSection title="Theme">
+        <SettingsSection title={t("Theme")}>
           <ModelSettingRowSelect
             model={settings}
             modelKey="appearance"
-            title="Appearance"
-            description="Choose whether Yaak follows your system appearance or uses a fixed mode."
+            title={t("Appearance")}
+            description={t(
+              "Choose whether Yaak follows your system appearance or uses a fixed mode.",
+            )}
             options={[
-              { label: "Automatic", value: "system" },
-              { label: "Light", value: "light" },
-              { label: "Dark", value: "dark" },
+              { label: t("Automatic"), value: "system" },
+              { label: t("Light"), value: "light" },
+              { label: t("Dark"), value: "dark" },
             ]}
           />
           {(settings.appearance === "system" || settings.appearance === "light") && (
             <SettingRowSelect
               name="lightTheme"
-              title="Light theme"
-              description="Theme used when Yaak is in light mode."
+              title={t("Light theme")}
+              description={t("Theme used when Yaak is in light mode.")}
               value={activeTheme.data.light.id}
               options={lightThemes}
               onChange={(themeLight) => patchModel(settings, { themeLight })}
@@ -108,8 +111,8 @@ export function SettingsTheme() {
           {(settings.appearance === "system" || settings.appearance === "dark") && (
             <SettingRowSelect
               name="darkTheme"
-              title="Dark theme"
-              description="Theme used when Yaak is in dark mode."
+              title={t("Dark theme")}
+              description={t("Theme used when Yaak is in dark mode.")}
               value={activeTheme.data.dark.id}
               options={darkThemes}
               onChange={(themeDark) => patchModel(settings, { themeDark })}
@@ -117,7 +120,7 @@ export function SettingsTheme() {
           )}
         </SettingsSection>
 
-        <SettingsSection title="Preview">
+        <SettingsSection title={t("Preview")}>
           <VStack
             space={3}
             className="mt-4 w-full bg-surface p-3 border border-dashed border-border-subtle rounded-sm overflow-x-auto"
@@ -125,7 +128,7 @@ export function SettingsTheme() {
             <HStack className="text" space={1.5}>
               <Icon icon={appearance === "dark" ? "moon" : "sun"} />
               <strong>{activeTheme.data.active.label}</strong>
-              <em>(preview)</em>
+              <em>{t("(preview)")}</em>
             </HStack>
             <HStack space={1.5} className="w-full">
               {buttonColors.map((c, i) => (

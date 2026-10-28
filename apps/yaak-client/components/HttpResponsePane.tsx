@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse, HttpResponseEvent } from "@yaakapp-internal/models";
 import {
   Banner,
@@ -94,26 +95,26 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
     () => [
       {
         value: TAB_BODY,
-        label: "Response",
+        label: t("Response"),
         options: {
           value: viewMode,
           onChange: setViewMode,
           items: [
-            { label: "Response", value: "pretty" },
+            { label: t("Response"), value: "pretty" },
             ...(mimeType?.startsWith("image")
               ? []
-              : [{ label: "Response (Raw)", shortLabel: "Raw", value: "raw" }]),
+              : [{ label: t("Response (Raw)"), shortLabel: t("Raw"), value: "raw" }]),
           ],
           itemsAfter: [
             {
-              label: "Save to File",
+              label: t("Save to File"),
               onSelect: saveResponse.mutate,
               leftSlot: <Icon icon="save" />,
               hidden: activeResponse == null || !!activeResponse.error,
               disabled: activeResponse?.state !== "closed" && (activeResponse?.status ?? 0) >= 100,
             },
             {
-              label: "Copy Body",
+              label: t("Copy Body"),
               onSelect: copyResponse.mutate,
               leftSlot: <Icon icon="copy" />,
               hidden: activeResponse == null || !!activeResponse.error,
@@ -124,13 +125,13 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
       },
       {
         value: TAB_REQUEST,
-        label: "Request",
+        label: t("Request"),
         rightSlot:
           (activeResponse?.requestContentLength ?? 0) > 0 ? <CountBadge count={true} /> : null,
       },
       {
         value: TAB_HEADERS,
-        label: "Headers",
+        label: t("Headers"),
         rightSlot: (
           <CountBadge
             count={activeResponse?.requestHeaders.length ?? 0}
@@ -141,7 +142,7 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
       },
       {
         value: TAB_COOKIES,
-        label: "Cookies",
+        label: t("Cookies"),
         rightSlot:
           cookieCounts.sent > 0 || cookieCounts.received > 0 ? (
             <CountBadge count={cookieCounts.sent} count2={cookieCounts.received} showZero />
@@ -154,8 +155,8 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
           value: timelineViewMode,
           onChange: (v) => setTimelineViewMode((v as TimelineViewMode) ?? "timeline"),
           items: [
-            { label: "Timeline", value: "timeline" },
-            { label: "Timeline (Text)", shortLabel: "Timeline", value: "text" },
+            { label: t("Timeline"), value: "timeline" },
+            { label: t("Timeline (Text)"), shortLabel: t("Timeline"), value: "text" },
           ],
         },
       },
@@ -231,25 +232,26 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
                     content={
                       <VStack alignItems="start" space={1} className="text-xs">
                         <span className="font-medium text-warning">
-                          Redirect changed this request
+                          {t("Redirect changed this request")}
                         </span>
                         {redirectDropWarning.droppedBodyCount > 0 && (
                           <span>
-                            Body dropped on {redirectDropWarning.droppedBodyCount}{" "}
+                            {t("Body dropped on")}
+                            {redirectDropWarning.droppedBodyCount}{" "}
                             {redirectDropWarning.droppedBodyCount === 1
-                              ? "redirect hop"
-                              : "redirect hops"}
+                              ? t("redirect hop")
+                              : t("redirect hops")}
                           </span>
                         )}
                         {redirectDropWarning.droppedHeaders.length > 0 && (
                           <span>
-                            Headers dropped:{" "}
+                            {t("Headers dropped:")}{" "}
                             <span className="font-mono">
                               {redirectDropWarning.droppedHeaders.join(", ")}
                             </span>
                           </span>
                         )}
-                        <span className="text-text-subtle">See Timeline for details.</span>
+                        <span className="text-text-subtle">{t("See Timeline for details.")}</span>
                       </VStack>
                     }
                   >
@@ -289,7 +291,7 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
             {/* Show tabs if we have any data (headers, body, etc.) even if there's an error */}
             <Tabs
               tabs={tabs}
-              label="Response"
+              label={t("Response")}
               className="ml-3 mr-3 mb-3 min-h-0 flex-1"
               tabListClassName="mt-0.5 -mb-1.5"
               storageKey="http_response_tabs"
@@ -304,16 +306,16 @@ export function HttpResponsePane({ style, className, activeRequestId }: Props) {
                           <VStack space={3}>
                             <HStack space={3}>
                               <LoadingIcon className="text-text-subtlest" />
-                              Sending Request
+                              {t("Sending Request")}
                             </HStack>
                             <Button size="sm" variant="border" onClick={() => cancel.mutate()}>
-                              Cancel
+                              {t("Cancel")}
                             </Button>
                           </VStack>
                         </EmptyStateText>
                       ) : activeResponse.state === "closed" &&
                         (activeResponse.contentLength ?? 0) === 0 ? (
-                        <EmptyStateText>Empty</EmptyStateText>
+                        <EmptyStateText>{t("Empty")}</EmptyStateText>
                       ) : mimeType?.match(/^text\/event-stream/i) && viewMode === "pretty" ? (
                         <EventStreamViewer response={activeResponse} />
                       ) : mimeType?.match(/^image\/svg/) ? (
@@ -435,7 +437,7 @@ function EnsureCompleteResponse({
   }
 
   if (bodyUrl.data == null) {
-    return <div>Empty response body</div>;
+    return <div>{t("Empty response body")}</div>;
   }
 
   return <Component bodyUrl={bodyUrl.data} />;

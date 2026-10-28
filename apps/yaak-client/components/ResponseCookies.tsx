@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpResponse } from "@yaakapp-internal/models";
 import classNames from "classnames";
 import { useMemo } from "react";
@@ -121,7 +122,8 @@ export function ResponseCookies({ response }: Props) {
         storageKey={`${response.requestId}.sent_cookies`}
         summary={
           <h2 className="flex items-center">
-            Sent Cookies <CountBadge showZero count={sentCookies.length} />
+            {t("Sent Cookies")}
+            <CountBadge showZero count={sentCookies.length} />
           </h2>
         }
       >
@@ -144,7 +146,8 @@ export function ResponseCookies({ response }: Props) {
         storageKey={`${response.requestId}.received_cookies`}
         summary={
           <h2 className="flex items-center">
-            Received Cookies <CountBadge showZero count={receivedCookies.length} />
+            {t("Received Cookies")}
+            <CountBadge showZero count={receivedCookies.length} />
           </h2>
         }
       >
@@ -168,24 +171,24 @@ export function ResponseCookies({ response }: Props) {
                   </span>
                   {cookie.isDeleted && (
                     <span className="text-xs font-sans text-danger bg-danger/10 px-1.5 py-0.5 rounded-sm">
-                      Deleted
+                      {t("Deleted")}
                     </span>
                   )}
                 </div>
                 <KeyValueRows>
                   {[
                     cookie.domain && (
-                      <KeyValueRow labelColor="info" label="Domain" key="domain">
+                      <KeyValueRow labelColor="info" label={t("Domain")} key="domain">
                         {cookie.domain}
                       </KeyValueRow>
                     ),
                     cookie.path && (
-                      <KeyValueRow labelColor="info" label="Path" key="path">
+                      <KeyValueRow labelColor="info" label={t("Path")} key="path">
                         {cookie.path}
                       </KeyValueRow>
                     ),
                     cookie.expires && (
-                      <KeyValueRow labelColor="info" label="Expires" key="expires">
+                      <KeyValueRow labelColor="info" label={t("Expires")} key="expires">
                         {cookie.expires}
                       </KeyValueRow>
                     ),
@@ -195,7 +198,7 @@ export function ResponseCookies({ response }: Props) {
                       </KeyValueRow>
                     ),
                     cookie.secure && (
-                      <KeyValueRow labelColor="info" label="Secure" key="secure">
+                      <KeyValueRow labelColor="info" label={t("Secure")} key="secure">
                         true
                       </KeyValueRow>
                     ),
@@ -221,5 +224,5 @@ export function ResponseCookies({ response }: Props) {
 }
 
 function NoCookies() {
-  return <span className="text-text-subtlest text-sm italic">No Cookies</span>;
+  return <span className="text-text-subtlest text-sm italic">{t("No Cookies")}</span>;
 }

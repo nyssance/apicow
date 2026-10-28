@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { HStack, Icon } from "@yaakapp-internal/ui";
 import classNames from "classnames";
 import { useAtom, useAtomValue } from "jotai";
@@ -59,7 +60,7 @@ export const WorkspaceHeader = memo(function WorkspaceHeader({
         <ImportCurl />
         {showEncryptionSetup ? (
           <PillButton color="danger" onClick={setupOrConfigureEncryption}>
-            Enter Encryption Key
+            {t("Enter Encryption Key")}
           </PillButton>
         ) : (
           <LicenseBadge />
@@ -72,7 +73,9 @@ export const WorkspaceHeader = memo(function WorkspaceHeader({
                 ? "columns_2"
                 : "rows_2"
           }
-          title={`Change to ${workspaceLayout === "horizontal" ? "vertical" : "horizontal"} layout`}
+          title={t("Change to {{p0}} layout", {
+            p0: String(workspaceLayout === "horizontal" ? "vertical" : "horizontal"),
+          })}
           size="sm"
           iconColor="secondary"
           onClick={() =>
@@ -81,7 +84,7 @@ export const WorkspaceHeader = memo(function WorkspaceHeader({
         />
         <IconButton
           icon="search"
-          title="Search or execute a command"
+          title={t("Search or execute a command")}
           size="sm"
           hotkeyAction="command_palette.toggle"
           iconColor="secondary"

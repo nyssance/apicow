@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { createWorkspaceModel } from "@yaakapp-internal/models";
 import { jotaiStore } from "../lib/jotai";
 import { showPrompt } from "../lib/prompt";
@@ -16,10 +17,10 @@ export function useCreateCookieJar() {
 
       const name = await showPrompt({
         id: "new-cookie-jar",
-        title: "New CookieJar",
-        placeholder: "My Jar",
-        confirmText: "Create",
-        label: "Name",
+        title: t("New CookieJar"),
+        placeholder: t("My Jar"),
+        confirmText: t("Create"),
+        label: t("Name"),
         defaultValue: "My Jar",
       });
       if (name == null) return null;

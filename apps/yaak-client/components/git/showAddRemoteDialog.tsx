@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GitRemote } from "@yaakapp-internal/git";
 import { gitMutations } from "@yaakapp-internal/git";
 import { showPromptForm } from "../../lib/prompt-form";
@@ -6,9 +7,9 @@ import { gitCallbacks } from "./callbacks";
 export async function addGitRemote(dir: string, defaultName?: string): Promise<GitRemote> {
   const r = await showPromptForm({
     id: "add-remote",
-    title: "Add Remote",
+    title: t("Add Remote"),
     inputs: [
-      { type: "text", label: "Name", name: "name", defaultValue: defaultName },
+      { type: "text", label: t("Name"), name: "name", defaultValue: defaultName },
       { type: "text", label: "URL", name: "url", placeholder: "git@github.com:org/repo.git" },
     ],
   });

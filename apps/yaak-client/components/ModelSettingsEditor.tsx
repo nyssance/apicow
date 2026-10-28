@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type {
   Folder,
   GrpcRequest,
@@ -76,7 +77,7 @@ export function ModelSettingsEditor({ model, showSectionTitles = false }: Props)
   return (
     <SettingsList className="space-y-8">
       {supportsTlsSettings && (
-        <SettingsSection title={showSectionTitles ? "Requests" : null}>
+        <SettingsSection title={showSectionTitles ? t("Requests") : null}>
           {supportsHttpSettings && (
             <IntegerSettingRow
               settingDefinition={SETTING_REQUEST_TIMEOUT}
@@ -158,7 +159,7 @@ export function ModelSettingsEditor({ model, showSectionTitles = false }: Props)
         </SettingsSection>
       )}
       {supportsCookieSettings && (
-        <SettingsSection title={supportsTlsSettings || showSectionTitles ? "Cookies" : null}>
+        <SettingsSection title={supportsTlsSettings || showSectionTitles ? t("Cookies") : null}>
           <BooleanSettingRow
             settingDefinition={SETTING_SEND_COOKIES}
             setting={model.settingSendCookies}
@@ -336,7 +337,7 @@ function BooleanSettingRow({
 }
 
 const HTTP_VERSION_OPTIONS: { label: string; value: HttpVersion }[] = [
-  { label: "Automatic", value: "auto" },
+  { label: t("Automatic"), value: "auto" },
   { label: "HTTP/1.1", value: "http1" },
   { label: "HTTP/2", value: "http2" },
 ];

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { EditorView } from "@codemirror/view";
 import { generateId } from "@yaakapp-internal/lib/generateId";
 import type { Color } from "@yaakapp-internal/plugins";
@@ -320,8 +321,8 @@ export function Input({
           <IconButton
             title={
               obscured
-                ? `Show ${typeof label === "string" ? label : "field"}`
-                : `Obscure ${typeof label === "string" ? label : "field"}`
+                ? t("Show {{p0}}", { p0: String(typeof label === "string" ? label : "field") })
+                : t("Obscure {{p0}}", { p0: String(typeof label === "string" ? label : "field") })
             }
             size="xs"
             className={classNames("mr-0.5 h-auto! my-0.5", disabled && "opacity-disabled")}

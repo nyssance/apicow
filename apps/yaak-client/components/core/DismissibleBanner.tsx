@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Color } from "@yaakapp-internal/plugins";
 import type { BannerProps } from "@yaakapp-internal/ui";
 import { Banner } from "@yaakapp-internal/ui";
@@ -59,11 +60,7 @@ export function DismissibleBanner({
 
   return (
     <Banner
-      className={classNames(
-        className,
-        "relative",
-        size === "xs" && "!px-2 !py-2 text-xs",
-      )}
+      className={classNames(className, "relative", size === "xs" && "!px-2 !py-2 text-xs")}
       {...props}
     >
       <div className="@container">
@@ -84,9 +81,9 @@ export function DismissibleBanner({
                 setDismissed(true).catch(console.error);
                 Promise.resolve(onDismiss?.()).catch(console.error);
               }}
-              title="Dismiss message"
+              title={t("Dismiss message")}
             >
-              Dismiss
+              {t("Dismiss")}
             </Button>
             {actions?.map((a) => (
               <Button

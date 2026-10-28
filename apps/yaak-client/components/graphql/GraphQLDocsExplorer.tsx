@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Color } from "@yaakapp-internal/plugins";
 import classNames from "classnames";
 import { fuzzyMatch } from "fuzzbunny";
@@ -106,7 +107,7 @@ export const GraphQLDocsExplorer = memo(function GraphQLDocsExplorer({
         />
         {activeItem == null ? (
           <div className="flex flex-col gap-3 overflow-y-auto h-full w-full px-3 pb-6">
-            <Heading>Root Types</Heading>
+            <Heading>{t("Root Types")}</Heading>
             <GqlTypeRow
               name={{ value: "query", color: "primary" }}
               item={qryItem}
@@ -125,7 +126,7 @@ export const GraphQLDocsExplorer = memo(function GraphQLDocsExplorer({
               setItem={setActiveItem}
               className="my-0!"
             />
-            <Subheading count={Object.keys(allTypes).length}>All Schema Types</Subheading>
+            <Subheading count={Object.keys(allTypes).length}>{t("All Schema Types")}</Subheading>
             <DocMarkdown>{schema.description ?? null}</DocMarkdown>
             <div className="flex flex-col gap-1">
               {Object.values(allTypes).map((t) => {
@@ -207,7 +208,12 @@ function GraphQLExplorerHeader({
         />
       </div>
       <div className="ml-auto flex gap-1 *:text-text-subtle">
-        <IconButton icon="x" size="sm" title="Close documentation explorer" onClick={onClose} />
+        <IconButton
+          icon="x"
+          size="sm"
+          title={t("Close documentation explorer")}
+          onClick={onClose}
+        />
       </div>
     </nav>
   );
@@ -262,7 +268,7 @@ function GqlTypeInfo({
       <div>
         {heading}
 
-        <Subheading count={Object.keys(fields).length}>Fields</Subheading>
+        <Subheading count={Object.keys(fields).length}>{t("Fields")}</Subheading>
         {Object.entries(fields).map(([fieldName, field]) => {
           const fieldItem: ExplorerItem = toExplorerItem(field, item);
           return (
@@ -278,7 +284,7 @@ function GqlTypeInfo({
 
         {possibleTypes.length > 0 && (
           <>
-            <Subheading>Implemented By</Subheading>
+            <Subheading>{t("Implemented By")}</Subheading>
             {possibleTypes.map((t) => (
               <GqlTypeRow key={t.name} item={toExplorerItem(t, item)} setItem={setItem} />
             ))}
@@ -294,7 +300,7 @@ function GqlTypeInfo({
       <div>
         {heading}
 
-        <Subheading>Possible Types</Subheading>
+        <Subheading>{t("Possible Types")}</Subheading>
         {types.map((t) => (
           <GqlTypeRow key={t.name} item={{ kind: "type", type: t, from: item }} setItem={setItem} />
         ))}
@@ -307,7 +313,7 @@ function GqlTypeInfo({
     return (
       <div>
         {heading}
-        <Subheading>Values</Subheading>
+        <Subheading>{t("Values")}</Subheading>
         {values.map((v) => (
           <div key={v.name} className="my-4 font-mono text-editor truncate">
             <span className="text-primary">{v.value}</span>
@@ -324,13 +330,13 @@ function GqlTypeInfo({
 
         {item.type.defaultValue !== undefined && (
           <div>
-            <Subheading>Default Value</Subheading>
+            <Subheading>{t("Default Value")}</Subheading>
             <div className="font-mono text-editor">{JSON.stringify(item.type.defaultValue)}</div>
           </div>
         )}
 
         <div>
-          <Subheading>Type</Subheading>
+          <Subheading>{t("Type")}</Subheading>
           <GqlTypeRow
             className="mt-4"
             item={{ kind: "type", type: item.type.type, from: item }}
@@ -346,7 +352,7 @@ function GqlTypeInfo({
         {heading}
 
         <div>
-          <Subheading>Type</Subheading>
+          <Subheading>{t("Type")}</Subheading>
           <GqlTypeRow
             className="mt-4"
             item={{ kind: "type", type: item.type.type, from: item }}
@@ -356,7 +362,7 @@ function GqlTypeInfo({
 
         {item.type.args.length > 0 && (
           <div>
-            <Subheading>Arguments</Subheading>
+            <Subheading>{t("Arguments")}</Subheading>
             {item.type.args.map((a) => {
               return (
                 <div key={`${String(a.type)}::${a.name}`} className="my-4">
@@ -379,7 +385,7 @@ function GqlTypeInfo({
       <div>
         {heading}
 
-        <Subheading count={Object.keys(fields).length}>Fields</Subheading>
+        <Subheading count={Object.keys(fields).length}>{t("Fields")}</Subheading>
         {Object.keys(fields).map((fieldName) => {
           const field = fields[fieldName];
           if (field == null) return null;
@@ -410,7 +416,7 @@ function GqlTypeInfo({
         {heading}
         {interfaces.length > 0 && (
           <>
-            <Subheading>Implements</Subheading>
+            <Subheading>{t("Implements")}</Subheading>
             {interfaces.map((i) => (
               <GqlTypeRow
                 key={i.name}
@@ -421,7 +427,7 @@ function GqlTypeInfo({
           </>
         )}
 
-        <Subheading count={Object.keys(fields).length}>Fields</Subheading>
+        <Subheading count={Object.keys(fields).length}>{t("Fields")}</Subheading>
         {Object.keys(fields).map((fieldName) => {
           const field = fields[fieldName];
           if (field == null) return null;
@@ -441,7 +447,7 @@ function GqlTypeInfo({
   }
 
   console.log("Unknown GraphQL Type", item);
-  return <div>Unknown GraphQL type</div>;
+  return <div>{t("Unknown GraphQL type")}</div>;
 }
 
 function GqlTypeRow({
@@ -461,7 +467,7 @@ function GqlTypeRow({
 }) {
   if (item == null) return null;
 
-  let child: ReactNode = <>Unknown Type</>;
+  let child: ReactNode = <>{t("Unknown Type")}</>;
 
   if (item.kind === "type") {
     child = (
@@ -791,13 +797,19 @@ function GqlSchemaSearch({
       <PlainInput
         ref={inputRef}
         size="sm"
-        label="search"
+        label={t("search")}
         hideLabel
         defaultValue={value}
         placeholder={
           focused
-            ? `Search ${currentItem != null && "name" in currentItem.type ? currentItem.type.name : "Schema"}`
-            : "Search"
+            ? t("Search {{p0}}", {
+                p0: String(
+                  currentItem != null && "name" in currentItem.type
+                    ? currentItem.type.name
+                    : "Schema",
+                ),
+              })
+            : t("Search")
         }
         leftSlot={
           <div className="w-10 flex justify-center items-center">
@@ -821,7 +833,7 @@ function GqlSchemaSearch({
       >
         {results.length === 0 && (
           <SearchResult isActive={false} className="text-text-subtle">
-            No results found
+            {t("No results found")}
           </SearchResult>
         )}
         {results.map((r, i) => {

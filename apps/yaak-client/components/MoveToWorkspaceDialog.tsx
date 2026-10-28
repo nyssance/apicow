@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { GrpcRequest, HttpRequest, WebsocketRequest } from "@yaakapp-internal/models";
 import { patchModel, workspacesAtom } from "@yaakapp-internal/models";
 import { InlineCode, VStack } from "@yaakapp-internal/ui";
@@ -26,12 +27,13 @@ export function MoveToWorkspaceDialog({ onDone, requests, activeWorkspaceId }: P
   return (
     <VStack space={4} className="mb-4">
       <Select
-        label="Target Workspace"
+        label={t("Target Workspace")}
         name="workspace"
         value={selectedWorkspaceId}
         onChange={setSelectedWorkspaceId}
         options={workspaces.map((w) => ({
-          label: w.id === activeWorkspaceId ? `${w.name} (current)` : w.name,
+          label:
+            w.id === activeWorkspaceId ? t("{{p0}} (current)", { p0: String(w.name) }) : w.name,
           value: w.id,
         }))}
       />
@@ -53,12 +55,12 @@ export function MoveToWorkspaceDialog({ onDone, requests, activeWorkspaceId }: P
             message:
               requests.length === 1 && requests[0] != null ? (
                 <>
-                  <InlineCode>{resolvedModelName(requests[0])}</InlineCode> moved to{" "}
+                  <InlineCode>{resolvedModelName(requests[0])}</InlineCode> {" " + t("moved to")}{" "}
                   <InlineCode>{targetWorkspace?.name ?? "unknown"}</InlineCode>
                 </>
               ) : (
                 <>
-                  {pluralizeCount("request", requests.length)} moved to{" "}
+                  {pluralizeCount("request", requests.length)} {" " + t("moved to")}{" "}
                   <InlineCode>{targetWorkspace?.name ?? "unknown"}</InlineCode>
                 </>
               ),
@@ -75,13 +77,15 @@ export function MoveToWorkspaceDialog({ onDone, requests, activeWorkspaceId }: P
                   hide();
                 }}
               >
-                Switch to Workspace
+                {t("Switch to Workspace")}
               </Button>
             ),
           });
         }}
       >
-        {requests.length === 1 ? "Move" : `Move ${pluralizeCount("Request", requests.length)}`}
+        {requests.length === 1
+          ? t("Move")
+          : t("Move {{p0}}", { p0: String(pluralizeCount("Request", requests.length)) })}
       </Button>
     </VStack>
   );

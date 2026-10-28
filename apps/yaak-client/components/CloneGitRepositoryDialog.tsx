@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { gitClone } from "@yaakapp-internal/git";
 import { Banner, VStack } from "@yaakapp-internal/ui";
 import { useId, useState } from "react";
@@ -40,7 +41,7 @@ export function CloneGitRepositoryDialog({ hide }: Props) {
 
   const handleSelectDirectory = async () => {
     const dir = await platform.dialog.open({
-      title: "Select Directory",
+      title: t("Select Directory"),
       directory: true,
       multiple: false,
     });
@@ -75,7 +76,7 @@ export function CloneGitRepositoryDialog({ hide }: Props) {
       setError(String(err));
       showErrorToast({
         id: "git-clone-error",
-        title: "Clone Failed",
+        title: t("Clone Failed"),
         message: String(err),
       });
     } finally {
@@ -91,18 +92,18 @@ export function CloneGitRepositoryDialog({ hide }: Props) {
         </Banner>
       )}
 
-      <CommercialUseBanner source="git-clone" title="Using Git for work?" />
+      <CommercialUseBanner source="git-clone" title={t("Using Git for work?")} />
 
       <PlainInput
         required
-        label="Repository URL"
+        label={t("Repository URL")}
         placeholder="https://github.com/user/repo.git"
         defaultValue={url}
         onChange={setUrl}
       />
 
       <PlainInput
-        label="Directory"
+        label={t("Directory")}
         placeholder={appInfo.defaultProjectDir}
         defaultValue={directory}
         onChange={setDirectoryOverride}
@@ -111,7 +112,7 @@ export function CloneGitRepositoryDialog({ hide }: Props) {
             size="xs"
             className="mr-0.5 h-auto! my-0.5"
             icon="folder"
-            title="Browse"
+            title={t("Browse")}
             onClick={handleSelectDirectory}
           />
         }
@@ -120,13 +121,13 @@ export function CloneGitRepositoryDialog({ hide }: Props) {
       <Checkbox
         checked={hasSubdirectory}
         onChange={setHasSubdirectory}
-        title="Workspace is in a subdirectory"
-        help="Enable if the Yaak workspace files are not at the root of the repository"
+        title={t("Workspace is in a subdirectory")}
+        help={t("Enable if the Yaak workspace files are not at the root of the repository")}
       />
 
       {hasSubdirectory && (
         <PlainInput
-          label="Subdirectory"
+          label={t("Subdirectory")}
           placeholder="path/to/workspace"
           defaultValue={subdirectory}
           onChange={setSubdirectory}
@@ -136,7 +137,7 @@ export function CloneGitRepositoryDialog({ hide }: Props) {
       <DialogFooter
         actions={[
           {
-            label: isCloning ? "Cloning..." : "Clone Repository",
+            label: isCloning ? t("Cloning...") : t("Clone Repository"),
             color: "primary",
             form: formId,
             disabled: !url || !directory || isCloning,

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform, useCapability } from "@yaakapp-internal/platform";
 import { Icon } from "@yaakapp-internal/ui";
 import * as m from "motion/react-m";
@@ -43,7 +44,7 @@ function ImportCurlButton() {
         className="rounded-full"
         rightSlot={<Icon icon="import" size="sm" />}
         isLoading={isLoading}
-        title="Import Curl command from clipboard"
+        title={t("Import Curl command from clipboard")}
         onClick={async () => {
           setIsLoading(true);
           try {
@@ -56,7 +57,7 @@ function ImportCurlButton() {
           }
         }}
       >
-        Import Curl
+        {t("Import Curl")}
       </Button>
     </m.div>
   );
@@ -76,8 +77,10 @@ function ImportCurlOnPaste() {
         color: "success",
         message: (
           <div>
-            <h2 className="font-semibold">Curl command detected</h2>
-            <p className="text-text-subtle text-sm">Create a request from the pasted command?</p>
+            <h2 className="font-semibold">{t("Curl command detected")}</h2>
+            <p className="text-text-subtle text-sm">
+              {t("Create a request from the pasted command?")}
+            </p>
           </div>
         ),
         action: ({ hide }) => (
@@ -91,7 +94,7 @@ function ImportCurlOnPaste() {
               importCurl.mutate({ command });
             }}
           >
-            Create Request
+            {t("Create Request")}
           </Button>
         ),
       });

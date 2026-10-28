@@ -1,3 +1,20 @@
+# ApiCub
+
+ApiCub is an independent development fork of Yaak. The first milestone is macOS support with Tauri 3 and a Simplified Chinese / English interface, preserving upstream API workflows, layout, SQLite storage and plugins.
+
+- Upstream baseline: `mountain-loop/yaak` at `4abc882e131e2fd29412cfbc701767bbed0f5c48`.
+- The source copyright and MIT license remain in [LICENSE](LICENSE).
+- Local development identity: `com.nyssance.apicub.dev`; production identity: `com.nyssance.apicub`.
+- Language: Settings → General → Language. Defaults to the system language; changing it flushes pending model writes and reloads the window.
+- Official Yaak updater and commercial-license build features are not enabled for ApiCub builds. No ApiCub update or payment service has been configured.
+- Existing internal `yaak-*` crate names, plugin APIs, CLI and serialized formats are retained for compatibility. This is not a complete rebranding or a public release.
+
+See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 24+, Rust and the workspace Vite+ CLI are required. Run `npm ci`, `npm run bootstrap`, then `npm start`.
+
+---
+
+## Upstream README (retained for attribution and reference)
+
 <p align="center">
   <a href="https://github.com/JamesIves/github-sponsors-readme-action">
     <img width="200px" src="https://github.com/mountain-loop/yaak/raw/main/crates-tauri/yaak-app-client/icons/icon.png">

@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { Extension } from "@codemirror/state";
 import { useQuery } from "@tanstack/react-query";
 import type { ReactNode } from "react";
@@ -132,8 +133,8 @@ export function TextViewer({
             autoFocus
             containerClassName="bg-surface"
             size="sm"
-            placeholder={language === "json" ? "JSONPath expression" : "XPath expression"}
-            label="Filter expression"
+            placeholder={language === "json" ? t("JSONPath expression") : t("XPath expression")}
+            label={t("Filter expression")}
             name="filter"
             defaultValue={filter.filterText}
             forceUpdateKey={filter.filterUpdateKey}
@@ -147,7 +148,7 @@ export function TextViewer({
                 <IconButton
                   size="xs"
                   icon="x"
-                  title="Close filter"
+                  title={t("Close filter")}
                   iconColor="secondary"
                   onClick={filter.toggleSearch}
                   className="w-8 mr-0.5 h-auto!"
@@ -164,7 +165,7 @@ export function TextViewer({
           size="sm"
           isLoading={filterResult.isPending && filterResult.isFetching}
           icon="filter"
-          title="Filter response"
+          title={t("Filter response")}
           onClick={filter.toggleSearch}
           className="border border-border-subtle!"
         />,

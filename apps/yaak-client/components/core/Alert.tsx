@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { HStack, VStack } from "@yaakapp-internal/ui";
 import type { ReactNode } from "react";
 import { Button } from "./Button";
@@ -13,7 +14,7 @@ export function Alert({ onHide, body }: AlertProps) {
       <div>{body}</div>
       <HStack space={2} justifyContent="end">
         <Button className="focus" color="primary" onClick={onHide}>
-          Okay
+          {t("Okay")}
         </Button>
       </HStack>
     </VStack>

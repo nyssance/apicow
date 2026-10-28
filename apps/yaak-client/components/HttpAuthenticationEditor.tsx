@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type {
   Folder,
   GrpcRequest,
@@ -38,21 +39,19 @@ export function HttpAuthenticationEditor({ model }: Props) {
   );
 
   const handleChange = useCallback(
-    async (authentication: Record<string, unknown>) =>
-      await patchModel(model, { authentication }),
+    async (authentication: Record<string, unknown>) => await patchModel(model, { authentication }),
     [model],
   );
 
   if (model.authenticationType === "none") {
-    return <EmptyStateText>No authentication</EmptyStateText>;
+    return <EmptyStateText>{t("No authentication")}</EmptyStateText>;
   }
 
   if (model.authenticationType != null && authConfig.data == null) {
     return (
       <EmptyStateText>
         <p>
-          Auth plugin not found for{" "}
-          <InlineCode>{model.authenticationType}</InlineCode>
+          {t("Auth plugin not found for")} <InlineCode>{model.authenticationType}</InlineCode>
         </p>
       </EmptyStateText>
     );
@@ -64,25 +63,23 @@ export function HttpAuthenticationEditor({ model }: Props) {
         <EmptyStateText className="flex-col gap-3">
           <div className="not-italic flex flex-col items-center gap-3 text-center">
             <p className="max-w-md text-sm text-text-subtle">
-              Choose an auth method to apply it to all requests in{" "}
-              <strong className="font-semibold text-text-subtle">
-                {resolvedModelName(model)}
-              </strong>
+              {t("Choose an auth method to apply it to all requests in")}{" "}
+              <strong className="font-semibold text-text-subtle">{resolvedModelName(model)}</strong>
               .
             </p>
             <AuthenticationTypeDropdown model={model} />
             <Link href="https://yaak.app/docs/using-yaak/request-inheritance">
-              Documentation
+              {t("Documentation")}
             </Link>
           </div>
         </EmptyStateText>
       );
     }
-    return <EmptyStateText>No authentication</EmptyStateText>;
+    return <EmptyStateText>{t("No authentication")}</EmptyStateText>;
   }
 
   if (inheritedAuth.authenticationType === "none") {
-    return <EmptyStateText>No authentication</EmptyStateText>;
+    return <EmptyStateText>{t("No authentication")}</EmptyStateText>;
   }
 
   const wasAuthInherited = inheritedAuth?.id !== model.id;
@@ -92,13 +89,12 @@ export function HttpAuthenticationEditor({ model }: Props) {
     return (
       <EmptyStateText>
         <p>
-          Inherited from{" "}
+          {t("Inherited from")}{" "}
           <button
             type="submit"
             className="underline hover:text-text"
             onClick={() => {
-              if (inheritedAuth.model === "folder")
-                openFolderSettings(inheritedAuth.id, "auth");
+              if (inheritedAuth.model === "folder") openFolderSettings(inheritedAuth.id, "auth");
               else openWorkspaceSettings("auth");
             }}
           >
@@ -114,21 +110,20 @@ export function HttpAuthenticationEditor({ model }: Props) {
       <div>
         <HStack space={2} alignItems="start">
           <SegmentedControl
-            label="Enabled"
+            label={t("Enabled")}
             hideLabel
             name="enabled"
             value={
-              model.authentication.disabled === false ||
-              model.authentication.disabled == null
+              model.authentication.disabled === false || model.authentication.disabled == null
                 ? "__TRUE__"
                 : model.authentication.disabled === true
                   ? "__FALSE__"
                   : "__DYNAMIC__"
             }
             options={[
-              { label: "Enabled", value: "__TRUE__" },
-              { label: "Disabled", value: "__FALSE__" },
-              { label: "Enabled when...", value: "__DYNAMIC__" },
+              { label: t("Enabled"), value: "__TRUE__" },
+              { label: t("Disabled"), value: "__FALSE__" },
+              { label: t("Enabled when..."), value: "__DYNAMIC__" },
             ]}
             onChange={async (enabled) => {
               let disabled: boolean | string;
@@ -144,16 +139,14 @@ export function HttpAuthenticationEditor({ model }: Props) {
           />
           {authConfig.data?.actions && authConfig.data.actions.length > 0 && (
             <Dropdown
-              items={authConfig.data.actions.map(
-                (a): DropdownItem => ({
-                  label: a.label,
-                  leftSlot: a.icon ? <Icon icon={a.icon} /> : null,
-                  onSelect: () => a.call(model),
-                }),
-              )}
+              items={authConfig.data.actions.map((a): DropdownItem => ({
+                label: a.label,
+                leftSlot: a.icon ? <Icon icon={a.icon} /> : null,
+                onSelect: () => a.call(model),
+              }))}
             >
               <IconButton
-                title="Authentication Actions"
+                title={t("Authentication Actions")}
                 icon="settings"
                 size="xs"
                 className="text-secondary!"
@@ -167,9 +160,7 @@ export function HttpAuthenticationEditor({ model }: Props) {
               className="w-full"
               stateKey={`auth.${model.id}.dynamic`}
               value={model.authentication.disabled}
-              onChange={(v) =>
-                handleChange({ ...model.authentication, disabled: v })
-              }
+              onChange={(v) => handleChange({ ...model.authentication, disabled: v })}
             />
           </div>
         )}
@@ -204,11 +195,9 @@ function AuthenticationTypeDropdown({ model }: Props) {
         color="secondary"
         variant="border"
         size="sm"
-        rightSlot={
-          <Icon icon="chevron_down" size="sm" className="text-text-subtle" />
-        }
+        rightSlot={<Icon icon="chevron_down" size="sm" className="text-text-subtle" />}
       >
-        Select Auth
+        {t("Select Auth")}
       </Button>
     </RadioDropdown>
   );
@@ -236,18 +225,14 @@ function AuthenticationDisabledInput({
     <Input
       size="sm"
       className={className}
-      label="Dynamic Disabled"
+      label={t("Dynamic Disabled")}
       hideLabel
       defaultValue={value}
-      placeholder="Enabled when this renders a non-empty value"
+      placeholder={t("Enabled when this renders a non-empty value")}
       rightSlot={
         <div className="px-1 flex items-center">
           <div className="rounded-full bg-surface-highlight text-xs px-1.5 py-0.5 text-text-subtle whitespace-nowrap">
-            {rendered.isPending
-              ? "loading"
-              : rendered.data
-                ? "enabled"
-                : "disabled"}
+            {rendered.isPending ? t("loading") : rendered.data ? t("enabled") : t("disabled")}
           </div>
         </div>
       }
