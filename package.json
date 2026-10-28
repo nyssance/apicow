@@ -109,7 +109,8 @@
     "proxy:tauri-before-dev": "node scripts/run-workspaces-dev.mjs apps/yaak-proxy",
     "client:debug": "node scripts/run-dev.mjs client --config crates-tauri/yaak-app-client/tauri.hasgard.conf.json",
     "client:debug:build": "node scripts/run-build.mjs client --debug --bundles app --no-sign --config crates-tauri/yaak-app-client/tauri.development.conf.json --config crates-tauri/yaak-app-client/tauri.hasgard.conf.json",
-    "test:hasgard": "node scripts/test-hasgard.mjs"
+    "test:hasgard": "node scripts/test-hasgard.mjs",
+    "test:native-workflows": "node scripts/test-native-workflows.mjs"
   },
   "dependencies": {
     "@codemirror/lang-go": "^6.0.1",
@@ -119,6 +120,8 @@
     "@codemirror/legacy-modes": "^6.5.5"
   },
   "devDependencies": {
+    "@grpc/grpc-js": "^1.14.6",
+    "@grpc/proto-loader": "^0.8.1",
     "@rolldown/plugin-babel": "^0.2.3",
     "@tailwindcss/postcss": "^4.3.2",
     "@tauri-apps/cli": "^3.0.0-alpha.5",

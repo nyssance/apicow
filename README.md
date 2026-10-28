@@ -110,3 +110,7 @@ Hasgard 仅随 `hasgard-testing` feature 注册，且仅在 debug 构建运行�
 启动打包测试版后，运行 `TAURI_HASGARD_SOCKET=<路径> npm run test:hasgard`，
 验证语言切换、跨窗口同步以及本机 GET/POST 的原始请求内容。脚本仅接受
 `com.nyssance.apicub.test`，会在测试工作区创建请求，不连接真实账号。
+
+扩展原生回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-workflows`。
+覆盖导入导出、认证、HTTP/SSE/WebSocket、gRPC、TLS 和 HTTP 代理；具体执行层与边界见
+[验证记录](docs/apicub-validation.md)。gRPC 测试服务依赖仅加入 devDependencies。

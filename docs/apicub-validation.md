@@ -55,3 +55,42 @@
 - 全量前端测试再次通过：80 个文件、1025 项；lint / 类型检查与前端生产构建通过。
 - 扩展并通过 `npm run test:hasgard`：中文“发送当前请求”能定位动作，英文 `request send` 仍能筛选同一动作；原有语言切换、GET/POST 校验继续通过。
 - 修正回归脚本首次进入工作区分支的选择器引号。保留原版布局及组件库，未引入 shadcn。
+
+## 扩展原生功能回归（2026-10-29）
+
+入口：先启动 `ApiCub Test.app` 并设置 `TAURI_HASGARD_SOCKET`，依次运行
+`npm run test:hasgard` 与 `npm run test:native-workflows`。
+后者使用本机 HTTP、WebSocket、gRPC 和 HTTPS 服务、虚构凭据及临时夹具。
+测试使用的证书和夹具在结束时移除；测试工作区保留在隔离的 Test 应用中便于检查。
+代理测试在 finally 中恢复 Test 应用原来的设置。没有真实账号或远端写操作。
+
+| 范围                     | 执行层与断言                                                                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Postman 导入             | 真实对话框：文件路径、格式识别、预览、应用、完成摘要；核对请求数量                                                                                     |
+| Basic / Bearer / API Key | 导入后从请求界面发送；本机服务器核对实际 Authorization 或自定义标头，Basic 密码含中文                                                                  |
+| JSON                     | 本机服务器逐字核对 UTF-8 请求体，保留 `Name`、`Send 中文` 和 `Settings`                                                                                |
+| 重定向与 Cookie          | 302 跳转后核对最终路径及服务端收到的 Cookie                                                                                                            |
+| SSE                      | 实际 HTTP 请求后核对界面渲染的两条事件，包含中文                                                                                                       |
+| 导出再导入               | 通过应用真实 `cmd_export_data` 导出，然后用导入对话框重新导入；比较请求名、方法、URL、请求体、类型、标头、查询参数与认证配置；不包含系统保存对话框验收 |
+| WebSocket                | 界面创建、连接、发送、显示回显与关闭；服务器核对原始中文消息和连接关闭                                                                                 |
+| OpenAPI                  | 界面导入；显式选择 `Server 1` 环境后发送，验证 baseUrl 模板及示例 JSON 请求体；仅选择 Global Variables 时不会自动获得服务器变量                        |
+| gRPC 单次 / 服务端流     | 界面导入请求，Hasgard 调用实际 Rust RPC，使用临时 proto 和本机 grpc-js 服务；核对服务描述、消息原文及正常结束状态。未计为发送按钮或原生文件选择器验收  |
+| TLS                      | 真实 Rust 请求引擎拒绝不可信自签名证书；仅该次临时请求显式关闭校验后可读取回显，未关闭全局校验                                                         |
+| HTTP 代理                | 实际配置和请求引擎，核对代理收到 absolute-form URL 和 Proxy-Authorization；命中绕过规则后核对 origin-form URL 且不泄露代理认证标头                     |
+
+这些是 ApiCub 独有的端到端回归，基于保留的上游功能，并非宣称一比一移植全部上游测试。
+来源调用链包括 `ImportDataDialog → cmd_import_data/cmd_commit_import`、
+`ExportDataDialog → cmd_export_data → yaak-models/export.rs`、
+`plugins/auth-{basic,bearer,apikey}`、`WebsocketRequestPane`、
+`cmd_grpc_reflect/cmd_grpc_go → yaak-grpc`。
+上游 `GrpcEvent::order_by` 为 CreatedAt 倒序；测试按事件时间顺序核对流中的消息。
+
+本轮修正导入来源提示、预览动作、变更说明、完成计数及 WebSocket 连接/消息状态的中文。
+测试脚本另断言中文预览、完成摘要和连接状态，避免仅有翻译字典而实际界面仍显示英文。
+
+仍不是最佳：未完成 OAuth 交互、Digest/NTLM/AWS 的原生端到端、gRPC 客户端/双向流与取消、
+双向 TLS/系统证书、HTTPS CONNECT/SOCKS 代理、导入冲突全分支、Git 同步及全界面逐项验收；
+没有与 Yaak 的同机性能对比。已有插件/引擎单元测试通过不替代这些原生验证。
+下一顺序：补齐上述高影响异常路径和 Git 工作流，再建立同机性能基准。
+
+本轮最终结果：更新后的打包 Test 应用上，两套 Hasgard 脚本均通过；全量前端 80 文件 / 1025 项通过，lint 与类型检查通过（3 项原有警告）。Rust 未改动，Tauri 原生打包编译通过。中文摘要回归额外发现并修复单数 Environment 漏译。

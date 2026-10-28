@@ -132,9 +132,9 @@ function WebsocketEventRow({
 
   const content =
     messageType === "close" ? (
-      "Disconnected from server"
+      t("Disconnected from server")
     ) : messageType === "open" ? (
-      "Connected to server"
+      t("Connected to server")
     ) : messageType === "error" ? (
       <span className="text-warning">{message}</span>
     ) : message === "" ? (
@@ -185,12 +185,14 @@ function WebsocketEventDetail({
 
   const title =
     event.messageType === "close"
-      ? "Connection Closed"
+      ? t("Connection Closed")
       : event.messageType === "open"
-        ? "Connection Open"
+        ? t("Connection Open")
         : event.messageType === "error"
-          ? "WebSocket Error"
-          : `Message ${event.isServer ? "Received" : "Sent"}`;
+          ? t("WebSocket Error")
+          : event.isServer
+            ? t("Message Received")
+            : t("Message Sent");
 
   const actions: EventDetailAction[] =
     message !== ""

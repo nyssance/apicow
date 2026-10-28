@@ -161,7 +161,7 @@ export function ImportSourceList({
             <span>
               {t("Choose")}{" "}
               <InlineButton disabled={disabled} onClick={() => pick(false)}>
-                {t("files")}
+                {t("Files")}
               </InlineButton>
               {t(", a")}{" "}
               <InlineButton disabled={disabled} onClick={() => pick(true)}>
@@ -189,8 +189,8 @@ export function ImportSourceList({
       hovering={isHovering}
       disabled={disabled}
       onRemove={onRemove}
-      addLabel="Add files, a folder, or a URL"
-      addHint="or drop them here"
+      addLabel={t("Add files, a folder, or a URL")}
+      addHint={t("or drop them here")}
       addItems={[
         { label: t("Files"), icon: "file", onSelect: () => pick(false) },
         { label: t("Folder"), icon: "folder", onSelect: () => pick(true) },

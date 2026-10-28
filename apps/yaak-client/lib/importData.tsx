@@ -15,7 +15,7 @@ import { createFastMutation } from "../hooks/useFastMutation";
 import { showAlert } from "./alert";
 import { showDialog } from "./dialog";
 import { jotaiStore } from "./jotai";
-import { pluralizeCount } from "@yaakapp-internal/lib/pluralize";
+import { pluralize } from "@yaakapp-internal/lib/pluralize";
 import { router } from "./router";
 import { rpc } from "./rpc";
 
@@ -104,22 +104,22 @@ async function finishImport(imported: BatchUpsertResult): Promise<void> {
         <VStack space={3} className="pb-4">
           <ul className="list-disc pl-6">
             {imported.workspaces.length > 0 && (
-              <li>{pluralizeCount("Workspace", imported.workspaces.length)}</li>
+              <li>{importCount("Workspace", imported.workspaces.length)}</li>
             )}
             {imported.environments.length > 0 && (
-              <li>{pluralizeCount("Environment", imported.environments.length)}</li>
+              <li>{importCount("Environment", imported.environments.length)}</li>
             )}
             {imported.folders.length > 0 && (
-              <li>{pluralizeCount("Folder", imported.folders.length)}</li>
+              <li>{importCount("Folder", imported.folders.length)}</li>
             )}
             {imported.httpRequests.length > 0 && (
-              <li>{pluralizeCount("HTTP Request", imported.httpRequests.length)}</li>
+              <li>{importCount("HTTP Request", imported.httpRequests.length)}</li>
             )}
             {imported.grpcRequests.length > 0 && (
-              <li>{pluralizeCount("GRPC Request", imported.grpcRequests.length)}</li>
+              <li>{importCount("GRPC Request", imported.grpcRequests.length)}</li>
             )}
             {imported.websocketRequests.length > 0 && (
-              <li>{pluralizeCount("Websocket Request", imported.websocketRequests.length)}</li>
+              <li>{importCount("Websocket Request", imported.websocketRequests.length)}</li>
             )}
           </ul>
           <div>
@@ -140,4 +140,8 @@ async function finishImport(imported: BatchUpsertResult): Promise<void> {
       search: { environment_id: environmentId },
     });
   }
+}
+
+function importCount(word: string, count: number): string {
+  return t("{{p0}} {{p1}}", { p0: count, p1: t(pluralize(word, count)) });
 }

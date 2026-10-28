@@ -258,7 +258,10 @@ function LoadedImportDataDialog({
     const unchanged = items.filter((i) => i.action === "unchanged");
     const footerNote =
       unchanged.length > 0
-        ? `${unchanged.length} ${pluralize("resource", unchanged.length)} unchanged`
+        ? t("{{p0}} {{p1}} unchanged", {
+            p0: unchanged.length,
+            p1: t(pluralize("resource", unchanged.length)),
+          })
         : "";
     const changeCount = items.filter((item) => {
       if (disabledIds.has(item.modelId)) return false;
@@ -271,15 +274,17 @@ function LoadedImportDataDialog({
     const [destinationLabel, destinationValue] = ((): [string, string] => {
       if (plan.destination.type === "new_workspace") {
         const names = plan.resources.workspaces.map((w) => w.name).filter((n) => n !== "");
-        if (names.length === 0) return ["New workspace", "Untitled"];
+        if (names.length === 0) return [t("New workspace"), t("Untitled")];
         return [
-          names.length === 1 ? "New workspace" : `${names.length} new workspaces`,
+          names.length === 1
+            ? t("New workspace")
+            : t("{{p0}} new workspaces", { p0: names.length }),
           names.join(", "),
         ];
       }
       const { workspaceId } = plan.destination;
-      const name = workspaces.find((w) => w.id === workspaceId)?.name ?? "Unknown workspace";
-      return ["Destination", name];
+      const name = workspaces.find((w) => w.id === workspaceId)?.name ?? t("Unknown workspace");
+      return [t("Destination"), name];
     })();
 
     // The destination workspace roots the tree. It is not a plan item — commit always applies
@@ -406,7 +411,7 @@ function LoadedImportDataDialog({
                 : changeCount > 0
                   ? t("Apply {{p0}} {{p1}}", {
                       p0: String(changeCount),
-                      p1: String(changeCount === 1 ? "Change" : "Changes"),
+                      p1: t(changeCount === 1 ? "Change" : "Changes"),
                     })
                   : t("Done"),
               color: "primary",
@@ -608,15 +613,15 @@ function actionColor(item: ImportPlanItem): ComponentProps<typeof Chip>["color"]
 function actionLabel(item: ImportPlanItem): string | null {
   switch (item.action) {
     case "create":
-      return "new";
+      return t("new");
     case "update":
-      return "updated";
+      return t("updated");
     case "delete":
-      return "removed";
+      return t("removed");
     case "keep_local":
-      return "edited";
+      return t("edited");
     case "ignored":
-      return "ignored";
+      return t("ignored");
     default:
       return null;
   }
@@ -625,23 +630,23 @@ function actionLabel(item: ImportPlanItem): string | null {
 function actionHelp(item: ImportPlanItem): string | null {
   const help = (text: string) =>
     item.changedFields.length > 0
-      ? `${text} · ${item.changedFields.map(fieldLabel).join(", ")}`
-      : text;
+      ? `${t(text)} · ${item.changedFields.map(fieldLabel).join(", ")}`
+      : t(text);
   switch (item.action) {
     case "create":
-      return "Not in this workspace yet";
+      return t("Not in this workspace yet");
     case "update":
       return item.reason === "moved_into_ignored_folder"
-        ? "Moved into a folder that isn't imported. Importing that folder brings it along"
+        ? t("Moved into a folder that isn't imported. Importing that folder brings it along")
         : help("Changed in the source since the last import");
     case "delete":
-      return "Gone from the source since the last import. Checking it deletes it here";
+      return t("Gone from the source since the last import. Checking it deletes it here");
     case "keep_local":
       return help("Changed here since the last import. Checking it reverts to the source");
     case "conflict":
       return help("Changed here and in the source since the last import");
     case "ignored":
-      return "Not in this workspace. Imports leave it alone until you check it";
+      return t("Not in this workspace. Imports leave it alone until you check it");
     default:
       return null;
   }

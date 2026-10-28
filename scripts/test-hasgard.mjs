@@ -1,48 +1,9 @@
 #!/usr/bin/env node
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
 import { createServer } from "node:http";
-import { setTimeout } from "node:timers/promises";
 
-const socket = process.env.TAURI_HASGARD_SOCKET;
-assert.ok(socket, "Set TAURI_HASGARD_SOCKET to the running ApiCub Test socket");
-function hasgard(window, ...args) {
-  return JSON.parse(
-    execFileSync(
-      "tauri-hasgard",
-      ["--socket", socket, "--json", ...(window ? ["--window", window] : []), ...args],
-      { encoding: "utf8", timeout: 15000, stdio: ["pipe", "pipe", "pipe"] },
-    ),
-  );
-}
-const evaluate = (window, expression) => hasgard(window, "eval", expression);
-async function until(check, description) {
-  const deadline = Date.now() + 15000;
-  let last;
-  while (Date.now() < deadline) {
-    try {
-      const value = check();
-      if (value) return value;
-    } catch (error) {
-      last = error;
-    }
-    await setTimeout(150);
-  }
-  throw new Error(`Timed out: ${description}`, { cause: last });
-}
-function clickText(window, text) {
-  assert.equal(
-    evaluate(
-      window,
-      `(() => {
-    const e = Array.from(document.querySelectorAll('button')).find(e => e.textContent.trim() === ${JSON.stringify(text)} && e.getBoundingClientRect().height > 0);
-    if (!e) return false; e.click(); return true;
-  })()`,
-    ),
-    true,
-    `Button: ${text}`,
-  );
-}
+import { hasgard, evaluate, until, clickText } from "./lib/hasgard.mjs";
+
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 assert.ok(main, "ApiCub main window is open");
 assert.equal(
