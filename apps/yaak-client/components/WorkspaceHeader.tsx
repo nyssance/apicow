@@ -74,7 +74,7 @@ export const WorkspaceHeader = memo(function WorkspaceHeader({
                 : "rows_2"
           }
           title={t("Change to {{p0}} layout", {
-            p0: String(workspaceLayout === "horizontal" ? "vertical" : "horizontal"),
+            p0: t(workspaceLayout === "horizontal" ? "vertical" : "horizontal"),
           })}
           size="sm"
           iconColor="secondary"

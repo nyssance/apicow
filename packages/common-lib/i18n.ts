@@ -21,6 +21,9 @@ export function getLocale(): Locale {
 const englishBranding: Record<string, string> = {
   Yaak: "ApiCub",
   "Yaak Settings": "ApiCub Settings",
+  "Yaak v{{p0}}": "ApiCub v{{p0}}",
+  "Font used for Yaak interface controls.": "Font used for ApiCub interface controls.",
+  "Plugins extend the functionality of Yaak.": "Plugins extend the functionality of ApiCub.",
   "Relaunch Yaak": "Relaunch ApiCub",
   "Try Yaak with a real API": "Try ApiCub with a real API",
   "Yaak response preview": "ApiCub response preview",

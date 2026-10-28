@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpRequestHeader } from "@yaakapp-internal/models";
 import { HStack, CountBadge } from "@yaakapp-internal/ui";
 import { acceptLanguages } from "../lib/data/acceptLanguages";
@@ -32,7 +33,7 @@ export function HeadersEditor({
   stateKey,
   headers,
   inheritedHeaders,
-  inheritedHeadersLabel = "Inherited",
+  inheritedHeadersLabel = t("Inherited"),
   onChange,
   forceUpdateKey,
 }: Props) {

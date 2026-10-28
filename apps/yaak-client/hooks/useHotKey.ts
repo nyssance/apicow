@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { debounce } from "@yaakapp-internal/lib";
 import { settingsAtom } from "@yaakapp-internal/models";
@@ -339,7 +340,11 @@ function handleKeyDown(e: KeyboardEvent) {
 }
 
 export function useHotkeyLabel(action: HotkeyAction): string {
-  return hotkeyLabels[action];
+  return getHotkeyLabel(action);
+}
+
+export function getHotkeyLabel(action: HotkeyAction): string {
+  return t(hotkeyLabels[action]);
 }
 
 export function getHotkeyScope(action: HotkeyAction): string {

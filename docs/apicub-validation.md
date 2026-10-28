@@ -47,3 +47,11 @@
 - Hasgard 默认原生截图的窗口选择返回错误，指定 native window id 可截图；本次不将截图结果作为像素级一致性验收。
 
 - `cargo clippy --workspace --features yaak-app-client/hasgard-testing` 通过（保留上游警告）。`cargo check -p yaak-app-client --features wry` 通过，生成的默认 capabilities 不含 `hasgard-testing`。
+
+## 中文界面收尾
+
+- 快捷键名称和作用域中文化，筛选同时匹配中文显示名和原版英文 ID；保存的快捷键 ID 与按键组合保持不变。
+- 补齐继承标头、原生下拉默认值标记、横向 / 纵向布局提示；英文应用菜单版本及界面说明使用 ApiCub 名称。
+- 全量前端测试再次通过：80 个文件、1025 项；lint / 类型检查与前端生产构建通过。
+- 扩展并通过 `npm run test:hasgard`：中文“发送当前请求”能定位动作，英文 `request send` 仍能筛选同一动作；原有语言切换、GET/POST 校验继续通过。
+- 修正回归脚本首次进入工作区分支的选择器引号。保留原版布局及组件库，未引入 shadcn。

@@ -66,7 +66,7 @@ if (
     () =>
       evaluate(
         main,
-        '!!document.querySelector("button[title="主菜单"],button[title="Main Menu"]")',
+        `!!document.querySelector('button[title="主菜单"],button[title="Main Menu"]')`,
       ),
     "workspace ready",
   );
@@ -98,6 +98,33 @@ assert.ok(
   evaluate(main, 'document.body.innerText.includes("无环境")'),
   "Chinese environment fallback",
 );
+clickText(settings, "快捷键");
+hasgard(settings, "fill", 'input[placeholder="筛选快捷键…"]', "发送当前请求");
+await until(
+  () =>
+    evaluate(
+      settings,
+      `Array.from(document.querySelectorAll('table tbody tr')).some(e => e.textContent.includes('发送当前请求'))`,
+    ),
+  "Chinese shortcut search",
+);
+assert.equal(
+  evaluate(
+    settings,
+    `Array.from(document.querySelectorAll('table tbody tr')).some(e => e.textContent.includes('放大'))`,
+  ),
+  false,
+);
+hasgard(settings, "fill", 'input[placeholder="筛选快捷键…"]', "request send");
+await until(
+  () =>
+    evaluate(
+      settings,
+      `Array.from(document.querySelectorAll('table tbody tr')).some(e => e.textContent.includes('发送当前请求'))`,
+    ),
+  "English shortcut search retained",
+);
+hasgard(settings, "fill", 'input[placeholder="筛选快捷键…"]', "");
 hasgard(main, "click", 'button[title="添加资源"]');
 clickText(main, "HTTP");
 await until(() => evaluate(main, '!!document.querySelector("form .cm-content")'), "request editor");

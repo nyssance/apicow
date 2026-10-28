@@ -20,6 +20,7 @@ import {
   defaultHotkeys,
   formatHotkeyString,
   getHotkeyScope,
+  getHotkeyLabel,
   type HotkeyAction,
   hotkeyActions,
   hotkeysAtom,
@@ -85,7 +86,7 @@ export function SettingsHotkeys() {
     return hotkeyActions.filter((action) => {
       const scope = getHotkeyScope(action).replace(/_/g, " ");
       const label = action.replace(/[_.]/g, " ");
-      const searchText = `${scope} ${label}`;
+      const searchText = `${scope} ${label} ${t(capitalize(scope))} ${getHotkeyLabel(action)}`;
       return fuzzyMatch(searchText, filter) != null;
     });
   }, [filter]);
@@ -161,7 +162,7 @@ interface HotkeyRowProps {
 
 function HotkeyRow({ action, currentKeys, defaultKeys, onSave, onReset }: HotkeyRowProps) {
   const label = useHotkeyLabel(action);
-  const scope = capitalize(getHotkeyScope(action).replace(/_/g, " "));
+  const scope = t(capitalize(getHotkeyScope(action).replace(/_/g, " ")));
   const isCustomized = !arraysEqual(currentKeys, defaultKeys);
   const isDisabled = currentKeys.length === 0;
 
