@@ -238,7 +238,7 @@ function GqlTypeInfo({
       <Heading>
         <GqlTypeLabel item={item} />
       </Heading>
-      <DocMarkdown>{description || "No description"}</DocMarkdown>
+      <DocMarkdown>{description || t("No description")}</DocMarkdown>
       {"deprecationReason" in item.type && item.type.deprecationReason && (
         <Banner color="notice">
           <DocMarkdown>{item.type.deprecationReason}</DocMarkdown>

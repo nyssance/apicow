@@ -89,7 +89,7 @@ export const PathList = forwardRef<HTMLDivElement, Props>(function PathList(
         >
           <Icon icon="plus" size="sm" className="text-text-subtlest" />
           {hovering ? (
-            "Drop to add"
+            t("Drop to add")
           ) : (
             <>
               <span>{addLabel}</span>

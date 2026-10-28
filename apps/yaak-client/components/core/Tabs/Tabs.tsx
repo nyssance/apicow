@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import {
   Icon,
   type StoredValue,
@@ -77,7 +78,7 @@ function toBaseTab(tab: TabItem): BaseTabItem {
           >
             {option && "shortLabel" in option && option.shortLabel
               ? option.shortLabel
-              : (option?.label ?? "Unknown")}
+              : (option?.label ?? t("Unknown"))}
           </Button>
         </RadioDropdown>
       );

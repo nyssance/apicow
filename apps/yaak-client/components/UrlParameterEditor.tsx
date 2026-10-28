@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import { VStack } from "@yaakapp-internal/ui";
 import { useCallback, useRef } from "react";
 import { useRequestEditor, useRequestEditorEvent } from "../hooks/useRequestEditor";
@@ -47,7 +48,7 @@ export function UrlParametersEditor({ pairs, forceUpdateKey, onChange, stateKey 
         stateKey={stateKey}
         valueAutocompleteFunctions
         valueAutocompleteVariables
-        valuePlaceholder="Value"
+        valuePlaceholder={t("Value")}
       />
     </VStack>
   );

@@ -723,7 +723,7 @@ export function PairEditorRow({
           onBlur={handleBlurName}
           onChange={handleChangeName}
           onFocus={handleFocusName}
-          placeholder={namePlaceholder ?? "name"}
+          placeholder={namePlaceholder ?? t("name")}
           autocomplete={nameAutocomplete}
           autocompleteVariables={nameAutocompleteVariables}
           autocompleteFunctions={nameAutocompleteFunctions}
@@ -768,7 +768,7 @@ export function PairEditorRow({
               onChange={handleChangeValueText}
               onFocus={handleFocusValue}
               type={isLast ? "text" : typeof valueType === "function" ? valueType(pair) : valueType}
-              placeholder={valuePlaceholder ?? "value"}
+              placeholder={valuePlaceholder ?? t("value")}
               autocomplete={valueAutocomplete?.(pair.name)}
               autocompleteFunctions={valueAutocompleteFunctions}
               autocompleteVariables={valueAutocompleteVariablesFiltered}

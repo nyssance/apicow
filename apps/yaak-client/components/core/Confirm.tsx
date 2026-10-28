@@ -68,7 +68,7 @@ export function Confirm({
         actions={[
           { label: t("Cancel"), onClick: handleHide },
           {
-            label: confirmText ?? "Confirm",
+            label: confirmText ?? t("Confirm"),
             color,
             form: formId,
             disabled: !didConfirm,

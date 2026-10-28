@@ -80,7 +80,9 @@ export function FileHistoryDialog({ dir, relaPath }: { dir: string; relaPath: st
             ) : (
               <div className="h-full flex flex-col">
                 <div className="mb-2 min-w-0 text-text-subtle grid items-center gap-2 grid-cols-[minmax(0,1fr)_auto]">
-                  <div className="min-w-0 truncate">{selectedCommit.message || "No message"}</div>
+                  <div className="min-w-0 truncate">
+                    {selectedCommit.message || t("No message")}
+                  </div>
                   <Button
                     className="ml-auto"
                     color="warning"
@@ -123,9 +125,9 @@ function CommitListItem({
       )}
       onClick={onSelect}
     >
-      <div className="truncate flex-1">{commit.message || "No message"}</div>
+      <div className="truncate flex-1">{commit.message || t("No message")}</div>
       <div className="text-text-subtle text-sm truncate">
-        {commit.author.name || "Unknown"} - {formatDistanceToNowStrict(commit.when)}{" "}
+        {commit.author.name || t("Unknown")} - {formatDistanceToNowStrict(commit.when)}{" "}
         {" " + t("ago -") + " "}
         <span className="shrink-0 text-2xs text-text-subtle font-mono">
           {commit.oid.slice(0, 7)}

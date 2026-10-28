@@ -313,7 +313,7 @@ function KeyRevealer({
       <HStack>
         {encryptionKey && <CopyIconButton text={encryptionKey} title={t("Copy workspace key")} />}
         <IconButton
-          title={show ? t("Hide") : "Reveal" + "workspace key"}
+          title={show ? t("Hide") : t("Reveal workspace key")}
           icon={show ? "eye_closed" : "eye"}
           onClick={() => setShow((v) => !v)}
         />

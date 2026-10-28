@@ -71,7 +71,7 @@ export function GrpcRequestPane({
   onSend,
 }: Props) {
   const authTab = useAuthTab(TAB_AUTH, activeRequest);
-  const metadataTab = useHeadersTab(TAB_METADATA, activeRequest, "Metadata");
+  const metadataTab = useHeadersTab(TAB_METADATA, activeRequest, t("Metadata"));
   const inheritedHeaders = useInheritedHeaders(activeRequest);
   const numSettingsOverrides = countOverriddenSettings(activeRequest);
   const forceUpdateKey = useRequestUpdateKey(activeRequest.id ?? null);
@@ -207,7 +207,7 @@ export function GrpcRequestPane({
                 paneWidth < 400 && "flex-1",
               )}
             >
-              {select.options.find((o) => o.value === select.value)?.label ?? "No Schema"}
+              {select.options.find((o) => o.value === select.value)?.label ?? t("No Schema")}
             </Button>
           </RadioDropdown>
           {methodType === "client_streaming" || methodType === "streaming" ? (

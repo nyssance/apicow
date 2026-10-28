@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { FormInput, JsonPrimitive } from "@yaakapp-internal/plugins";
 import type { FormEvent } from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -19,8 +20,8 @@ export function Prompt({
   onCancel,
   inputs: initialInputs,
   onResult,
-  confirmText = "Confirm",
-  cancelText = "Cancel",
+  confirmText = t("Confirm"),
+  cancelText = t("Cancel"),
   onValuesChange,
   onInputsUpdated,
 }: PromptProps) {
@@ -52,8 +53,8 @@ export function Prompt({
       <DialogFooter
         inline
         actions={[
-          { label: cancelText || "Cancel", onClick: onCancel },
-          { label: confirmText || "Done", color: "primary", form: id },
+          { label: cancelText || t("Cancel"), onClick: onCancel },
+          { label: confirmText || t("Done"), color: "primary", form: id },
         ]}
       />
     </form>

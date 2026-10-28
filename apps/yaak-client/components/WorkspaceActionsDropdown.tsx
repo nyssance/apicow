@@ -187,7 +187,7 @@ export const WorkspaceActionsDropdown = memo(function WorkspaceActionsDropdown({
         )}
         {...buttonProps}
       >
-        {workspace?.name ?? "Workspace"}
+        {workspace?.name ?? t("Workspace")}
       </Button>
     </RadioDropdown>
   );

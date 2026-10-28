@@ -32,7 +32,7 @@ export function HistoryDialog({ dir }: { dir: string }) {
               </TruncatedWideTableCell>
               <TableCell>
                 <span title={t("Email: {{p0}}", { p0: String(l.author.email) })}>
-                  {l.author.name || "Unknown"}
+                  {l.author.name || t("Unknown")}
                 </span>
               </TableCell>
               <TableCell className="text-text-subtle">

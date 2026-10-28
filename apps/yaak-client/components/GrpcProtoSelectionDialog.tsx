@@ -96,7 +96,7 @@ function GrpcProtoSelectionDialogWithRequest({
             await protoFilesKv.set(protoFiles.filter((p) => p !== path));
             await grpc.reflect.refetch();
           }}
-          addLabel="Add proto files or an import folder"
+          addLabel={t("Add proto files or an import folder")}
           addItems={[
             {
               label: t("Proto files"),
@@ -105,7 +105,7 @@ function GrpcProtoSelectionDialogWithRequest({
                 const selected = await platform.dialog.open({
                   title: t("Select Proto Files"),
                   multiple: true,
-                  filters: [{ name: "Proto Files", extensions: ["proto"] }],
+                  filters: [{ name: t("Proto Files"), extensions: ["proto"] }],
                 });
                 if (selected == null) return;
                 const newFiles = selected.filter((p) => !protoFiles.includes(p));

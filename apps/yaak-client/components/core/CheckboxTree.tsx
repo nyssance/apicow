@@ -80,7 +80,7 @@ export function CheckboxTree<T>(props: Props<T>) {
         ) : (
           <Checkbox
             checked={checked}
-            title={props.checkboxTitle?.(node) ?? "Toggle"}
+            title={props.checkboxTitle?.(node) ?? t("Toggle")}
             hideLabel
             disabled={props.isCheckboxDisabled?.(node)}
             onChange={(checked) => props.onCheck(node, checked)}

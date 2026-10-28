@@ -115,7 +115,7 @@ export function SettingsAgents() {
             snippet={cli.snippet}
             language={cli.language}
             disabled={!cliInstalled}
-            done={setupStatus.data?.mcpServer ? "Added" : null}
+            done={setupStatus.data?.mcpServer ? t("Added") : null}
           />
           <SettingCommand
             title={t("Install the skill")}
@@ -129,7 +129,7 @@ export function SettingsAgents() {
             snippet={skillInstallCommand(client)}
             language="shell"
             disabled={!cliInstalled}
-            done={setupStatus.data?.skill ? "Installed" : null}
+            done={setupStatus.data?.skill ? t("Installed") : null}
           />
         </SettingsSection>
       </SettingsList>

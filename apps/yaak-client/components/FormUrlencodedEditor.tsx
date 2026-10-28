@@ -1,3 +1,4 @@
+import { t } from "@yaakapp-internal/lib/i18n";
 import type { HttpRequest } from "@yaakapp-internal/models";
 import { useCallback, useMemo } from "react";
 import type { Pair, PairEditorProps } from "./core/PairEditor";
@@ -36,7 +37,7 @@ export function FormUrlencodedEditor({ request, forceUpdateKey, onChange }: Prop
       nameAutocompleteFunctions
       nameAutocompleteVariables
       namePlaceholder="entry_name"
-      valuePlaceholder="Value"
+      valuePlaceholder={t("Value")}
       pairs={pairs}
       onChange={handleChange}
       forceUpdateKey={forceUpdateKey}

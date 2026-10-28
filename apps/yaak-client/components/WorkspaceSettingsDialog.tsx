@@ -67,7 +67,7 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
   return (
     <Tabs
       defaultValue={tab ?? DEFAULT_TAB}
-      label={t("Folder Settings")}
+      label={t("Workspace Settings")}
       className="pt-4 pb-2 px-3"
       tabListClassName="pl-4"
       addBorders
@@ -96,7 +96,7 @@ export function WorkspaceSettingsDialog({ workspaceId, hide, tab }: Props) {
       <TabContent value={TAB_HEADERS} className="overflow-y-auto h-full px-4">
         <HeadersEditor
           inheritedHeaders={inheritedHeaders}
-          inheritedHeadersLabel="Defaults"
+          inheritedHeadersLabel={t("Defaults")}
           forceUpdateKey={workspace.id}
           headers={workspace.headers}
           onChange={(headers) => patchModel(workspace, { headers })}

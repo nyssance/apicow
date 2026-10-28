@@ -603,8 +603,8 @@ function KeyValueArg({
         pairs={pairs}
         onChange={handleChange}
         stateKey={stateKey}
-        namePlaceholder="name"
-        valuePlaceholder="value"
+        namePlaceholder={t("name")}
+        valuePlaceholder={t("value")}
         noScroll
       />
     </div>

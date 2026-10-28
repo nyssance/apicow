@@ -1329,5 +1329,15 @@
   "{{p0}} files in the directory have changed. Do you want to update your workspace?": "目录中有 {{p0}} 个文件发生变化，是否更新工作区？",
   "create": "创建",
   "update": "更新",
-  "delete": "删除"
+  "delete": "删除",
+  "Defaults": "默认值",
+  "Add proto files or an import folder": "添加 Proto 文件或导入目录",
+  "Proto Files": "Proto 文件",
+  "Postman, Insomnia, Bruno, OpenAPI, or curl": "Postman、Insomnia、Bruno、OpenAPI 或 curl",
+  "name": "名称",
+  "value": "值",
+  "Metadata": "元数据",
+  "Reveal workspace key": "显示工作区密钥",
+  "Toggle": "切换",
+  "Added": "已添加"
 }
