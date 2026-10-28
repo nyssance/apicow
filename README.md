@@ -114,6 +114,7 @@ Hasgard 仅随 `hasgard-testing` feature 注册，且仅在 debug 构建运行�
 扩展原生回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-workflows`。
 高风险原生回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-advanced`（本机 Git、OAuth、双向 TLS、gRPC 流与取消）。
 浏览器授权和 SOCKS：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-oauth-socks`。
+系统外部浏览器 OAuth：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-oauth-external`；会打开默认浏览器的本机测试页面，结束后可关闭这些页面。
 OAuth 回调安全回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-oauth-security`。
 强退恢复：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-recovery`；会对独立 Test 应用执行三次 SIGKILL 并重启，使用临时同步目录与 Git 仓库。
 文件同步与 Git 界面：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-sync`。

@@ -115,6 +115,7 @@
     "test:native-oauth-socks": "node scripts/test-native-oauth-socks.mjs",
     "test:native-sync": "node scripts/test-native-sync.mjs",
     "bench:native": "node scripts/bench-native-http.mjs",
+    "test:native-oauth-external": "node scripts/test-native-oauth-external.mjs",
     "test:native-oauth-security": "node scripts/test-native-oauth-security.mjs",
     "test:native-recovery": "node scripts/test-native-recovery.mjs"
   },

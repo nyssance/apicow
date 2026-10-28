@@ -48,6 +48,15 @@ export function startCallbackServer(options: {
     let callbackReject: ((err: Error) => void) | null = null;
     let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
     let stopped = false;
+    // Register the result before opening a browser: navigation may complete
+    // before openExternalUrl resolves and the consumer starts waiting.
+    const callbackPromise = new Promise<string>((res, rej) => {
+      callbackResolve = res;
+      callbackReject = rej;
+    });
+    // stop/timeout can precede the consumer; preserve rejection without an
+    // unhandled rejection while the browser-opening operation is still pending.
+    void callbackPromise.catch(() => {});
 
     const server = http.createServer((req: IncomingMessage, res: ServerResponse) => {
       const reqUrl = new URL(req.url ?? "/", `http://${req.headers.host}`);
@@ -144,29 +153,18 @@ export function startCallbackServer(options: {
       const result: CallbackServerResult = {
         port: actualPort,
         redirectUri,
-        waitForCallback: () => {
-          return new Promise<string>((res, rej) => {
-            if (stopped) {
-              rej(new Error("Callback server already stopped"));
-              return;
-            }
-
-            callbackResolve = res;
-            callbackReject = rej;
-
-            // Set timeout
-            timeoutHandle = setTimeout(() => {
-              if (callbackReject) {
-                callbackReject(new Error("Authorization timed out"));
-                callbackResolve = null;
-                callbackReject = null;
-              }
-              stopServer();
-            }, timeoutMs);
-          });
-        },
+        waitForCallback: () => callbackPromise,
         stop: stopServer,
       };
+
+      timeoutHandle = setTimeout(() => {
+        if (callbackReject) {
+          callbackReject(new Error("Authorization timed out"));
+          callbackResolve = null;
+          callbackReject = null;
+        }
+        stopServer();
+      }, timeoutMs);
 
       activeServer = result;
       resolve(result);
