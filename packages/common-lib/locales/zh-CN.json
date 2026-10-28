@@ -1240,5 +1240,6 @@
   "Apply Setting": "应用设置",
   "Data Sent": "已发送数据",
   "Data Received": "已接收数据",
-  "DNS Resolution": "DNS 解析"
+  "DNS Resolution": "DNS 解析",
+  "No Environment": "无环境"
 }

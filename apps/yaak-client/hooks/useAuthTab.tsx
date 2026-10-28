@@ -65,7 +65,7 @@ export function useAuthDropdownOptions(
                 />
               </HStack>
             ) : (
-              "Auth"
+              t("Auth")
             ),
           value: null,
         },

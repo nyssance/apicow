@@ -26,7 +26,7 @@
 
 ## 未完成的验证与边界
 
-- 电脑控制工具拒绝访问 ApiCub Dev（`Computer Use was not approved to use ApiCub Dev`），尚未完成打包应用的界面点击、语言切换和本地 HTTP 请求端到端验收。
+- 原电脑控制工具拒绝访问 ApiCub Dev；按用户要求改用 Hasgard 0.6.2，已完成下述打包版原生回归。
 - 未验证 CEF、Windows、Linux、发布签名、公证或自动更新分发。
 - Tauri 3 仍为 alpha 版本。第三方插件自有文本及底层诊断可能仍显示英文；原版图标暂保留。
 - 当前是开发阶段交付，不宣称已达到稳定发行版或完整替代 Apifox。
@@ -34,3 +34,16 @@
 ## 仓库
 
 开发进展持续提交到私有仓库 `nyssance/apicub`，保留 `upstream` 溯源。不自动创建版本标签或发布产品。
+
+## Hasgard 原生回归（2026-10-29）
+
+- `tauri-plugin-hasgard = "0.6"`，锁定 0.6.2；通过 `hasgard-testing` feature 接入，独立应用标识 `com.nyssance.apicub.test`。默认构建不注册调试桥、不包含 Hasgard capability。
+- 实测发现 Tauri 内容探测把包含 PDF magic 的 JS 分块误判为 `application/pdf`，导致进入工作区出现路由错误。现在对成功返回的内置 `/assets/*.js` 明确设置 `text/javascript`，工作区正常加载；协议响应和用户数据不受影响。
+- `npm run test:hasgard` 在真实打包的 macOS Wry WebView 中通过：创建 HTTP 请求；设置控件英文→中文切换；主窗口和设置窗口的语言与 localStorage 同步；本机 GET/POST 返回 200；服务端逐字断言 query 与 JSON 原文。
+- CodeMirror 输入由 Hasgard eval 调用真实编辑器 view.dispatch，经过原有 React 保存链路；普通按钮和选择器通过 Hasgard 操作。该回归不宣称验证物理键盘输入。
+- 结束应用后重新启动，核对中文偏好、JSON 请求体及 200 响应记录均保留。
+- 修复实测发现的“无环境”与认证页签英文回退、主窗口初始标题残留 Yaak。
+- 最新前端构建、lint/类型检查通过；i18n / 设置窗口标识 5 项回归通过。
+- Hasgard 默认原生截图的窗口选择返回错误，指定 native window id 可截图；本次不将截图结果作为像素级一致性验收。
+
+- `cargo clippy --workspace --features yaak-app-client/hasgard-testing` 通过（保留上游警告）。`cargo check -p yaak-app-client --features wry` 通过，生成的默认 capabilities 不含 `hasgard-testing`。

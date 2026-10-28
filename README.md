@@ -95,3 +95,18 @@ Built with [Tauri](https://tauri.app), Rust, and React, it’s fast, lightweight
 The source is [MIT licensed](LICENSE) and can be built and run for free, for both personal and commercial use.
 
 The prebuilt binaries follow Yaak's [pricing terms](https://yaak.app/pricing): free for personal use, license required for commercial use.
+
+### ApiCub Hasgard 调试
+
+使用 `cargo install tauri-hasgard-cli --version '^0.6' --locked` 安装 CLI。
+`npm run client:debug` 启动带 Hasgard 的开发模式；`npm run client:debug:build`
+生成 `target/debug/bundle/macos/ApiCub Test.app`。首次构建会执行原版 bootstrap。
+
+测试版使用 `com.nyssance.apicub.test` 独立数据目录。通过 `TAURI_HASGARD_SOCKET`
+指定 socket，随后运行 `tauri-hasgard --socket <路径> ping`、`windows`、
+`--window <窗口标签> snapshot` 或 `eval` 检查实际 WebView。
+Hasgard 仅随 `hasgard-testing` feature 注册，且仅在 debug 构建运行；默认产品构建不启用。
+
+启动打包测试版后，运行 `TAURI_HASGARD_SOCKET=<路径> npm run test:hasgard`，
+验证语言切换、跨窗口同步以及本机 GET/POST 的原始请求内容。脚本仅接受
+`com.nyssance.apicub.test`，会在测试工作区创建请求，不连接真实账号。

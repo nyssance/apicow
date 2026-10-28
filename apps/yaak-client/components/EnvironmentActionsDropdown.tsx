@@ -79,7 +79,7 @@ export const EnvironmentActionsDropdown = memo(function EnvironmentActionsDropdo
         {...buttonProps}
       >
         <EnvironmentColorIndicator environment={activeEnvironment ?? null} />
-        {activeEnvironment?.name ?? (hasBaseVars ? "Environment" : "No Environment")}
+        {activeEnvironment?.name ?? (hasBaseVars ? t("Environment") : t("No Environment"))}
       </Button>
     </Dropdown>
   );

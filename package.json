@@ -106,7 +106,10 @@
     "client:tauri-before-build": "npm run bootstrap",
     "client:tauri-before-dev": "node scripts/run-workspaces-dev.mjs apps/yaak-client",
     "proxy:tauri-before-build": "npm run bootstrap",
-    "proxy:tauri-before-dev": "node scripts/run-workspaces-dev.mjs apps/yaak-proxy"
+    "proxy:tauri-before-dev": "node scripts/run-workspaces-dev.mjs apps/yaak-proxy",
+    "client:debug": "node scripts/run-dev.mjs client --config crates-tauri/yaak-app-client/tauri.hasgard.conf.json",
+    "client:debug:build": "node scripts/run-build.mjs client --debug --bundles app --no-sign --config crates-tauri/yaak-app-client/tauri.development.conf.json --config crates-tauri/yaak-app-client/tauri.hasgard.conf.json",
+    "test:hasgard": "node scripts/test-hasgard.mjs"
   },
   "dependencies": {
     "@codemirror/lang-go": "^6.0.1",

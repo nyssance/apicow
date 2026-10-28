@@ -1266,6 +1266,11 @@ pub fn run() {
         .plugin(plugins_ext::init())
         .plugin(yaak_fonts::init());
 
+    #[cfg(all(feature = "hasgard-testing", debug_assertions))]
+    {
+        builder = builder.plugin(tauri_plugin_hasgard::init());
+    }
+
     #[cfg(feature = "license")]
     {
         builder = builder.plugin(yaak_license::init());

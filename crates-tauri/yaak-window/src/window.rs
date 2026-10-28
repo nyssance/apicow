@@ -54,6 +54,19 @@ pub fn create_window<R: Runtime>(
     let mut win_builder =
         tauri::WebviewWindowBuilder::new(handle, config.label, WebviewUrl::App(config.url.into()))
             .title(config.title)
+            .on_web_resource_request(|request, response| {
+                // Tauri content sniffing mistakes the PDF magic string inside our JS
+                // bundle for a PDF. Vite asset extensions are authoritative here.
+                if response.status().is_success()
+                    && request.uri().path().starts_with("/assets/")
+                    && request.uri().path().ends_with(".js")
+                {
+                    response.headers_mut().insert(
+                        tauri::http::header::CONTENT_TYPE,
+                        tauri::http::HeaderValue::from_static("text/javascript"),
+                    );
+                }
+            })
             .resizable(true)
             .visible(!config.hidden)
             .fullscreen(false)
@@ -162,7 +175,7 @@ pub fn create_main_window<R: Runtime>(
     let config = CreateWindowConfig {
         url,
         label: label.as_str(),
-        title: "Yaak",
+        title: "ApiCub",
         state_key: Some(MAIN_WINDOW_STATE_KEY.to_string()),
         inner_size: Some((DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)),
         position: Some((
