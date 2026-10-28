@@ -308,16 +308,14 @@ async fn start_integrated_update<R: Runtime>(
     let ack_timer = sleep(ack_wait);
     tokio::pin!(ack_timer);
 
-    loop {
-        tokio::select! {
-            msg = rx.recv() => match msg {
-                Some(UpdateResponse::Ack) => break, // proceed to Phase 2
-                Some(UpdateResponse::Action{action}) => return Ok(action), // user was fast
-                None => return Err(GenericError("frontend channel closed before ack".into())),
-            },
-            _ = &mut ack_timer => {
-                return Err(GenericError("timed out waiting for frontend ack".into()));
-            }
+    tokio::select! {
+        msg = rx.recv() => match msg {
+            Some(UpdateResponse::Ack) => {}, // proceed to Phase 2
+            Some(UpdateResponse::Action{action}) => return Ok(action), // user was fast
+            None => return Err(GenericError("frontend channel closed before ack".into())),
+        },
+        _ = &mut ack_timer => {
+            return Err(GenericError("timed out waiting for frontend ack".into()));
         }
     }
 
