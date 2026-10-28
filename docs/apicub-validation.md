@@ -113,3 +113,16 @@
 系统证书、HTTPS CONNECT/SOCKS、其他认证和导入冲突全分支仍未覆盖。
 
 验证结果：更新后的 macOS Test 打包完成，三套 Hasgard 原生脚本通过；全量前端 80 文件 / 1025 项通过；npm workspace 测试、lint/类型检查及客户端 Clippy 通过（保留上游警告）。全量测试发现 JSONPath 测试用不完整 View 调用 forceParsing 的时序问题，改用 ensureSyntaxTree 和真实 State transaction，断言不变；语言测试等待重载后的控件与中文内容，避免 DOM lang 已更新但组件尚未就绪的竞态。
+
+### 失败路径进一步验证
+
+- Git：带未提交修改的拉取返回 `uncommitted_changes`，文件和 HEAD 不变；本地 / 远端各有新提交时，推送被拒绝且远端 HEAD 不变，拉取返回 `diverged` 且保留本地文件与提交。
+- gRPC：增加发送端仍开放时取消及四种调用形态的权限拒绝。复现单次调用把服务端 `PERMISSION_DENIED`（7）错误记录为 `UNKNOWN`（2）；原因是 unary / streaming / server_streaming 使用 TonicError，而应用只从 GrpcStreamError 提取原始状态。统一这些请求路径的错误封装，保留状态码、消息和元数据；客户端流原本已使用该封装。
+- 中文设置检查覆盖通用、主题、界面、快捷键、插件、智能体、证书和代理的当前默认页面。补齐快捷键列表 `Sidebar` 与 `Duplicate Request` 两项漏译并增加原生断言；主题名称、示例代码、第三方插件名称及既有 CLI 命令保留原文。此检查不等于所有弹窗、隐藏分支或像素一致性验收。
+
+补充实测：带认证的 HTTPS CONNECT 代理通过本机隧道访问双向 TLS 服务，核对 CONNECT 目标、代理认证标头、服务端客户端证书身份和响应原文；目标服务器没有收到 Proxy-Authorization。原先 HTTPS CONNECT 未覆盖项已补齐，SOCKS 仍未测。
+四种 gRPC 权限拒绝均返回状态 7 与原始 `fixture denied`；普通取消和半关闭取消均返回状态 1。新版 Test 应用中文快捷键断言通过。Rust gRPC 库 4 项测试与 Clippy 通过，前端全量仍为 80 文件 / 1025 项通过。
+
+当前仍不是最佳：尚无与原版 Yaak 的同机性能对比；浏览器 OAuth/PKCE、其余认证、SOCKS、Git 文件同步 UI 和全界面隐藏分支未完成原生验证。优先继续这些兼容性验证，再做性能基准；不以本轮测试通过声称所有官方功能已完全验收。
+
+最终 Test / Dev 两种 macOS 包均重建成功，三套原生脚本全部通过；lint/类型检查通过（3 项原有警告）。Dev 的 Cargo features 为 default/wry，对应 OUT_DIR capabilities 只有 default，不包含 Hasgard。注意源码目录 gen/schemas 是多构建共享的编辑器产物，可能留有 Test 记录；实际 Tauri context 读取对应构建的 OUT_DIR/capabilities.json，不能用共享 schema 判断产品权限。

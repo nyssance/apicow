@@ -1309,5 +1309,7 @@
   "WebSocket Error": "WebSocket 错误",
   "Message Sent": "发送的消息",
   "Environment": "环境",
-  "Untitled": "未命名"
+  "Untitled": "未命名",
+  "Sidebar": "侧栏",
+  "Duplicate Request": "复制请求"
 }

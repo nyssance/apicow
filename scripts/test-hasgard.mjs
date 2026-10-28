@@ -98,6 +98,14 @@ await until(
   "English shortcut search retained",
 );
 hasgard(settings, "fill", 'input[placeholder="筛选快捷键…"]', "");
+await until(
+  () => evaluate(settings, 'document.querySelector("table")?.innerText.includes("复制请求")'),
+  "all shortcut labels restored after clearing filter",
+);
+assert.equal(
+  evaluate(settings, '/Sidebar|Duplicate Request/.test(document.querySelector("table").innerText)'),
+  false,
+);
 hasgard(main, "click", 'button[title="添加资源"]');
 clickText(main, "HTTP");
 await until(() => evaluate(main, '!!document.querySelector("form .cm-content")'), "request editor");

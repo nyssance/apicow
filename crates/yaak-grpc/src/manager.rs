@@ -124,7 +124,7 @@ impl GrpcConnection {
         let codec = DynamicCodec::new(method.clone());
         client.ready().await.map_err(|e| GenericError(format!("Failed to connect: {}", e)))?;
 
-        Ok(client.unary(req, path, codec).await?)
+        Ok(client.unary(req, path, codec).await.map_err(GrpcStreamError::from)?)
     }
 
     pub async fn serialize_message(
@@ -231,7 +231,7 @@ impl GrpcConnection {
         decorate_req(metadata, &mut req)?;
 
         client.ready().await.map_err(|e| GenericError(format!("Failed to connect: {}", e)))?;
-        Ok(client.streaming(req, path, codec).await?)
+        Ok(client.streaming(req, path, codec).await.map_err(GrpcStreamError::from)?)
     }
 
     pub async fn client_streaming<F>(
@@ -333,7 +333,7 @@ impl GrpcConnection {
         let path = method_desc_to_path(method);
         let codec = DynamicCodec::new(method.clone());
         client.ready().await.map_err(|e| GenericError(format!("Failed to connect: {}", e)))?;
-        Ok(client.server_streaming(req, path, codec).await?)
+        Ok(client.server_streaming(req, path, codec).await.map_err(GrpcStreamError::from)?)
     }
 }
 
