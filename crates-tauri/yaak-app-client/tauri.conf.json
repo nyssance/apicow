@@ -1,7 +1,7 @@
 {
   "productName": "ApiCub",
   "version": "0.0.0",
-  "identifier": "com.nyssance.apicub",
+  "identifier": "day.dreamer.apicow",
   "build": {
     "beforeBuildCommand": "npm --prefix ../.. run client:tauri-before-build",
     "beforeDevCommand": "npm --prefix ../.. run client:tauri-before-dev",

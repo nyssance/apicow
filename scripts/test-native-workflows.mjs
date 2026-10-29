@@ -16,7 +16,7 @@ const requireRuntime = createRequire(
 const { WebSocketServer } = requireRuntime("ws");
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 assert.ok(main);
-assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "day.dreamer.apicow.test");
 assert.equal(evaluate(main, "document.documentElement.lang"), "zh-CN", "Run test:hasgard first");
 const received = [];
 const server = createServer((req, res) => {

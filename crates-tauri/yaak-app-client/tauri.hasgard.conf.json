@@ -1,6 +1,6 @@
 {
   "productName": "ApiCub Test",
-  "identifier": "com.nyssance.apicub.test",
+  "identifier": "day.dreamer.apicow.test",
   "build": { "features": ["hasgard-testing"] },
   "bundle": { "createUpdaterArtifacts": false },
   "plugins": { "deep-link": { "desktop": { "schemes": ["apicub-test"] } } }

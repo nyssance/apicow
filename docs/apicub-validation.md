@@ -39,7 +39,7 @@
 
 ## Hasgard 原生回归（2026-10-29）
 
-- `tauri-plugin-hasgard = "0.6"`，锁定 0.6.2；通过 `hasgard-testing` feature 接入，独立应用标识 `com.nyssance.apicub.test`。默认构建不注册调试桥、不包含 Hasgard capability。
+- `tauri-plugin-hasgard = "0.6"`，锁定 0.6.2；通过 `hasgard-testing` feature 接入，独立应用标识 `day.dreamer.apicow.test`。默认构建不注册调试桥、不包含 Hasgard capability。
 - 实测发现 Tauri 内容探测把包含 PDF magic 的 JS 分块误判为 `application/pdf`，导致进入工作区出现路由错误。现在对成功返回的内置 `/assets/*.js` 明确设置 `text/javascript`，工作区正常加载；协议响应和用户数据不受影响。
 - `npm run test:hasgard` 在真实打包的 macOS Wry WebView 中通过：创建 HTTP 请求；设置控件英文→中文切换；主窗口和设置窗口的语言与 localStorage 同步；本机 GET/POST 返回 200；服务端逐字断言 query 与 JSON 原文。
 - CodeMirror 输入由 Hasgard eval 调用真实编辑器 view.dispatch，经过原有 React 保存链路；普通按钮和选择器通过 Hasgard 操作。该回归不宣称验证物理键盘输入。
