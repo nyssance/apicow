@@ -175,7 +175,7 @@ pub fn create_main_window<R: Runtime>(
     let config = CreateWindowConfig {
         url,
         label: label.as_str(),
-        title: "ApiCub",
+        title: "ApiCow",
         state_key: Some(MAIN_WINDOW_STATE_KEY.to_string()),
         inner_size: Some((DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)),
         position: Some((

@@ -1,5 +1,5 @@
 {
-  "productName": "ApiCub Dev",
+  "productName": "ApiCow Dev",
   "identifier": "day.dreamer.apicow.dev",
   "bundle": {
     "icon": [
@@ -13,7 +13,7 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["apicub-dev"]
+        "schemes": ["apicow-dev"]
       }
     }
   }

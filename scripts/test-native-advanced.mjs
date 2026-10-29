@@ -12,16 +12,16 @@ import { loadSync } from "@grpc/proto-loader";
 import { hasgard, hasgardAsync, until } from "./lib/hasgard.mjs";
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 assert.ok(main);
-assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "day.dreamer.apicow.test");
 const rpc = (cmd, payload) =>
   hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
-const dir = await mkdtemp(join(tmpdir(), "apicub-advanced-"));
+const dir = await mkdtemp(join(tmpdir(), "apicow-advanced-"));
 const servers = [];
 const tunnelSockets = new Set();
 const grpcServer = new grpc.Server();
 const settings = await rpc("models_get_settings", {});
 const workspaceId = await rpc("models_upsert", {
-  model: { model: "workspace", name: "ApiCub 高风险回归" },
+  model: { model: "workspace", name: "ApiCow 高风险回归" },
 });
 const send = (request) =>
   rpc("cmd_send_ephemeral_request", { request, environmentId: null, cookieJarId: null });
@@ -40,7 +40,7 @@ try {
   const seed = join(dir, "seed");
   git(dir, "clone", remote, seed);
   const identity = (cwd) => {
-    git(cwd, "config", "user.name", "ApiCub Test");
+    git(cwd, "config", "user.name", "ApiCow Test");
     git(cwd, "config", "user.email", "test@example.invalid");
   };
   identity(seed);
@@ -210,7 +210,7 @@ try {
     return { key, cert };
   };
   const serverCert = makeCert("localhost");
-  const clientCert = makeCert("apicub-test-client");
+  const clientCert = makeCert("apicow-test-client");
   let verified = 0;
   const tls = createHttpsServer(
     {
@@ -222,7 +222,7 @@ try {
     },
     (req, res) => {
       assert.ok(req.socket.authorized);
-      assert.equal(req.socket.getPeerCertificate().subject.CN, "apicub-test-client");
+      assert.equal(req.socket.getPeerCertificate().subject.CN, "apicow-test-client");
       assert.equal(req.headers["proxy-authorization"], undefined);
       verified++;
       res.end("双向 TLS");
@@ -327,12 +327,12 @@ try {
   const proto = join(dir, "stream.proto");
   await writeFile(
     proto,
-    'syntax="proto3"; package apicub; message Message { string text=1; } service Stream { rpc Client(stream Message) returns(Message); rpc Bidi(stream Message) returns(stream Message); rpc HalfClose(stream Message) returns(stream Message); rpc CancelOpen(stream Message) returns(stream Message); rpc Denied(Message) returns(Message); rpc DeniedClient(stream Message) returns(Message); rpc DeniedBidi(stream Message) returns(stream Message); rpc DeniedStream(Message) returns(stream Message); }',
+    'syntax="proto3"; package apicow; message Message { string text=1; } service Stream { rpc Client(stream Message) returns(Message); rpc Bidi(stream Message) returns(stream Message); rpc HalfClose(stream Message) returns(stream Message); rpc CancelOpen(stream Message) returns(stream Message); rpc Denied(Message) returns(Message); rpc DeniedClient(stream Message) returns(Message); rpc DeniedBidi(stream Message) returns(stream Message); rpc DeniedStream(Message) returns(stream Message); }',
   );
   const def = grpc.loadPackageDefinition(loadSync(proto));
   let halfClosed = false;
   let cancelled = false;
-  grpcServer.addService(def.apicub.Stream.service, {
+  grpcServer.addService(def.apicow.Stream.service, {
     Client(call, cb) {
       const messages = [];
       call.on("data", (m) => messages.push(m.text));
@@ -394,7 +394,7 @@ try {
         workspaceId,
         name: method,
         url: `http://127.0.0.1:${grpcPort}`,
-        service: "apicub.Stream",
+        service: "apicow.Stream",
         method,
       },
     });

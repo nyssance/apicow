@@ -1,7 +1,7 @@
 {
-  "productName": "ApiCub Test",
+  "productName": "ApiCow Test",
   "identifier": "day.dreamer.apicow.test",
   "build": { "features": ["hasgard-testing"] },
   "bundle": { "createUpdaterArtifacts": false },
-  "plugins": { "deep-link": { "desktop": { "schemes": ["apicub-test"] } } }
+  "plugins": { "deep-link": { "desktop": { "schemes": ["apicow-test"] } } }
 }

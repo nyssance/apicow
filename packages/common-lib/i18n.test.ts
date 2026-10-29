@@ -2,7 +2,7 @@ import { describe, expect, test } from "vite-plus/test";
 import { resolveLocale, translate } from "./i18n";
 import zhCN from "./locales/zh-CN.json";
 
-describe("ApiCub interface language", () => {
+describe("ApiCow interface language", () => {
   test("respects the saved choice and otherwise follows the primary system language", () => {
     expect(resolveLocale("en", ["zh-CN"])).toBe("en");
     expect(resolveLocale("zh-CN", ["en-US"])).toBe("zh-CN");

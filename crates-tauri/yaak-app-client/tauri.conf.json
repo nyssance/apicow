@@ -1,5 +1,5 @@
 {
-  "productName": "ApiCub",
+  "productName": "ApiCow",
   "version": "0.0.0",
   "identifier": "day.dreamer.apicow",
   "build": {
@@ -23,7 +23,7 @@
   "plugins": {
     "deep-link": {
       "desktop": {
-        "schemes": ["apicub"]
+        "schemes": ["apicow"]
       }
     }
   },

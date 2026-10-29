@@ -24,7 +24,7 @@ window.addEventListener("storage", (event) => {
     .catch(console.error);
 });
 document.documentElement.lang = getLocale();
-void platform.emit("apicub-locale", getLocale());
+void platform.emit("apicow-locale", getLocale());
 
 const osType = platform.osType();
 setPlatformOnDocument(osType);

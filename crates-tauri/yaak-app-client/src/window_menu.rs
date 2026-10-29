@@ -31,11 +31,11 @@ fn text(source: &'static str) -> &'static str {
         "Minimize" => "最小化",
         "Maximize" => "缩放",
         "Close Window" => "关闭窗口",
-        "About ApiCub" => "关于 ApiCub",
+        "About ApiCow" => "关于 ApiCow",
         "Services" => "服务",
-        "Hide ApiCub" => "隐藏 ApiCub",
+        "Hide ApiCow" => "隐藏 ApiCow",
         "Hide Others" => "隐藏其他",
-        "Quit ApiCub" => "退出 ApiCub",
+        "Quit ApiCow" => "退出 ApiCow",
         "Undo" => "撤销",
         "Redo" => "重做",
         "Cut" => "剪切",
@@ -93,7 +93,7 @@ pub fn app_menu<R: Runtime>(app_handle: &AppHandle<R>) -> tauri::Result<Menu<R>>
             #[cfg(not(target_os = "macos"))]
             &PredefinedMenuItem::about(
                 app_handle,
-                Some(text("About ApiCub")),
+                Some(text("About ApiCow")),
                 Some(about_metadata.clone()),
             )?,
             #[cfg(target_os = "macos")]
@@ -118,7 +118,7 @@ pub fn app_menu<R: Runtime>(app_handle: &AppHandle<R>) -> tauri::Result<Menu<R>>
                 &[
                     &PredefinedMenuItem::about(
                         app_handle,
-                        Some(text("About ApiCub")),
+                        Some(text("About ApiCow")),
                         Some(about_metadata),
                     )?,
                     &PredefinedMenuItem::separator(app_handle)?,
@@ -128,14 +128,14 @@ pub fn app_menu<R: Runtime>(app_handle: &AppHandle<R>) -> tauri::Result<Menu<R>>
                     &PredefinedMenuItem::separator(app_handle)?,
                     &PredefinedMenuItem::services(app_handle, Some(text("Services")))?,
                     &PredefinedMenuItem::separator(app_handle)?,
-                    &PredefinedMenuItem::hide(app_handle, Some(text("Hide ApiCub")))?,
+                    &PredefinedMenuItem::hide(app_handle, Some(text("Hide ApiCow")))?,
                     &PredefinedMenuItem::hide_others(app_handle, Some(text("Hide Others")))?,
                     &PredefinedMenuItem::separator(app_handle)?,
                     // NOTE: Replace the predefined quit item with a custom one because, for some
                     //  reason, ExitRequested events are not fired on cmd+Q. Perhaps this will be
                     //  fixed in the future?
                     //  https://github.com/tauri-apps/tauri/issues/9198
-                    &MenuItemBuilder::with_id("hacked_quit".to_string(), text("Quit ApiCub"))
+                    &MenuItemBuilder::with_id("hacked_quit".to_string(), text("Quit ApiCow"))
                         .accelerator("CmdOrCtrl+q")
                         .build(app_handle)?,
                 ],
@@ -154,7 +154,7 @@ pub fn app_menu<R: Runtime>(app_handle: &AppHandle<R>) -> tauri::Result<Menu<R>>
                 &[
                     &PredefinedMenuItem::close_window(app_handle, Some(text("Close Window")))?,
                     #[cfg(not(target_os = "macos"))]
-                    &PredefinedMenuItem::quit(app_handle, Some(text("Quit ApiCub")))?,
+                    &PredefinedMenuItem::quit(app_handle, Some(text("Quit ApiCow")))?,
                 ],
             )?,
             &Submenu::with_items(

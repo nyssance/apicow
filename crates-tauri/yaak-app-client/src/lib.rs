@@ -179,7 +179,7 @@ async fn cmd_metadata<R: Runtime>(app_handle: AppHandle<R>) -> YaakResult<AppMet
     let app_log_dir = app_handle.path().app_log_dir()?;
     let vendored_plugin_dir =
         app_handle.path().resolve("vendored/plugins", BaseDirectory::Resource)?;
-    let default_project_dir = app_handle.path().home_dir()?.join("ApiCubProjects");
+    let default_project_dir = app_handle.path().home_dir()?.join("ApiCowProjects");
     let cli_version = detect_cli_version().await;
     Ok(AppMetaData {
         is_dev: is_dev(),
@@ -1293,7 +1293,7 @@ pub fn run() {
     builder
         .setup(|app| {
             let locale_handle = app.handle().clone();
-            app.listen("apicub-locale", move |event| {
+            app.listen("apicow-locale", move |event| {
                 if let Ok(locale) = serde_json::from_str::<String>(event.payload()) {
                     if locale != "en" && locale != "zh-CN" {
                         return;

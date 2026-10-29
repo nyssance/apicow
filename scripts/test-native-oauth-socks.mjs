@@ -6,7 +6,7 @@ import { createServer as createTcpServer, connect } from "node:net";
 import { hasgard, hasgardAsync } from "./lib/hasgard.mjs";
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 assert.ok(main);
-assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "day.dreamer.apicow.test");
 const rpc = (cmd, payload) =>
   hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
 const saved = await rpc("models_get_settings", {});
@@ -15,7 +15,7 @@ const workspaceId = await rpc("models_upsert", {
 });
 const sockets = new Set();
 const seen = { authorize: [], token: [], protected: [], socks: [] };
-const verifier = "apicub-local-pkce-verifier-abcdefghijklmnopqrstuvwxyz0123456789";
+const verifier = "apicow-local-pkce-verifier-abcdefghijklmnopqrstuvwxyz0123456789";
 let base;
 const http = createServer((req, res) => {
   const url = new URL(req.url, base);

@@ -7,19 +7,19 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
 import { hasgard, hasgardAsync, until } from "./lib/hasgard.mjs";
-const binary = resolve("target/debug/bundle/macos/ApiCub Test.app/Contents/MacOS/yaak-app-client");
+const binary = resolve("target/debug/bundle/macos/ApiCow Test.app/Contents/MacOS/yaak-app-client");
 let main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 const rpc = (cmd, payload) =>
   hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
 const identify = () =>
-  assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+  assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "day.dreamer.apicow.test");
 identify();
-const dir = await mkdtemp(join(tmpdir(), "apicub-recovery-"));
+const dir = await mkdtemp(join(tmpdir(), "apicow-recovery-"));
 const syncDir = join(dir, "sync");
 await mkdir(syncDir);
 let appPid;
 function findAppPid() {
-  const pids = execFileSync("pgrep", ["-f", "ApiCub Test.app/Contents/MacOS/yaak-app-client$"], {
+  const pids = execFileSync("pgrep", ["-f", "ApiCow Test.app/Contents/MacOS/yaak-app-client$"], {
     encoding: "utf8",
   })
     .trim()
@@ -29,7 +29,7 @@ function findAppPid() {
   const command = execFileSync("ps", ["-p", String(pids[0]), "-o", "comm="], {
     encoding: "utf8",
   }).trim();
-  assert.ok(command.endsWith("ApiCub Test.app/Contents/MacOS/yaak-app-client"));
+  assert.ok(command.endsWith("ApiCow Test.app/Contents/MacOS/yaak-app-client"));
   return pids[0];
 }
 async function killTest() {
@@ -59,7 +59,7 @@ async function restart() {
     main = windows.windows.find((w) => w.label.startsWith("main_"))?.label;
     return (
       main &&
-      (await hasgardAsync(main, "ipc", "plugin:app|identifier")) === "com.nyssance.apicub.test"
+      (await hasgardAsync(main, "ipc", "plugin:app|identifier")) === "day.dreamer.apicow.test"
     );
   }, "Test app restarted");
 }
@@ -170,7 +170,7 @@ try {
     `PASS: interrupted sync (${published.length} published files), complete YAML, restart reconciliation without data loss`,
   );
   git("init", "--initial-branch=main");
-  git("config", "user.name", "ApiCub Test");
+  git("config", "user.name", "ApiCow Test");
   git("config", "user.email", "test@example.invalid");
   await writeFile(join(gitDir, "api.json"), '{"text":"提交恢复 中文 Settings"}\n');
   await rpc("cmd_git_add", { dir: gitDir, relaPaths: ["api.json"] });

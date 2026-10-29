@@ -1,7 +1,7 @@
 import zhCN from "./locales/zh-CN.json";
 
 export type Locale = "en" | "zh-CN";
-export const localeStorageKey = "apicub.locale";
+export const localeStorageKey = "apicow.locale";
 
 export function resolveLocale(saved: string | null, languages: readonly string[]): Locale {
   if (saved === "en" || saved === "zh-CN") return saved;
@@ -19,14 +19,14 @@ export function getLocale(): Locale {
 }
 
 const englishBranding: Record<string, string> = {
-  Yaak: "ApiCub",
-  "Yaak Settings": "ApiCub Settings",
-  "Yaak v{{p0}}": "ApiCub v{{p0}}",
-  "Font used for Yaak interface controls.": "Font used for ApiCub interface controls.",
-  "Plugins extend the functionality of Yaak.": "Plugins extend the functionality of ApiCub.",
-  "Relaunch Yaak": "Relaunch ApiCub",
-  "Try Yaak with a real API": "Try ApiCub with a real API",
-  "Yaak response preview": "ApiCub response preview",
+  Yaak: "ApiCow",
+  "Yaak Settings": "ApiCow Settings",
+  "Yaak v{{p0}}": "ApiCow v{{p0}}",
+  "Font used for Yaak interface controls.": "Font used for ApiCow interface controls.",
+  "Plugins extend the functionality of Yaak.": "Plugins extend the functionality of ApiCow.",
+  "Relaunch Yaak": "Relaunch ApiCow",
+  "Try Yaak with a real API": "Try ApiCow with a real API",
+  "Yaak response preview": "ApiCow response preview",
 };
 
 /** Translate explicit UI copy only. Request payloads, IDs and user text never pass through this API. */

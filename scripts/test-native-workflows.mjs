@@ -28,7 +28,7 @@ const server = createServer((req, res) => {
   req.on("end", () => {
     received.push({ url: req.url, method: req.method, headers: req.headers, body });
     if (req.url === "/redirect") {
-      res.writeHead(302, { Location: "/cookie", "Set-Cookie": "apicub_test=local-safe; Path=/" });
+      res.writeHead(302, { Location: "/cookie", "Set-Cookie": "apicow_test=local-safe; Path=/" });
       // Cookie header values must be ASCII; the payload checks cover Unicode.
       res.end();
     } else if (req.url === "/events") {
@@ -52,7 +52,7 @@ await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
 const base = `http://127.0.0.1:${server.address().port}`;
 let tlsServer;
 const grpcServer = new grpc.Server();
-const dir = await mkdtemp(join(tmpdir(), "apicub-workflows-"));
+const dir = await mkdtemp(join(tmpdir(), "apicow-workflows-"));
 function rpc(cmd, payload) {
   return hasgard(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
 }
@@ -178,7 +178,7 @@ try {
       auth: {
         type: "apikey",
         apikey: [
-          { key: "key", value: "X-ApiCub-Key" },
+          { key: "key", value: "X-ApiCow-Key" },
           { key: "value", value: "local-key" },
           { key: "in", value: "header" },
         ],
@@ -199,7 +199,7 @@ try {
   ];
   const postman = {
     info: {
-      name: "ApiCub 原生回归",
+      name: "ApiCow 原生回归",
       schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     },
     item: fixtures.map((f) => ({
@@ -222,11 +222,11 @@ try {
     (await send(fixtures[1].name, "/bearer"))[0].headers.authorization,
     "Bearer local-test-token",
   );
-  assert.equal((await send(fixtures[2].name, "/key"))[0].headers["x-apicub-key"], "local-key");
+  assert.equal((await send(fixtures[2].name, "/key"))[0].headers["x-apicow-key"], "local-key");
   assert.equal((await send(fixtures[3].name, "/json"))[0].body, fixtures[3].body.raw);
   const redirect = await send(fixtures[4].name, "/redirect");
   await until(() => received.at(-1)?.url === "/cookie", "redirect followed");
-  assert.equal(received.at(-1).headers.cookie, "apicub_test=local-safe");
+  assert.equal(received.at(-1).headers.cookie, "apicow_test=local-safe");
   assert.equal(redirect[0].url, "/redirect");
   await send(fixtures[5].name, "/events");
   await until(
@@ -348,11 +348,11 @@ try {
   const protoFile = join(dir, "echo.proto");
   await writeFile(
     protoFile,
-    'syntax = "proto3"; package apicub; service Echo { rpc Unary (Message) returns (Message); rpc Stream (Message) returns (stream Message); } message Message { string text = 1; }',
+    'syntax = "proto3"; package apicow; service Echo { rpc Unary (Message) returns (Message); rpc Stream (Message) returns (stream Message); } message Message { string text = 1; }',
   );
   const definition = grpc.loadPackageDefinition(loadSync(protoFile));
   const grpcRequests = [];
-  grpcServer.addService(definition.apicub.Echo.service, {
+  grpcServer.addService(definition.apicow.Echo.service, {
     Unary(call, callback) {
       grpcRequests.push(call.request);
       callback(null, call.request);
@@ -380,7 +380,7 @@ try {
     workspaceId: "wk_grpc_fixture",
     name: method + " 中文",
     url: `http://127.0.0.1:${grpcPort}`,
-    service: "apicub.Echo",
+    service: "apicow.Echo",
     method,
     message: JSON.stringify({ text: "原始中文 Settings" }),
   }));
@@ -398,7 +398,7 @@ try {
       "--args",
       JSON.stringify({ cmd: "cmd_grpc_reflect", payload }),
     );
-    assert.ok(services.some((service) => service.name === "apicub.Echo"));
+    assert.ok(services.some((service) => service.name === "apicow.Echo"));
     const connectionId = await hasgardAsync(
       main,
       "ipc",

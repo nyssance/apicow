@@ -1,4 +1,4 @@
-# ApiCub 性能基线
+# ApiCow 性能基线
 
 2026-10-29，Apple M4 / macOS Darwin 27.2.0 / arm64。代码版本 `f16429a84116b80a36fca55d83d2ff57640fa272`，采样时工作区干净，已结束本轮构建和测试进程。
 
@@ -11,10 +11,10 @@
 
 应用内部耗时取真实响应的 `elapsed` 字段，只有毫秒精度；不能从 1 ms 推断亚毫秒性能。含调试桥耗时还包含 Hasgard CLI 启动、IPC 和响应字节的 JSON 传输，不能当作用户界面响应时间。
 
-这是可重复的 ApiCub 自身基线，没有运行同条件的原版 Yaak，也不是发布版、并发吞吐、首启、内存或大工作区基准。因此不能据此宣称比 Yaak 更快或性能最佳。
+这是可重复的 ApiCow 自身基线，没有运行同条件的原版 Yaak，也不是发布版、并发吞吐、首启、内存或大工作区基准。因此不能据此宣称比 Yaak 更快或性能最佳。
 
-复现：先启动隔离的 ApiCub Test 应用，结束本机编译和其他测试，再运行：
+复现：先启动隔离的 ApiCow Test 应用，结束本机编译和其他测试，再运行：
 
 ```sh
-TAURI_HASGARD_SOCKET=/tmp/apicub-hasgard.sock npm run bench:native -- /tmp/apicub-benchmark.json
+TAURI_HASGARD_SOCKET=/tmp/apicow-hasgard.sock npm run bench:native -- /tmp/apicow-benchmark.json
 ```

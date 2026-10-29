@@ -8,7 +8,7 @@ const main = await until(
 );
 assert.equal(
   await until(() => hasgard(main, "ipc", "plugin:app|identifier"), "Test bridge"),
-  "com.nyssance.apicub.test",
+  "day.dreamer.apicow.test",
 );
 const rpc = (cmd, payload) =>
   hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));

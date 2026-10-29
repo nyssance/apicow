@@ -1,4 +1,4 @@
-# ApiCub 第一阶段验证
+# ApiCow 第一阶段验证
 
 日期：2026-10-29。上游基线：`mountain-loop/yaak@4abc882e131e2fd29412cfbc701767bbed0f5c48`。
 
@@ -8,7 +8,7 @@
 
 - 使用 GitCub 同系列 Tauri 3 alpha 依赖；macOS Wry 构建。
 - 简体中文 / English 界面切换，用户语言偏好持久化，原生菜单跟随语言。
-- ApiCub 应用名称、应用标识、数据目录、深链接和更新配置隔离。
+- ApiCow 应用名称、应用标识、数据目录、深链接和更新配置隔离。
 - 保留上游布局、SQLite、请求协议、插件接口及 MIT 版权声明。
 
 ## 已执行
@@ -23,19 +23,19 @@
 - 更新等待逻辑修正后，`cargo test -p yaak-app-client --lib --features wry`：17 项通过。
 - OpenAPI roundtrip：5 份上游规范、107 个请求通过 mock 校验；保留脚本自身对 httpbin redirect-to 的 known 标记。
 - `npm run vendor`：成功生成插件和运行时资源。
-- Tauri CLI 生成未签名的 `target/debug/bundle/macos/ApiCub Dev.app`；构建成功。
+- Tauri CLI 生成未签名的 `target/debug/bundle/macos/ApiCow Dev.app`；构建成功。
 - 直接运行开发二进制：插件宿主启动并响应认证 / 模板函数 RPC。
 
 ## 未完成的验证与边界
 
-- 原电脑控制工具拒绝访问 ApiCub Dev；按用户要求改用 Hasgard 0.6.2，已完成下述打包版原生回归。
+- 原电脑控制工具拒绝访问 ApiCow Dev；按用户要求改用 Hasgard 0.6.2，已完成下述打包版原生回归。
 - 未验证 CEF、Windows、Linux、发布签名、公证或自动更新分发。
 - Tauri 3 仍为 alpha 版本。第三方插件自有文本及底层诊断可能仍显示英文；原版图标暂保留。
 - 当前是开发阶段交付，不宣称已达到稳定发行版或完整替代 Apifox。
 
 ## 仓库
 
-开发进展持续提交到私有仓库 `nyssance/apicub`，保留 `upstream` 溯源。不自动创建版本标签或发布产品。
+开发进展持续提交到私有仓库 `nyssance/apicow`，保留 `upstream` 溯源。不自动创建版本标签或发布产品。
 
 ## Hasgard 原生回归（2026-10-29）
 
@@ -53,14 +53,14 @@
 ## 中文界面收尾
 
 - 快捷键名称和作用域中文化，筛选同时匹配中文显示名和原版英文 ID；保存的快捷键 ID 与按键组合保持不变。
-- 补齐继承标头、原生下拉默认值标记、横向 / 纵向布局提示；英文应用菜单版本及界面说明使用 ApiCub 名称。
+- 补齐继承标头、原生下拉默认值标记、横向 / 纵向布局提示；英文应用菜单版本及界面说明使用 ApiCow 名称。
 - 全量前端测试再次通过：80 个文件、1025 项；lint / 类型检查与前端生产构建通过。
 - 扩展并通过 `npm run test:hasgard`：中文“发送当前请求”能定位动作，英文 `request send` 仍能筛选同一动作；原有语言切换、GET/POST 校验继续通过。
 - 修正回归脚本首次进入工作区分支的选择器引号。保留原版布局及组件库，未引入 shadcn。
 
 ## 扩展原生功能回归（2026-10-29）
 
-入口：先启动 `ApiCub Test.app` 并设置 `TAURI_HASGARD_SOCKET`，依次运行
+入口：先启动 `ApiCow Test.app` 并设置 `TAURI_HASGARD_SOCKET`，依次运行
 `npm run test:hasgard` 与 `npm run test:native-workflows`。
 后者使用本机 HTTP、WebSocket、gRPC 和 HTTPS 服务、虚构凭据及临时夹具。
 测试使用的证书和夹具在结束时移除；测试工作区保留在隔离的 Test 应用中便于检查。
@@ -80,7 +80,7 @@
 | TLS                      | 真实 Rust 请求引擎拒绝不可信自签名证书；仅该次临时请求显式关闭校验后可读取回显，未关闭全局校验                                                         |
 | HTTP 代理                | 实际配置和请求引擎，核对代理收到 absolute-form URL 和 Proxy-Authorization；命中绕过规则后核对 origin-form URL 且不泄露代理认证标头                     |
 
-这些是 ApiCub 独有的端到端回归，基于保留的上游功能，并非宣称一比一移植全部上游测试。
+这些是 ApiCow 独有的端到端回归，基于保留的上游功能，并非宣称一比一移植全部上游测试。
 来源调用链包括 `ImportDataDialog → cmd_import_data/cmd_commit_import`、
 `ExportDataDialog → cmd_export_data → yaak-models/export.rs`、
 `plugins/auth-{basic,bearer,apikey}`、`WebsocketRequestPane`、
@@ -110,7 +110,7 @@
 - 真实复现 `cmd_grpc_go` 的取消缺陷：Commit 丢弃发送端后，Cancel 被发送端存在性检查提前返回。修复为先解析并处理 Cancel，再检查发送端。旧构建稳定超时 `HalfClose finishes`；新构建同一用例通过，状态为 1（Cancelled）。
 - `until` 支持等待异步断言，避免 Promise 被误判为条件已满足。
 
-这些是 ApiCub 新增的原生集成回归，不代表官方没有相应测试，也不是上游覆盖率审计。
+这些是 ApiCow 新增的原生集成回归，不代表官方没有相应测试，也不是上游覆盖率审计。
 此前列出的 Git、OAuth 和 gRPC 缺口按上述实际执行层收窄；浏览器 OAuth、Git 文件同步 UI、
 系统证书、HTTPS CONNECT/SOCKS、其他认证和导入冲突全分支仍未覆盖。
 
@@ -186,9 +186,9 @@ SOCKS5h 使用本机协议服务器，验证用户名密码握手、成功响应
 
 ## 外部授权页的品牌、中文与结果提示（2026-10-29）
 
-本地回调页标题改为 ApiCub，添加 UTF-8 声明；发送中、已收到回调和发送失败提示按外部浏览器的主要语言显示简体中文或英文。此页面不共享应用 localStorage，因而跟随浏览器语言，而不是应用内显式语言选择；没有新增插件 API 或访问应用设置。
+本地回调页标题改为 ApiCow，添加 UTF-8 声明；发送中、已收到回调和发送失败提示按外部浏览器的主要语言显示简体中文或英文。此页面不共享应用 localStorage，因而跟随浏览器语言，而不是应用内显式语言选择；没有新增插件 API 或访问应用设置。
 
-修正误导提示：本地服务器收到 POST 只表示回调已交给应用，不代表 state 校验、令牌交换或请求成功。原来的 “Authorization Complete” 改为 “Authorization callback received” / “已收到授权回调”，并引导返回 ApiCub 查看结果。HTTP 失败和网络异常都明确表示回调发送失败。
+修正误导提示：本地服务器收到 POST 只表示回调已交给应用，不代表 state 校验、令牌交换或请求成功。原来的 “Authorization Complete” 改为 “Authorization callback received” / “已收到授权回调”，并引导返回 ApiCow 查看结果。HTTP 失败和网络异常都明确表示回调发送失败。
 
 一次性 Node VM 页面脚本检查通过 18 个组合：中英文 × 回调接收 / HTTP 失败 / 网络异常 × 查询参数 / URL 片段 / 托管片段转换；核对中文、加号及转义内容不被翻译或改写。这里使用模拟 DOM，不是浏览器视觉测试，也没有访问真实托管中转服务。浏览器控制工具不可用，原生 Chrome 访问另被工具以未授权拒绝，因此未做截图和视觉验收。
 

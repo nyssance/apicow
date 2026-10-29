@@ -1,7 +1,7 @@
 {
-  "productName": "ApiCub Proxy",
+  "productName": "ApiCow Proxy",
   "version": "0.0.0",
-  "identifier": "com.nyssance.apicub.proxy",
+  "identifier": "day.dreamer.apicow.proxy",
   "build": {
     "beforeBuildCommand": "npm --prefix ../.. run proxy:tauri-before-build",
     "beforeDevCommand": "npm --prefix ../.. run proxy:tauri-before-dev",

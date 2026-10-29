@@ -277,7 +277,7 @@ function getFragmentForwardingHtml(): string {
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>ApiCub</title>
+  <title>ApiCow</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -312,16 +312,16 @@ function getFragmentForwardingHtml(): string {
       sending: '正在发送授权回调…',
       wait: '请稍候',
       received: '已收到授权回调',
-      returnToApp: '请返回 ApiCub 查看授权结果。你可以关闭此标签页。',
+      returnToApp: '请返回 ApiCow 查看授权结果。你可以关闭此标签页。',
       failed: '授权回调发送失败',
-      retry: '请返回 ApiCub 重新尝试授权。'
+      retry: '请返回 ApiCow 重新尝试授权。'
     } : {
       sending: 'Sending authorization callback...',
       wait: 'Please wait',
       received: 'Authorization callback received',
-      returnToApp: 'Return to ApiCub to check the authorization result. You may close this tab.',
+      returnToApp: 'Return to ApiCow to check the authorization result. You may close this tab.',
       failed: 'Could not send authorization callback',
-      retry: 'Return to ApiCub and try authorizing again.'
+      retry: 'Return to ApiCow and try authorizing again.'
     };
     title.textContent = copy.sending;
     message.textContent = copy.wait;

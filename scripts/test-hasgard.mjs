@@ -5,11 +5,11 @@ import { createServer } from "node:http";
 import { hasgard, evaluate, until, clickText } from "./lib/hasgard.mjs";
 
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
-assert.ok(main, "ApiCub main window is open");
+assert.ok(main, "ApiCow main window is open");
 assert.equal(
   hasgard(main, "ipc", "plugin:app|identifier"),
-  "com.nyssance.apicub.test",
-  "Only run against the isolated ApiCub Test application",
+  "day.dreamer.apicow.test",
+  "Only run against the isolated ApiCow Test application",
 );
 await until(() => evaluate(main, 'document.readyState === "complete"'), "main ready");
 // Support a fresh test profile, without importing real workspaces or credentials.
@@ -53,7 +53,7 @@ for (const locale of ["en", "zh-CN"]) {
       () =>
         evaluate(
           window,
-          `document.documentElement.lang === ${JSON.stringify(locale)} && localStorage.getItem('apicub.locale') === ${JSON.stringify(locale)}`,
+          `document.documentElement.lang === ${JSON.stringify(locale)} && localStorage.getItem('apicow.locale') === ${JSON.stringify(locale)}`,
         ),
       `${window} ${locale}`,
     );

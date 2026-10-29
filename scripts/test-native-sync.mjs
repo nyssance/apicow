@@ -7,11 +7,11 @@ import { execFileSync } from "node:child_process";
 import { hasgard, hasgardAsync, evaluate, clickText, until } from "./lib/hasgard.mjs";
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 assert.ok(main);
-assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "day.dreamer.apicow.test");
 const rpc = (cmd, payload) =>
   hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
 const dir = await mkdtemp(
-  join(homedir(), "Library/Application Support/com.nyssance.apicub.test", "native-sync-"),
+  join(homedir(), "Library/Application Support/day.dreamer.apicow.test", "native-sync-"),
 );
 const workspaceId = await rpc("models_upsert", {
   model: { model: "workspace", name: "文件同步界面回归" },
@@ -136,7 +136,7 @@ try {
       return false;
     }
   }, "UI initializes Git");
-  git("config", "user.name", "ApiCub Test");
+  git("config", "user.name", "ApiCow Test");
   git("config", "user.email", "test@example.invalid");
   const branch = git("branch", "--show-current");
   await until(

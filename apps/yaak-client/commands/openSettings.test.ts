@@ -20,6 +20,6 @@ test("Chinese window title preserves the internal settings window label", async 
   await openSettings.mutateAsync("general");
   expect(rpc).toHaveBeenCalledWith(
     "cmd_new_child_window",
-    expect.objectContaining({ label: "settings", title: "ApiCub 设置" }),
+    expect.objectContaining({ label: "settings", title: "ApiCow 设置" }),
   );
 });

@@ -3,7 +3,7 @@
     "features": ["wry"]
   },
   "bundle": {
-    "publisher": "ApiCub",
+    "publisher": "ApiCow",
     "license": "MIT",
     "copyright": "Yaak",
     "active": true,

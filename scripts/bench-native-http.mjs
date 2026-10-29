@@ -8,7 +8,7 @@ import { performance } from "node:perf_hooks";
 import { hasgard, hasgardAsync } from "./lib/hasgard.mjs";
 const main = hasgard(null, "windows").windows.find((w) => w.label.startsWith("main_"))?.label;
 assert.ok(main);
-assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "com.nyssance.apicub.test");
+assert.equal(hasgard(main, "ipc", "plugin:app|identifier"), "day.dreamer.apicow.test");
 const rpc = (cmd, payload) =>
   hasgardAsync(main, "ipc", "rpc", "--args", JSON.stringify({ cmd, payload }));
 const settings = await rpc("models_get_settings", {});
@@ -17,7 +17,7 @@ assert.ok(
   "Disable test proxy before benchmarking",
 );
 const workspaceId = await rpc("models_upsert", {
-  model: { model: "workspace", name: "ApiCub HTTP 基准" },
+  model: { model: "workspace", name: "ApiCow HTTP 基准" },
 });
 const server = createServer((req, res) => {
   const size = Number(req.url.slice(1));

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { execFile, execFileSync } from "node:child_process";
 import { setTimeout } from "node:timers/promises";
 const socket = process.env.TAURI_HASGARD_SOCKET;
-assert.ok(socket, "Set TAURI_HASGARD_SOCKET to the running ApiCub Test socket");
+assert.ok(socket, "Set TAURI_HASGARD_SOCKET to the running ApiCow Test socket");
 export function hasgard(window, ...args) {
   return JSON.parse(
     execFileSync(

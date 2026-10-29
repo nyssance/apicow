@@ -1,12 +1,12 @@
-# ApiCub
+# ApiCow
 
-ApiCub is an independent development fork of Yaak. The first milestone is macOS support with Tauri 3 and a Simplified Chinese / English interface, preserving upstream API workflows, layout, SQLite storage and plugins.
+ApiCow is an independent development fork of Yaak. The first milestone is macOS support with Tauri 3 and a Simplified Chinese / English interface, preserving upstream API workflows, layout, SQLite storage and plugins.
 
 - Upstream baseline: `mountain-loop/yaak` at `4abc882e131e2fd29412cfbc701767bbed0f5c48`.
 - The source copyright and MIT license remain in [LICENSE](LICENSE).
 - Local development identity: `day.dreamer.apicow.dev`; production identity: `day.dreamer.apicow`.
 - Language: Settings → General → Language. Defaults to the system language; changing it flushes pending model writes and reloads the window.
-- Official Yaak updater and commercial-license build features are not enabled for ApiCub builds. No ApiCub update or payment service has been configured.
+- Official Yaak updater and commercial-license build features are not enabled for ApiCow builds. No ApiCow update or payment service has been configured.
 - Existing internal `yaak-*` crate names, plugin APIs, CLI and serialized formats are retained for compatibility. This is not a complete rebranding or a public release.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 24+, Rust and the workspace Vite+ CLI are required. Run `npm ci`, `npm run bootstrap`, then `npm start`.
@@ -96,11 +96,11 @@ The source is [MIT licensed](LICENSE) and can be built and run for free, for bot
 
 The prebuilt binaries follow Yaak's [pricing terms](https://yaak.app/pricing): free for personal use, license required for commercial use.
 
-### ApiCub Hasgard 调试
+### ApiCow Hasgard 调试
 
 使用 `cargo install tauri-hasgard-cli --version '^0.6' --locked` 安装 CLI。
 `npm run client:debug` 启动带 Hasgard 的开发模式；`npm run client:debug:build`
-生成 `target/debug/bundle/macos/ApiCub Test.app`。首次构建会执行原版 bootstrap。
+生成 `target/debug/bundle/macos/ApiCow Test.app`。首次构建会执行原版 bootstrap。
 
 测试版使用 `day.dreamer.apicow.test` 独立数据目录。通过 `TAURI_HASGARD_SOCKET`
 指定 socket，随后运行 `tauri-hasgard --socket <路径> ping`、`windows`、
@@ -118,6 +118,6 @@ Hasgard 仅随 `hasgard-testing` feature 注册，且仅在 debug 构建运行�
 OAuth 回调安全回归：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-oauth-security`。
 强退恢复：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-recovery`；会对独立 Test 应用执行三次 SIGKILL 并重启，使用临时同步目录与 Git 仓库。
 文件同步与 Git 界面：`TAURI_HASGARD_SOCKET=<路径> npm run test:native-sync`。
-本机 HTTP 性能采样：`TAURI_HASGARD_SOCKET=<路径> npm run bench:native -- /tmp/apicub-benchmark.json`；需在构建、测试等后台工作结束后运行。
+本机 HTTP 性能采样：`TAURI_HASGARD_SOCKET=<路径> npm run bench:native -- /tmp/apicow-benchmark.json`；需在构建、测试等后台工作结束后运行。
 覆盖导入导出、认证、HTTP/SSE/WebSocket、gRPC、TLS 和 HTTP 代理；具体执行层与边界见
-[验证记录](docs/apicub-validation.md)。gRPC 测试服务依赖仅加入 devDependencies。
+[验证记录](docs/apicow-validation.md)。gRPC 测试服务依赖仅加入 devDependencies。
