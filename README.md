@@ -6,10 +6,36 @@ ApiCow is an independent development fork of Yaak. The first milestone is macOS 
 - The source copyright and MIT license remain in [LICENSE](LICENSE).
 - Local development identity: `day.dreamer.apicow.dev`; production identity: `day.dreamer.apicow`.
 - Language: Settings → General → Language. Defaults to the system language; changing it flushes pending model writes and reloads the window.
-- Official Yaak updater and commercial-license build features are not enabled for ApiCow builds. No ApiCow update or payment service has been configured.
+- Release builds enable the standard Tauri updater against the public [nyssance/releases](https://github.com/nyssance/releases) repo (`apicow-latest/latest.json`, signed updates only); Yaak's update server and commercial-license feature are not used. See [Release](#release) below.
 - Existing internal `yaak-*` crate names, plugin APIs, CLI and serialized formats are retained for compatibility. This is not a complete rebranding or a public release.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 24+, Rust and the workspace Vite+ CLI are required. Run `npm ci`, `npm run bootstrap`, then `npm start`.
+
+## Release
+
+发布流程照搬 GitCub：推送 `v<版本>` 标签后，`.github/workflows/release-app.yml` 在 macOS runner 上构建
+Apple Silicon 包，用 Developer ID 签名、公证（`.app` 与 DMG 都盖章）、生成更新器包（`.app.tar.gz` + `.sig`）和
+`latest.json`，在公开仓 [nyssance/releases](https://github.com/nyssance/releases) 建草稿 Release `apicow-v<版本>`，
+源码仓保持私有。目前只发 macOS（Apple Silicon）。
+
+1. 打标签：`git tag v0.1.0 && git push origin v0.1.0`。版本号沿用上游做法由标签提供：工作流在构建前运行
+   `npm run replace-version` 把标签写进 `crates-tauri/yaak-app-client/tauri.conf.json`，仓库里保持占位 `0.0.0`
+   （preflight 只接受 `0.0.0` 或与标签相同的值）。
+2. 等工作流跑完，在 nyssance/releases 检查草稿 `apicow-v<版本>` 的资源：`apicow_<版本>_darwin_aarch64.app.tar.gz`
+   及 `.sig`（更新器包）、`apicow_<版本>_macos_aarch64.dmg`（已公证盖章）、`latest.json`，然后把草稿发布。
+3. 手动运行 `release` 工作流并填 `publish_latest=v<版本>`：它把该版本的 `latest.json` 改成发布后的直链，覆盖到固定的
+   `apicow-latest` Release。更新器端点只读 `apicow-latest/latest.json`，所以这一步之前已装用户不会看到新版本。
+
+不带参数的手动运行只出未签名的安装包作为工件，不发布。
+
+随包分发的 `vendored/node/yaaknode` 与 `vendored/protoc/yaakprotoc` 由 `scripts/sign-vendored-binaries.mjs`
+（`beforeBundleCommand`）在打包前签上 hardened runtime 与时间戳（yaaknode 带 JIT entitlements），否则公证拒绝整个包；
+没有 `APPLE_SIGNING_IDENTITY` 时该脚本什么都不做。
+
+仓库 secrets：`APPLE_CERTIFICATE`（Developer ID Application 证书导出的 .p12 做 base64）、`APPLE_CERTIFICATE_PASSWORD`、
+`APPLE_SIGNING_IDENTITY`、`APPLE_ID`、`APPLE_PASSWORD`（App 专用密码）、`APPLE_TEAM_ID`、`TAURI_PRIVATE_KEY`、
+`TAURI_KEY_PASSWORD`、`RELEASE_TOKEN`（只对 nyssance/releases 有 Contents 读写的 fine-grained token）。更新器私钥只在本机
+`~/.tauri/apicow.key` 和仓库 secrets 里，公钥写在 `tauri.release.conf.json`；丢了私钥或密码就再也签不出已装用户认的更新。
 
 ---
 
