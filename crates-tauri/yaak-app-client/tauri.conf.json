@@ -4,6 +4,7 @@
   "identifier": "day.dreamer.apicow",
   "build": {
     "beforeBuildCommand": "npm --prefix ../.. run client:tauri-before-build",
+    "beforeBundleCommand": "node ../../scripts/sign-vendored-binaries.mjs",
     "beforeDevCommand": "npm --prefix ../.. run client:tauri-before-dev",
     "devUrl": "http://localhost:1420",
     "frontendDist": "../../dist/apps/yaak-client",

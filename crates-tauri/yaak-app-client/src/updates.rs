@@ -3,7 +3,6 @@ use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
 use crate::error::Result;
-use crate::models_ext::QueryManagerExt;
 use crate::restart;
 use log::{debug, error, info, warn};
 use serde::{Deserialize, Serialize};
@@ -75,12 +74,14 @@ impl YaakUpdater {
         auto_download: bool,
         update_trigger: UpdateTrigger,
     ) -> Result<bool> {
-        let settings = window.db().get_settings();
-        let update_key = format!("{:x}", md5::compute(settings.id));
         self.last_check = Some(Instant::now());
 
         info!("Checking for updates mode={} autodl={}", mode, auto_download);
 
+        // The endpoint is the static `latest.json` configured in tauri.release.conf.json
+        // (nyssance/releases, `apicow-latest`), so this is the stock Tauri updater: no
+        // channel/install-mode headers, and `mode` only sets how often the background
+        // check runs.
         let w = window.clone();
         let mut updater_builder = w.updater_builder();
         if let Some(proxy_url) = get_system_proxy_url() {
@@ -103,16 +104,6 @@ impl YaakUpdater {
                     });
                 });
             })
-            .header("X-Update-Mode", mode.to_string())?
-            .header("X-Update-Key", update_key)?
-            .header(
-                "X-Update-Trigger",
-                match update_trigger {
-                    UpdateTrigger::Background => "background",
-                    UpdateTrigger::User => "user",
-                },
-            )?
-            .header("X-Install-Mode", detect_install_mode().unwrap_or("unknown"))?
             .build()?
             .check()
             .await;
@@ -134,7 +125,8 @@ impl YaakUpdater {
                         return;
                     }
 
-                    // Force native updater if specified (useful if a release broke the UI)
+                    // `latest.json` may carry `"install_mode": "native"` to force the native
+                    // dialogs (useful if a release broke the UI)
                     let native_install_mode =
                         update.raw_json.get("install_mode").map(|v| v.as_str()).unwrap_or_default()
                             == Some("native");
@@ -402,28 +394,6 @@ pub async fn download_update_idempotent<R: Runtime>(
     info!("{} downloaded", update.version);
 
     Ok(dl_path)
-}
-
-/// Detect the installer type so the update server can serve the correct artifact.
-fn detect_install_mode() -> Option<&'static str> {
-    #[cfg(target_os = "windows")]
-    {
-        if let Ok(exe) = std::env::current_exe() {
-            let path = exe.to_string_lossy().to_lowercase();
-            if path.starts_with(r"c:\program files") {
-                return Some("nsis-machine");
-            }
-        }
-        return Some("nsis");
-    }
-    #[allow(unreachable_code)]
-    if !cfg!(target_os = "linux") {
-        None
-    } else if is_flatpak() {
-        Some("flatpak")
-    } else {
-        linux_installer()
-    }
 }
 
 /// Flatpak installs (e.g. FlatPark) are updated by flatpak from their remote; the in-app
