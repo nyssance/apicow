@@ -33,12 +33,17 @@ export function validateRelease(release, source, signatures, versionTag, allowDr
       entry.signature.trim(),
       `Signature mismatch for ${platform}`,
     );
+    const publicPrefix = `https://github.com/nyssance/releases/releases/download/apicow-${versionTag}/`;
+    const draftUrl = new URL(asset.browser_download_url);
     assert.ok(
-      asset.browser_download_url.startsWith(
-        `https://github.com/nyssance/releases/releases/download/apicow-${versionTag}/`,
-      ),
+      asset.browser_download_url.startsWith(publicPrefix) ||
+        (allowDraft &&
+          release.draft &&
+          draftUrl.origin === "https://github.com" &&
+          /^\/nyssance\/releases\/releases\/download\/untagged-[^/]+\//.test(draftUrl.pathname)),
+      `Unexpected asset download URL for ${platform}`,
     );
-    entry.url = asset.browser_download_url;
+    entry.url = `${publicPrefix}${encodeURIComponent(asset.name)}`;
   }
   return manifest;
 }

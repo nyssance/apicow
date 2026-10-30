@@ -12,7 +12,11 @@ const checkOnly = process.argv.includes("--check-only");
 const repo = "nyssance/releases";
 const tag = `apicow-${versionTag}`;
 const gh = (...args) => execFileSync("gh", args, { encoding: "utf8" }).trim();
-const release = JSON.parse(gh("api", `repos/${repo}/releases/tags/${tag}`));
+// GitHub's by-tag endpoint omits drafts; list releases to find both states.
+const releases = JSON.parse(gh("api", "--paginate", "--slurp", `repos/${repo}/releases`)).flat();
+const matches = releases.filter((release) => release.tag_name === tag);
+assert.equal(matches.length, 1, `Expected one release for ${tag}`);
+const release = matches[0];
 const temp = mkdtempSync(join(tmpdir(), "apicow-publish-"));
 try {
   gh(

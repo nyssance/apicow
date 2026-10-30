@@ -51,3 +51,16 @@ assert.throws(() => validateRelease(release, source, signatures, "v0.1.2"));
 console.log(
   "PASS: dual-platform public URLs, exact installers, draft guard, signatures, platform separation and version checks",
 );
+
+const draft = structuredClone(release);
+draft.draft = true;
+for (const asset of draft.assets) {
+  asset.browser_download_url = asset.browser_download_url.replace(
+    "apicow-v0.1.1/",
+    "untagged-test/",
+  );
+}
+const draftResult = validateRelease(draft, source, signatures, "v0.1.1", true);
+assert.equal(draftResult.platforms["darwin-aarch64"].url, release.assets[2].browser_download_url);
+assert.throws(() => validateRelease(draft, source, signatures, "v0.1.1"));
+console.log("PASS: draft placeholder URLs are normalized only during preflight");
