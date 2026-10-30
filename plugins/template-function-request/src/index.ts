@@ -1,10 +1,10 @@
 import type { CallTemplateFunctionArgs, Context, PluginDefinition } from "@yaakapp/api";
 import type { AnyModel, HttpUrlParameter } from "@yaakapp-internal/models";
 import type { GenericCompletionOption } from "@yaakapp-internal/plugins";
-import type { JSONPathResult } from "../../template-function-json";
-import { filterJSONPath } from "../../template-function-json";
-import type { XPathResult } from "../../template-function-xml";
-import { filterXPath } from "../../template-function-xml";
+import type { JSONPathResult } from "../../template-function-json/src";
+import { filterJSONPath } from "../../template-function-json/src";
+import type { XPathResult } from "../../template-function-xml/src";
+import { filterXPath } from "../../template-function-xml/src";
 
 const RETURN_FIRST = "first";
 const RETURN_ALL = "all";

@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "bootstrap": "npm run build",
-    "build": "run-s build:*",
+    "build": "node ../../node_modules/npm-run-all/bin/run-s/index.js build:*",
     "build:pack": "node build-wasm.cjs",
     "build:clean": "rimraf ./pkg/.gitignore"
   },

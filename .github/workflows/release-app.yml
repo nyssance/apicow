@@ -1,5 +1,5 @@
 # 照 GitCub 的发布流程：手动运行只出未签名的安装包当工件；推 v* 标签则签名、公证、
-# 生成更新器元数据并在公开仓 nyssance/releases 建草稿 Release `apicow-v*`（源码仓保持私有），
+# 生成更新器元数据并在公开仓 nyssance/releases 建草稿 Release `apicow-v*`（源码仓已公开），
 # 人工检查发布后再把 latest.json 覆盖到固定的 `apicow-latest` Release，更新器只读那里。
 # 版本号沿用上游做法由标签提供：构建前 `bun run replace-version` 把 v* 写进 tauri.conf.json。
 # 发布 macOS Apple Silicon DMG 与 Windows x64 NSIS EXE。
@@ -235,6 +235,23 @@ jobs:
         if: always() && runner.os == 'macOS' && env.APICOW_SIGNING_DIR != ''
         shell: bash
         run: bash scripts/macos-signing.sh cleanup
+
+  publish-release:
+    needs: release
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: 校验双平台产物并发布正式版本和更新清单
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          VERSION_TAG: ${{ github.ref_name }}
+        run: |
+          node scripts/publish-latest.mjs "$VERSION_TAG" --check-only
+          gh release edit "apicow-$VERSION_TAG" --repo nyssance/releases --draft=false --latest=false
+          node scripts/publish-latest.mjs "$VERSION_TAG"
 
   # 发布草稿后手动运行：把该版本的 latest.json 覆盖到固定的 apicow-latest Release，更新器才看到新版本。
   publish-latest:
