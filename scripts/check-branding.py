@@ -65,8 +65,8 @@ def ico_frames(path):
     return frames
 
 
-def pe_icons(path):
-    """Read RT_ICON image bytes from the PE resource directory (PE32/PE32+)."""
+def pe_resources(path, resource_type=3):
+    """Read payloads of a resource type from a PE32/PE32+ resource directory."""
     data = path.read_bytes()
     require(data[:2] == b'MZ', 'Not a Windows executable')
     pe = struct.unpack_from('<I', data, 0x3c)[0]
@@ -99,7 +99,7 @@ def pe_icons(path):
         named, ids = struct.unpack_from('<HH', data, offset + 12)
         for i in range(named + ids):
             name, child = struct.unpack_from('<II', data, offset + 16 + i * 8)
-            if depth == 0 and name != 3:  # RT_ICON
+            if depth == 0 and name != resource_type:
                 continue
             if child & 0x80000000:
                 walk(child & 0x7fffffff, depth + 1)
@@ -112,18 +112,39 @@ def pe_icons(path):
     return images
 
 
-def check_windows(executable, installer):
+def pe_icons(path):
+    return pe_resources(path, 3)
+
+
+def check_windows(executable, installer, version):
     expected = ico_frames(APP / 'icons/release/icon.ico')
-    actual = pe_icons(executable)
-    require(all(frame in actual for frame in expected), 'Packaged Windows icon mismatch')
+
+    def verify(path):
+        actual = pe_icons(path)
+        require(all(frame in actual for frame in expected), 'Packaged Windows icon mismatch')
+        versions = pe_resources(path, 16)  # RT_VERSION
+        require(len(versions) == 1, 'Missing Windows version resource')
+        info = versions[0]
+        require('ApiCow'.encode('utf-16le') in info, 'Packaged Windows product name mismatch')
+        signature = struct.pack('<I', 0xFEEF04BD)
+        fixed = info.find(signature)
+        require(fixed >= 0, 'Missing Windows fixed version info')
+        ms, ls = struct.unpack_from('<II', info, fixed + 8)
+        actual_version = (ms >> 16, ms & 0xffff, ls >> 16)
+        expected_version = tuple(int(x) for x in version.removeprefix('v').split('-')[0].split('.'))
+        require(actual_version == expected_version, f'Windows version mismatch: {actual_version}')
+        print(f'PASS Windows product, version and all embedded icon frames: {path}')
+
+    if executable:
+        verify(executable)
     if installer:
         with tempfile.TemporaryDirectory(prefix='apicow-installer-check-') as temp:
             subprocess.run(['7z', 'x', str(installer.resolve()), '-o' + temp, '-y'],
                            check=True, stdout=subprocess.DEVNULL)
-            installed = [p for p in Path(temp).rglob('*.exe') if digest(p) == digest(executable)]
-            require(len(installed) == 1, 'Installer must contain the verified application executable')
-            require(all(frame in pe_icons(installed[0]) for frame in expected), 'Installed icon mismatch')
-    print(f'PASS Windows embedded icon and installer application: {executable}')
+            installed = list(Path(temp).rglob('yaak-app-client.exe'))
+            require(len(installed) == 1, 'Installer must contain exactly one ApiCow application')
+            verify(installed[0])
+        print(f'PASS actual NSIS installation payload: {installer}')
 
 
 def main():
@@ -138,8 +159,9 @@ def main():
     if args.mac_bundle:
         require(bool(args.version), '--version is required for package verification')
         check_mac(args.mac_bundle, args.version.removeprefix('v'))
-    if args.windows_exe:
-        check_windows(args.windows_exe, args.windows_installer)
+    if args.windows_exe or args.windows_installer:
+        require(bool(args.version), "--version is required for package verification")
+        check_windows(args.windows_exe, args.windows_installer, args.version)
 
 
 if __name__ == '__main__':

@@ -255,7 +255,7 @@ jobs:
         run: |
           $env:PATH += ";C:\Program Files\7-Zip"
           $installer = (Get-ChildItem target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe | Select-Object -First 1).FullName
-          python scripts/check-branding.py --windows-exe target/x86_64-pc-windows-msvc/release/yaak-app-client.exe --windows-installer "$installer"
+          python scripts/check-branding.py --windows-exe target/x86_64-pc-windows-msvc/release/yaak-app-client.exe --windows-installer "$installer" --version "$env:GITHUB_REF_NAME"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: 清理签名钥匙串
         if: always() && runner.os == 'macOS' && env.APICOW_SIGNING_DIR != ''
