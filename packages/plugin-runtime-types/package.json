@@ -24,7 +24,7 @@
     "bootstrap": "npm run build",
     "build": "node ../../node_modules/npm-run-all/bin/run-s/index.js build:copy-types build:tsc",
     "build:tsc": "tsc",
-    "build:copy-types": "node ../../node_modules/npm-run-all/bin/run-p/index.js build:copy-types:*",
+    "build:copy-types": "node ../../node_modules/npm-run-all/bin/run-p/index.js \"build:copy-types:*\"",
     "build:copy-types:root": "cpy --flat ../../crates/yaak-plugins/bindings/*.ts ./src/bindings",
     "build:copy-types:next": "cpy --flat ../../crates/yaak-plugins/bindings/serde_json/*.ts ./src/bindings/serde_json",
     "prepublishOnly": "npm run build"
