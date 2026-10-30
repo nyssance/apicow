@@ -1,21 +1,6 @@
 /// <reference lib="webworker" />
 
-/**
- * The process that owns the database.
- *
- * On the desktop that is the Rust binary: it holds SQLite, every window talks
- * to it, and it pushes model writes to all of them. In a browser this worker
- * plays that part. It loads the model layer compiled to wasm, opens the one
- * database, answers each tab's commands over its port, and fans every
- * `model_writes` out to every port — so two tabs are coherent for the same
- * reason two desktop windows are, not because of a side channel.
- *
- * It is a SharedWorker, and only that: the browser hands every tab on the
- * origin the same one, which is what makes "one database owner" true without
- * anyone coordinating. It still takes a Web Lock before opening the database,
- * for the one overlap the browser doesn't rule out — a tab reloading itself,
- * whose old worker may still be letting go while the new one comes up.
- */
+/** One dedicated worker per tab; Web Locks elects the sole OPFS owner. */
 
 import { DB_LOCK_NAME, type FromWorker, type ToWorker } from "./protocol";
 
@@ -29,18 +14,32 @@ import { DB_LOCK_NAME, type FromWorker, type ToWorker } from "./protocol";
 type Engine = typeof import("@yaakapp-internal/wasm");
 let engine: Engine | null = null;
 
-const ports = new Set<MessagePort>();
+type ReplyPort = { postMessage(message: FromWorker, transfer?: Transferable[]): void };
+let tab: MessagePort;
+const clientId = crypto.randomUUID();
+const channel = new BroadcastChannel("apicow-database");
+let ownerId: string | null = null;
+let isOwner = false;
+const pending = new Map<number, { message: ToWorker; owner: string | null }>();
+
+type PeerMessage =
+  | { type: "probe" }
+  | { type: "ready"; owner: string }
+  | { type: "request"; client: string; owner: string; message: ToWorker }
+  | { type: "reply"; client: string; message: FromWorker }
+  | { type: "broadcast"; message: FromWorker };
 
 /** Resolves once `boot()` has, or rejects with why it couldn't. */
 let booted: Promise<void> | null = null;
 let bootError: string | null = null;
 
-function send(port: MessagePort, message: FromWorker, transfer: Transferable[] = []): void {
+function send(port: ReplyPort, message: FromWorker, transfer: Transferable[] = []): void {
   port.postMessage(message, transfer);
 }
 
 function broadcast(message: FromWorker): void {
-  for (const port of ports) send(port, message);
+  tab.postMessage(message);
+  channel.postMessage({ type: "broadcast", message } satisfies PeerMessage);
 }
 
 function errorMessage(err: unknown): string {
@@ -48,54 +47,10 @@ function errorMessage(err: unknown): string {
   return String(err);
 }
 
-/**
- * How long to wait for the database lock before concluding someone else has it
- * for good. The wait exists for one case: a tab reloading itself. Its old
- * worker still holds the lock while it is torn down, and the new worker only
- * needs it to let go — which takes milliseconds, not seconds. Anything longer
- * is a live worker in another tab, and the honest answer is to say so.
- */
-const LOCK_TIMEOUT_MS = 3000;
-
-const ALREADY_OPEN =
-  "Yaak's database is held by another worker that isn't letting go. Close Yaak's other tabs and reload.";
-
-/**
- * Take the lock, or explain why not.
- *
- * Held for the life of the worker: the callback's promise never settles, so
- * the browser keeps the lock until this worker is gone. Requested with a
- * timeout rather than `ifAvailable`, so a dying predecessor's brief hold is
- * waited out but a live one is reported.
- */
-function acquireDatabaseLock(): Promise<void> {
-  // The tab checked for Web Locks before it ever connected; a worker without
-  // them would be a browser lying about its own features.
-  return new Promise<void>((resolve, reject) => {
-    navigator.locks
-      .request(DB_LOCK_NAME, { signal: AbortSignal.timeout(LOCK_TIMEOUT_MS) }, () => {
-        resolve();
-        return new Promise<void>(() => {});
-      })
-      .catch((err: unknown) => {
-        const name = (err as { name?: string } | null)?.name;
-        reject(name === "AbortError" || name === "TimeoutError" ? new Error(ALREADY_OPEN) : err);
-      });
-  });
-}
-
-/**
- * Open the database, once, for everyone.
- *
- * Lock first, then load the model layer, then open — in that order, so a
- * worker that will never own the database also never downloads and compiles
- * the wasm for it.
- */
 function bootOnce(): Promise<void> {
   if (booted != null) return booted;
 
   booted = (async () => {
-    await acquireDatabaseLock();
     const loaded = await import("@yaakapp-internal/wasm");
     await loaded.boot();
     engine = loaded;
@@ -108,9 +63,8 @@ function bootOnce(): Promise<void> {
   return booted;
 }
 
-async function handle(port: MessagePort, message: ToWorker): Promise<void> {
+async function handle(port: ReplyPort, message: ToWorker): Promise<void> {
   if (message.type === "goodbye") {
-    ports.delete(port);
     return;
   }
 
@@ -176,21 +130,100 @@ async function handle(port: MessagePort, message: ToWorker): Promise<void> {
   }
 }
 
-function attach(port: MessagePort): void {
-  ports.add(port);
-  port.onmessage = (e: MessageEvent<ToWorker>) => void handle(port, e.data);
-  port.start?.();
-
-  // Proof of life, before boot: the tab is timing this.
-  send(port, { type: "hello" });
-
-  bootOnce().then(
-    () => send(port, { type: "ready" }),
-    (err) => send(port, { type: "boot_error", message: errorMessage(err) }),
-  );
+function deliver(message: FromWorker): void {
+  if (message.type === "result" || message.type === "error") pending.delete(message.id);
+  tab.postMessage(message);
 }
 
-// Each tab arrives as a connect event with its own port.
-(self as unknown as SharedWorkerGlobalScope).onconnect = (e: MessageEvent) => {
-  attach(e.ports[0]!);
+function announceOwner(owner: string): void {
+  ownerId = owner;
+  tab.postMessage({ type: "ready" } satisfies FromWorker);
+  for (const [id, request] of pending) {
+    if (request.owner && request.owner !== owner) {
+      // Never replay a write whose previous owner may already have committed it.
+      deliver({
+        type: "error",
+        id,
+        message: "Database owner closed during the request. Retry the operation.",
+      });
+    } else if (!request.owner) {
+      dispatch(request.message);
+    }
+  }
+}
+
+function replyTo(client: string): ReplyPort {
+  return {
+    postMessage(message) {
+      if (client === clientId) deliver(message);
+      else channel.postMessage({ type: "reply", client, message } satisfies PeerMessage);
+    },
+  };
+}
+
+function dispatch(message: ToWorker): void {
+  if (message.type === "goodbye") {
+    channel.close();
+    self.close();
+    return;
+  }
+  pending.set(message.id, { message, owner: ownerId });
+  if (!ownerId) return;
+  if (isOwner) void handle(replyTo(clientId), message);
+  else
+    channel.postMessage({
+      type: "request",
+      client: clientId,
+      owner: ownerId,
+      message,
+    } satisfies PeerMessage);
+}
+
+self.onmessage = (event: MessageEvent<{ port: MessagePort }>) => {
+  tab = event.data.port;
+  tab.onmessage = (event: MessageEvent<ToWorker>) => dispatch(event.data);
+  tab.start();
+  tab.postMessage({ type: "hello" } satisfies FromWorker);
+
+  channel.onmessage = ({ data }: MessageEvent<PeerMessage>) => {
+    switch (data.type) {
+      case "probe":
+        if (isOwner) channel.postMessage({ type: "ready", owner: clientId } satisfies PeerMessage);
+        else if (bootError)
+          channel.postMessage({
+            type: "broadcast",
+            message: { type: "boot_error", message: bootError },
+          } satisfies PeerMessage);
+        break;
+      case "ready":
+        announceOwner(data.owner);
+        break;
+      case "request":
+        if (isOwner && data.owner === clientId) void handle(replyTo(data.client), data.message);
+        break;
+      case "reply":
+        if (data.client === clientId) deliver(data.message);
+        break;
+      case "broadcast":
+        tab.postMessage(data.message);
+        break;
+    }
+  };
+  channel.postMessage({ type: "probe" } satisfies PeerMessage);
+
+  // Waiters automatically take ownership when a tab closes or its worker dies.
+  void navigator.locks
+    .request(DB_LOCK_NAME, async () => {
+      try {
+        await bootOnce();
+        isOwner = true;
+        announceOwner(clientId);
+        channel.postMessage({ type: "ready", owner: clientId } satisfies PeerMessage);
+      } catch (error) {
+        broadcast({ type: "boot_error", message: errorMessage(error) });
+      }
+      // Keep OPFS handles and the ownership lock for exactly this worker's lifetime.
+      await new Promise<void>(() => {});
+    })
+    .catch((error: unknown) => broadcast({ type: "boot_error", message: errorMessage(error) }));
 };

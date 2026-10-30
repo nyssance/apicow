@@ -5,11 +5,11 @@
 //! the `models_*` commands by calling the same `ClientDb` queries the desktop
 //! does. A browser tab therefore stores exactly what a desktop install stores,
 //! migrations and all — the only thing that differs is where the SQLite pages
-//! live (IndexedDB) and who is calling in (a worker instead of Tauri).
+//! live (OPFS) and who is calling in (a worker instead of Tauri).
 //!
-//! It is meant to be loaded once, in one place — a SharedWorker — because two
-//! SQLite instances over the same IndexedDB pages would corrupt them. The
-//! JavaScript side owns that; this crate assumes it is the only writer.
+//! Only the dedicated worker holding the database Web Lock loads this engine.
+//! The JavaScript worker protocol elects that owner and forwards other tabs
+//! to it; this crate assumes it is the only writer.
 //!
 //! The command surface is deliberately narrow: what the frontend needs to keep
 //! its model store coherent, blob storage, and the "prepare" half of a send
@@ -44,7 +44,7 @@ use yaak_templates::{RenderOptions, TemplateCallback};
 /// keeps two: models in one, blobs in the other.
 const DB_NAME: &str = "yaak.db";
 const BLOB_DB_NAME: &str = "yaak-blobs.db";
-const VFS_NAME: &str = "yaak-idb";
+const VFS_NAME: &str = "apicow-opfs";
 
 /// What an export made here records as the version that wrote it. The desktop stamps its own
 /// app version; this host has none, and the field is provenance rather than something read
@@ -81,7 +81,13 @@ type Result<T> = std::result::Result<T, JsValue>;
 /* Boot                                                                        */
 /* -------------------------------------------------------------------------- */
 
-/// Register the IndexedDB-backed VFS and open the database.
+#[wasm_bindgen(module = "/src/migrate-storage.js")]
+extern "C" {
+    #[wasm_bindgen(catch, js_name = readLegacyDatabase)]
+    async fn read_legacy_database(name: &str) -> std::result::Result<JsValue, JsValue>;
+}
+
+/// Register the OPFS-backed VFS and open the database.
 ///
 /// Migrations run inside `init_standalone`, exactly as they do for the CLI.
 /// Safe to call more than once; later calls are no-ops.
@@ -93,18 +99,26 @@ pub async fn boot() -> Result<()> {
         return Ok(());
     }
 
-    // "Relaxed" means writes land in memory first and are flushed to
-    // IndexedDB shortly after, rather than on every commit. It is the right
-    // trade for a client app: a tab closing mid-flush loses at most the last
-    // few writes, and the alternative (OPFS sync access handles) needs a
-    // dedicated worker per file and is not available everywhere.
-    let cfg = sqlite_wasm_vfs::relaxed_idb::RelaxedIdbCfgBuilder::new()
+    use rsqlite_vfs::{VfsFilesManager, transfer::DbTransfer};
+    let cfg = sqlite_wasm_vfs::sahpool::OpfsSAHPoolCfgBuilder::new()
         .vfs_name(VFS_NAME)
-        .preload(sqlite_wasm_vfs::relaxed_idb::Preload::All)
+        .directory("apicow-sqlite")
+        .initial_capacity(8)
         .build();
-    sqlite_wasm_vfs::relaxed_idb::install::<sqlite_wasm_rs::WasmOsCallback>(&cfg, true)
+    let pool = sqlite_wasm_vfs::sahpool::install::<sqlite_wasm_rs::WasmOsCallback>(&cfg, true)
         .await
         .map_err(js_error)?;
+    // Import only absent files. A failed import can be retried, and the original
+    // IndexedDB database remains intact as the migration source.
+    for name in [DB_NAME, BLOB_DB_NAME] {
+        if !pool.contains(name).map_err(js_error)? {
+            let bytes = read_legacy_database(name).await?;
+            if !bytes.is_null() && !bytes.is_undefined() {
+                pool.import_db(name, &js_sys::Uint8Array::new(&bytes).to_vec())
+                    .map_err(js_error)?;
+            }
+        }
+    }
 
     let (queries, blobs, events) =
         yaak_models::init_standalone(DB_NAME, BLOB_DB_NAME).map_err(js_error)?;

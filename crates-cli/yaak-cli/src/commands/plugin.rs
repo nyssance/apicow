@@ -3,19 +3,19 @@ use crate::context::CliContext;
 use crate::ui;
 use crate::utils::http;
 use keyring::Entry;
-use rand::Rng;
+use rand::RngExt;
 use rolldown::{
-    BundleEvent, Bundler, BundlerOptions, ExperimentalOptions, InputItem, LogLevel, OutputFormat,
-    Platform, WatchOption, Watcher, WatcherEvent,
+    Bundler, BundlerConfig, BundlerOptions, ExperimentalOptions, InputItem, LogLevel, OutputFormat,
+    Platform, WatchOption,
 };
+use rolldown_common::WatcherChangeKind;
+use rolldown_watcher::{WatchEvent, Watcher, WatcherConfig, WatcherEventHandler};
 use serde::Deserialize;
 use std::collections::HashSet;
 use std::fs;
 use std::io::{self, IsTerminal, Read, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use std::sync::Arc;
-use tokio::sync::Mutex;
 use walkdir::WalkDir;
 use yaak_api::{ApiClientKind, yaak_api_client};
 use yaak_models::models::{Plugin, PluginSource};
@@ -143,72 +143,72 @@ fn metadata(args: PluginPathArg) -> CommandResult {
     Ok(())
 }
 
+struct PluginWatchHandler {
+    root: PathBuf,
+}
+
+impl WatcherEventHandler for PluginWatchHandler {
+    async fn on_event(&self, event: WatchEvent) {
+        match event {
+            WatchEvent::BundleEnd(_) => {
+                // Refresh assets and metadata after every successful rebuild.
+                let result = copy_build_assets(&self.root)
+                    .and_then(|()| generate_plugin_metadata(&self.root));
+                match result {
+                    Ok(()) => ui::success(&format!(
+                        "Generated plugin metadata at {}",
+                        self.root.join("build/metadata.json").display()
+                    )),
+                    Err(error) => ui::error(&error),
+                }
+            }
+            WatchEvent::Error(event) => {
+                if event.diagnostics.is_empty() {
+                    ui::error("Plugin build failed");
+                } else {
+                    for diagnostic in event.diagnostics.iter() {
+                        ui::error(&diagnostic.to_string());
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    async fn on_change(&self, path: &str, _kind: WatcherChangeKind) {
+        let path = Path::new(path);
+        let display =
+            path.strip_prefix(&self.root).map(|p| p.display().to_string()).unwrap_or_else(|_| {
+                path.file_name()
+                    .map(|name| name.to_string_lossy().into_owned())
+                    .unwrap_or_else(|| "unknown".to_string())
+            });
+        ui::info(&format!("Rebuilding plugin {display}"));
+    }
+
+    async fn on_restart(&self) {}
+    async fn on_close(&self) {}
+}
+
 async fn dev(args: PluginPathArg) -> CommandResult {
     let plugin_dir = resolve_plugin_dir(args.path)?;
     ensure_plugin_build_inputs(&plugin_dir)?;
-
     ui::info(&format!("Watching plugin {}...", plugin_dir.display()));
-
-    let bundler = Bundler::new(bundler_options(&plugin_dir, true))
-        .map_err(|err| format!("Failed to initialize Rolldown watcher: {err}"))?;
-    let watcher = Watcher::new(vec![Arc::new(Mutex::new(bundler))], None)
-        .map_err(|err| format!("Failed to start Rolldown watcher: {err}"))?;
-    let emitter = watcher.emitter();
-    let watch_root = plugin_dir.clone();
-    let _event_logger = tokio::spawn(async move {
-        loop {
-            let event = {
-                let rx = emitter.rx.lock().await;
-                rx.recv()
-            };
-
-            let Ok(event) = event else {
-                break;
-            };
-
-            match event {
-                WatcherEvent::Change(change) => {
-                    let changed_path = Path::new(change.path.as_str());
-                    let display_path = changed_path
-                        .strip_prefix(&watch_root)
-                        .map(|p| p.display().to_string())
-                        .unwrap_or_else(|_| {
-                            changed_path
-                                .file_name()
-                                .map(|name| name.to_string_lossy().into_owned())
-                                .unwrap_or_else(|| "unknown".to_string())
-                        });
-                    ui::info(&format!("Rebuilding plugin {display_path}"));
-                }
-                WatcherEvent::Event(BundleEvent::BundleEnd(_)) => {
-                    // Assets are staged on every rebuild, so a changed asset or
-                    // declaration is picked up without restarting.
-                    let result = copy_build_assets(&watch_root)
-                        .and_then(|()| generate_plugin_metadata(&watch_root));
-                    match result {
-                        Ok(()) => ui::success(&format!(
-                            "Generated plugin metadata at {}",
-                            watch_root.join("build/metadata.json").display()
-                        )),
-                        Err(error) => ui::error(&error),
-                    }
-                }
-                WatcherEvent::Event(BundleEvent::Error(event)) => {
-                    if event.error.diagnostics.is_empty() {
-                        ui::error("Plugin build failed");
-                    } else {
-                        for diagnostic in event.error.diagnostics {
-                            ui::error(&diagnostic.to_string());
-                        }
-                    }
-                }
-                WatcherEvent::Close => break,
-                _ => {}
-            }
+    let config = BundlerConfig::new(bundler_options(&plugin_dir, true), vec![]);
+    let watcher = Watcher::new(
+        vec![config],
+        PluginWatchHandler { root: plugin_dir },
+        &WatcherConfig::default(),
+    )
+    .map_err(|err| format!("Failed to start Rolldown watcher: {err}"))?;
+    watcher.run();
+    tokio::select! {
+        result = tokio::signal::ctrl_c() => {
+            result.map_err(|err| format!("Failed to listen for interrupt: {err}"))?;
+            watcher.close().await.map_err(|err| format!("Failed to close watcher: {err}"))?;
         }
-    });
-
-    watcher.start().await;
+        () = watcher.wait_for_close() => {}
+    }
     Ok(())
 }
 
@@ -724,9 +724,9 @@ fn random_name() -> String {
         "yak", "yarn", "year", "yell", "yoke", "yoga", "yam", "yacht", "yodel",
     ];
 
-    let mut rng = rand::thread_rng();
-    let adjective = ADJECTIVES[rng.gen_range(0..ADJECTIVES.len())];
-    let noun = NOUNS[rng.gen_range(0..NOUNS.len())];
+    let mut rng = rand::rng();
+    let adjective = ADJECTIVES[rng.random_range(0..ADJECTIVES.len())];
+    let noun = NOUNS[rng.random_range(0..NOUNS.len())];
     format!("{adjective}-{noun}")
 }
 
@@ -850,7 +850,7 @@ mod tests {
         let mut names = HashSet::new();
         for i in 0..zip.len() {
             let file = zip.by_index(i).expect("zip entry");
-            names.insert(file.name().to_string());
+            names.insert(file.name().expect("valid ZIP entry name").into_owned());
         }
 
         assert!(names.contains("README.md"));

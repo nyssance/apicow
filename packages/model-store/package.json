@@ -6,6 +6,6 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "peerDependencies": {
-    "jotai": "^2.18.0"
+    "jotai": "^3.0.1"
   }
 }

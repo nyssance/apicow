@@ -55,26 +55,21 @@ isn't one, so a desktop `npm run bootstrap` never depends on it.
 
 Behaviours worth knowing before changing anything:
 
-- **The worker is a `SharedWorker`, and only that.** The browser hands every
-  tab on the origin the same one, which is what makes "one database owner"
-  true without anyone coordinating — and makes the browser look like the
-  desktop: one process holds the data, every window talks to it, it pushes
-  writes to all of them. It still takes a Web Lock before opening, for the one
-  overlap the browser doesn't rule out (a reloading tab's dying predecessor).
-  There is deliberately no fallback to a per-tab worker: two kinds of worker
-  that can both come up is a race. Every current browser, desktop and mobile,
-  has `SharedWorker` and Web Locks (Chrome for Android since 148, April 2026);
-  older ones get a clear "unsupported browser" message rather than a second
-  SQLite over the same pages.
+- **A Web Lock elects one dedicated worker as the OPFS owner.** Each tab has a
+  worker connected by MessagePort. Non-owning workers forward commands over
+  BroadcastChannel, and every tab receives model writes. When the owning tab
+  closes, a queued worker takes over. Requests interrupted during a handover
+  fail explicitly instead of replaying a potentially committed write.
 - **Every write is stamped with the calling tab's `label`** as
   `UpdateSource::Window`, exactly like a desktop window label, so the frontend
   store's echo handling is unchanged.
 - **Cascade rules, duplicate naming, id generation, serde defaults, and the
   lazy first-run bootstrap are all the Rust code's.** Nothing about what a
   model _is_ is decided in TypeScript.
-- **Persistence is `relaxed-idb`**: SQLite pages live in IndexedDB, writes land
-  in memory and flush shortly after. A tab closing mid-flush loses at most the
-  last few writes.
+- **Persistence is OPFS**, using sqlite-wasm-vfs 0.3's sync-access-handle pool.
+  On first open, existing IndexedDB SQLite files are imported into OPFS; the
+  original files remain untouched. No previous VFS or random-number library is
+  retained to run the application.
 
 ## Commands
 

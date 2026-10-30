@@ -76,12 +76,12 @@ pub fn router(config: Config) -> Router {
         .route("/health", get(health))
         .route("/openapi.json", get(openapi))
         .route("/users", get(resources::list_users))
-        .route("/users/:id", get(resources::get_user))
-        .route("/users/:id/todos", get(resources::list_user_todos))
+        .route("/users/{id}", get(resources::get_user))
+        .route("/users/{id}/todos", get(resources::list_user_todos))
         .route("/todos", get(resources::list_todos))
         .route("/posts", get(resources::list_posts).post(resources::create_post))
         .route(
-            "/posts/:id",
+            "/posts/{id}",
             get(resources::get_post)
                 .put(resources::replace_post)
                 .patch(resources::update_post)

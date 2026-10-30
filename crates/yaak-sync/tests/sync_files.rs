@@ -105,7 +105,9 @@ impl Fixture {
         let content = if self.request_path.extension().unwrap() == "json" {
             serde_json::to_string(&value).unwrap()
         } else {
-            serde_yaml::to_string(&value).unwrap()
+            let json = serde_json::to_string(&value).unwrap();
+            let yaml: serde_yaml::Value = serde_yaml::from_str(&json).unwrap();
+            serde_yaml::to_string(&yaml).unwrap()
         };
         fs::write(&self.request_path, content).unwrap();
     }

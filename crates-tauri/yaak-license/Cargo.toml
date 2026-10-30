@@ -6,7 +6,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-chrono = "0.4.38"
+chrono = "0.4.45"
 log = { workspace = true }
 reqwest = { workspace = true, features = ["json"] }
 serde = { workspace = true, features = ["derive"] }

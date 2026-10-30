@@ -1,4 +1,4 @@
-use nanoid::nanoid;
+use rand::RngExt;
 
 pub fn generate_prefixed_id(prefix: &str) -> String {
     format!("{prefix}_{}", generate_id())
@@ -16,5 +16,6 @@ pub fn generate_id_of_length(n: usize) -> String {
         'X', 'Y', 'Z',
     ];
 
-    nanoid!(n, &alphabet)
+    let mut rng = rand::rng();
+    (0..n).map(|_| alphabet[rng.random_range(0..alphabet.len())]).collect()
 }

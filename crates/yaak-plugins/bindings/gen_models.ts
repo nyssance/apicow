@@ -136,7 +136,7 @@ export type GrpcConnection = {
   service: string;
   status: number;
   state: GrpcConnectionState;
-  trailers: { [key in string]?: string };
+  trailers: { [key in string]: string };
   url: string;
 };
 
@@ -153,17 +153,12 @@ export type GrpcEvent = {
   content: string;
   error: string | null;
   eventType: GrpcEventType;
-  metadata: { [key in string]?: string };
+  metadata: { [key in string]: string };
   status: number | null;
 };
 
 export type GrpcEventType =
-  | "info"
-  | "error"
-  | "client_message"
-  | "server_message"
-  | "connection_start"
-  | "connection_end";
+  "info" | "error" | "client_message" | "server_message" | "connection_start" | "connection_end";
 
 export type GrpcRequest = {
   model: "grpc_request";
@@ -402,7 +397,7 @@ export type Settings = {
   autoupdate: boolean;
   autoDownloadUpdates: boolean;
   checkNotifications: boolean;
-  hotkeys: { [key in string]?: Array<string> };
+  hotkeys: { [key in string]: Array<string> };
 };
 
 export type SyncState = {
@@ -449,14 +444,7 @@ export type WebsocketEvent = {
 };
 
 export type WebsocketEventType =
-  | "binary"
-  | "close"
-  | "error"
-  | "frame"
-  | "open"
-  | "ping"
-  | "pong"
-  | "text";
+  "binary" | "close" | "error" | "frame" | "open" | "ping" | "pong" | "text";
 
 export type WebsocketRequest = {
   model: "websocket_request";

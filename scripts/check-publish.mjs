@@ -1,0 +1,53 @@
+import assert from "node:assert/strict";
+import { validateRelease } from "./lib/release-manifest.mjs";
+
+const names = [
+  "apicow_0.1.1_macos_aarch64.dmg",
+  "apicow_0.1.1_windows_x64-setup.exe",
+  "apicow_0.1.1_darwin_aarch64.app.tar.gz",
+];
+const release = {
+  tag_name: "apicow-v0.1.1",
+  draft: false,
+  assets: names.map((name, id) => ({
+    name,
+    id,
+    browser_download_url: `https://github.com/nyssance/releases/releases/download/apicow-v0.1.1/${name}`,
+  })),
+};
+const source = {
+  version: "0.1.1",
+  platforms: {
+    "darwin-aarch64": {
+      signature: "mac-signature",
+      url: "https://api.github.com/repos/nyssance/releases/releases/assets/2",
+    },
+    "windows-x86_64": {
+      signature: "windows-signature",
+      url: "https://api.github.com/repos/nyssance/releases/releases/assets/1",
+    },
+  },
+};
+const signatures = {
+  [`${names[2]}.sig`]: "mac-signature\n",
+  [`${names[1]}.sig`]: "windows-signature\n",
+};
+const result = validateRelease(release, source, signatures, "v0.1.1");
+assert.equal(result.platforms["windows-x86_64"].url, release.assets[1].browser_download_url);
+assert.equal(result.platforms["darwin-aarch64"].url, release.assets[2].browser_download_url);
+assert.ok(source.platforms["windows-x86_64"].url.startsWith("https://api.github.com/"));
+assert.throws(() => validateRelease({ ...release, draft: true }, source, signatures, "v0.1.1"));
+assert.throws(() =>
+  validateRelease({ ...release, assets: release.assets.slice(1) }, source, signatures, "v0.1.1"),
+);
+assert.throws(() => validateRelease(release, source, {}, "v0.1.1"));
+const wrong = structuredClone(source);
+wrong.platforms["windows-x86_64"].url = wrong.platforms["darwin-aarch64"].url;
+assert.throws(() => validateRelease(release, wrong, signatures, "v0.1.1"));
+const incomplete = structuredClone(source);
+delete incomplete.platforms["windows-x86_64"];
+assert.throws(() => validateRelease(release, incomplete, signatures, "v0.1.1"));
+assert.throws(() => validateRelease(release, source, signatures, "v0.1.2"));
+console.log(
+  "PASS: dual-platform public URLs, exact installers, draft guard, signatures, platform separation and version checks",
+);

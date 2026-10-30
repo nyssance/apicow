@@ -23,7 +23,7 @@ license = ["yaak-license"]
 tauri-build = { version = "3.0.0-alpha.4", features = [] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-openssl-sys = { version = "0.9.105", features = ["vendored"] } # For Ubuntu installation to work
+openssl-sys = { version = "0.9.117", features = ["vendored"] } # For Ubuntu installation to work
 
 [target.'cfg(any(target_os = "macos", target_os = "linux"))'.dependencies]
 rlimit = "0.11" # Raise the launchd 256 open-file soft limit at startup
@@ -32,17 +32,17 @@ rlimit = "0.11" # Raise the launchd 256 open-file soft limit at startup
 base64 = "0.23.1" # For writing values the editor only ever held encoded
 charset = "0.1.5"
 chrono = { workspace = true, features = ["serde"] }
-cookie = "0.18.1"
+cookie = "0.18.2"
 eventsource-client = { git = "https://github.com/yaakapp/rust-eventsource-client", version = "0.14.0" }
-http = { version = "1.2.0", default-features = false }
+http = { version = "1.5.0", default-features = false }
 log = { workspace = true }
-md5 = "0.8.0"
-notify = "8.0.0"
+md5 = "0.8.1"
+notify = "8.2.1"
 pretty_graphql = "0.2"
 r2d2 = "0.8.10"
-r2d2_sqlite = "0.32"
+r2d2_sqlite = "0.35"
 mime_guess = "2.0.5"
-rand = "0.9.0"
+rand = "0.10.3"
 reqwest = { workspace = true, features = [
   "multipart",
   "gzip",
@@ -70,14 +70,14 @@ tauri-plugin-single-instance = { version = "3.0.0-alpha.3", features = ["deep-li
 tauri-plugin-updater = "3.0.0-alpha.3"
 thiserror = { workspace = true }
 tokio = { workspace = true, features = ["sync"] }
-tokio-stream = "0.1.17"
+tokio-stream = "0.1.19"
 tokio-tungstenite = { version = "0.30.0", default-features = false }
 url = "2"
 tokio-util = { version = "0.7", features = ["codec"] }
 ts-rs = { workspace = true }
 yaak-rpc = { workspace = true }
 yaak-rpc-schema = { workspace = true }
-uuid = "1.12.1"
+uuid = "1.29.0"
 yaak-api = { workspace = true }
 yaak-common = { workspace = true }
 yaak-tauri-utils = { workspace = true }

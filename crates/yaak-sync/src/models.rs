@@ -3,7 +3,7 @@ use crate::error::Result;
 use chrono::NaiveDateTime;
 use log::debug;
 use serde::{Deserialize, Deserializer, Serialize};
-use serde_yaml::{Mapping, Value};
+use serde_json::{Map, Value};
 use sha1::{Digest, Sha1};
 use std::fs;
 use std::path::Path;
@@ -38,7 +38,7 @@ impl<'de> Deserialize<'de> for SyncModel {
         let model = model.as_str();
 
         let obj = v
-            .as_mapping_mut()
+            .as_object_mut()
             .ok_or_else(|| serde::de::Error::custom("expected object for SyncModel"))?;
 
         // Dispatch to CHILD types (no recursion)
@@ -83,7 +83,7 @@ impl<'de> Deserialize<'de> for SyncModel {
     }
 }
 
-fn migrate_environment(obj: &mut Mapping) {
+fn migrate_environment(obj: &mut Map<String, Value>) {
     match (obj.get("base"), obj.get("parentModel")) {
         (Some(Value::Bool(base)), None) => {
             debug!("Migrating legacy environment {:?}", obj.get("id"));
@@ -131,7 +131,12 @@ impl SyncModel {
     pub fn to_file_contents(&self, rel_path: &Path) -> Result<(Vec<u8>, String)> {
         let ext = rel_path.extension().unwrap_or_default();
         let content = if ext == "yaml" || ext == "yml" {
-            serde_yaml::to_string(self)?
+            // Rolldown enables serde_json/arbitrary_precision workspace-wide.
+            // Convert through JSON text so YAML receives scalar numbers, not
+            // serde_json's private arbitrary-precision serialization marker.
+            let json = serde_json::to_string(self)?;
+            let yaml: serde_yaml::Value = serde_yaml::from_str(&json)?;
+            serde_yaml::to_string(&yaml)?
         } else {
             serde_json::to_string(self)?
         };
@@ -213,6 +218,26 @@ impl TryFrom<AnyModel> for SyncModel {
 mod migration_tests {
     use crate::error::Result;
     use crate::models::SyncModel;
+
+    #[test]
+    fn sync_roundtrip_preserves_numeric_fields_in_json_and_yaml() {
+        let mut request = yaak_models::models::HttpRequest {
+            id: "rq_numeric".into(),
+            workspace_id: "wk_numeric".into(),
+            sort_priority: 1.25,
+            ..Default::default()
+        };
+        request.authentication.insert("count".into(), serde_json::json!(42));
+        request.body.insert("ratio".into(), serde_json::json!(0.125));
+        let expected = SyncModel::HttpRequest(request);
+        for filename in ["request.json", "request.yaml"] {
+            let path = std::path::Path::new(filename);
+            let (bytes, _) = expected.to_file_contents(path).unwrap();
+            assert!(!String::from_utf8_lossy(&bytes).contains("$serde_json"));
+            let (actual, _) = SyncModel::from_bytes(bytes, path).unwrap().unwrap();
+            assert_eq!(actual, expected);
+        }
+    }
 
     #[test]
     fn import_sources_are_excluded_from_sync() {

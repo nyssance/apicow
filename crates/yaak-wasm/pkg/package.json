@@ -6,7 +6,8 @@
     "yaak_wasm_bg.wasm",
     "yaak_wasm.js",
     "yaak_wasm_bg.js",
-    "yaak_wasm.d.ts"
+    "yaak_wasm.d.ts",
+    "snippets"
   ],
   "main": "yaak_wasm.js",
   "types": "yaak_wasm.d.ts",

@@ -15,10 +15,10 @@ export function blob_get(id: string): Uint8Array | undefined;
  * the desktop chunks, so a body written here reads back on a desktop that
  * imports the database, and vice versa.
  */
-export function blob_put(id: string, bytes: Uint8Array): void;
+export function blob_put(id: string, bytes: Uint8Array | number[]): void;
 
 /**
- * Register the IndexedDB-backed VFS and open the database.
+ * Register the OPFS-backed VFS and open the database.
  *
  * Migrations run inside `init_standalone`, exactly as they do for the CLI.
  * Safe to call more than once; later calls are no-ops.

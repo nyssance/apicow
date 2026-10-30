@@ -40,14 +40,8 @@ export type FromWorker =
   /** A backend event for the app — today only `model_writes`. Sent to every port. */
   | { type: "event"; event: string; payload: unknown };
 
-/** What the worker registers itself under. Tabs on one origin share it. */
+/** Dedicated worker name shown in browser developer tools. */
 export const WORKER_NAME = "yaak-db";
 
-/**
- * The Web Lock the worker takes before opening the database.
- *
- * The browser already guarantees one SharedWorker per origin for this name.
- * The lock covers the one overlap it doesn't rule out: a tab reloading itself,
- * whose old worker may still be letting go while the new one comes up.
- */
+/** Exclusive OPFS owner election; queued workers take over when the owner closes. */
 export const DB_LOCK_NAME = "yaak-db";

@@ -1,4 +1,4 @@
-- Tag safety: app AND CLI releases both ship from `v*` tags (the CLI is version-locked to the app and publishes to npm on every app tag); `@yaakapp/api` uses `yaak-api-*` tags. Always confirm which is requested before retagging.
+- Tag safety: ApiCow desktop releases use new `v*` tags. The inherited CLI/npm workflow is restricted to mountain-loop/yaak and must stay disabled in this fork. `@yaakapp/api` uses `yaak-api-*` tags. Never move an existing release tag.
 - Do not commit, push, or tag without explicit approval
 
 # ApiCow 当前范围
@@ -15,3 +15,7 @@
 - 用户于 2026-10-29 授权按原版功能回归与中文全界面验收优先；原生测试仅使用独立测试标识、本机服务和虚构凭据。每次交付明确剩余未覆盖项，不以测试通过宣称最佳。
 
 - 2026-10-29 用户明确纠正：HTTP 引擎沿用同一份上游代码，不把 Yaak 同机对比作为收尾任务或交付缺口。当前完成 Tauri 3 适配和中文界面，保持原版功能；只有具体性能问题或用户专项要求时才定向测量。
+
+- 2026-10-30 用户明确要求依赖升级至最新版本（包含大版本），不因旧 API 兼容性保留旧直接依赖；需迁移代码并验证。此要求取代之前“不顺带全面升级依赖”的限制。`fab u` 直接使用 Bun/Cargo，不依赖 vp。
+
+- 2026-10-30 用户授权本次发布，并要求 macOS 与 Windows 各一个安装包：macOS Apple Silicon DMG、Windows x64 NSIS EXE。若发布受阻，先修复 publish 流程；不得发布不完整的双平台更新清单。

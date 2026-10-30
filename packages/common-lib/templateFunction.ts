@@ -7,7 +7,7 @@ import type {
 export function validateTemplateFunctionArgs(
   fnName: string,
   args: TemplateFunctionArg[],
-  values: CallTemplateFunctionArgs["values"],
+  values: Partial<CallTemplateFunctionArgs["values"]>,
 ): string | null {
   for (const arg of args) {
     if ("inputs" in arg && arg.inputs) {

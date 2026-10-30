@@ -27,7 +27,7 @@ const HELLO_TIMEOUT_MS = 3000;
 const WORKER_FAILED = "Yaak's database worker could not be started. Reload the page to try again";
 
 const UNSUPPORTED =
-  "This browser can't run Yaak: it needs shared workers and Web Locks to keep your data safe across tabs. Every current browser has both.";
+  "This browser can't run Yaak: it needs workers, BroadcastChannel, Web Locks and OPFS to store data across tabs.";
 
 type Pending = { resolve: (value: unknown) => void; reject: (reason: Error) => void };
 
@@ -52,12 +52,12 @@ export class WorkerConnection {
   private heard = false;
 
   constructor() {
-    // Both are required and neither is faked. Without a shared worker every
-    // tab would need its own SQLite over the same pages; without Web Locks
-    // nothing can promise there is only one even so. Every current browser,
-    // desktop and mobile, has both (Chrome for Android since 148); the ones
-    // that don't get told, not corrupted.
-    if (typeof SharedWorker === "undefined" || typeof navigator.locks === "undefined") {
+    if (
+      typeof Worker === "undefined" ||
+      typeof BroadcastChannel === "undefined" ||
+      typeof navigator.locks === "undefined" ||
+      !navigator.storage?.getDirectory
+    ) {
       this.port = null;
       this.bootError = UNSUPPORTED;
       showBootError(UNSUPPORTED);
@@ -74,8 +74,8 @@ export class WorkerConnection {
   /**
    * Connect to the origin's one database worker.
    *
-   * The browser hands every tab the same SharedWorker for this name and URL,
-   * which is what makes "one database owner" true without anyone coordinating.
+   * Each tab has a dedicated worker; a Web Lock elects the sole database owner.
+   * The workers forward requests and events over BroadcastChannel.
    *
    * `new URL("./worker.ts", import.meta.url)` is written out inline on purpose:
    * that exact syntax is what the bundler pattern-matches to know it must
@@ -83,17 +83,20 @@ export class WorkerConnection {
    * ships as raw TypeScript.
    */
   private connect(): MessagePort {
-    const worker = new SharedWorker(new URL("./worker.ts", import.meta.url), {
+    const worker = new Worker(new URL("./worker.ts", import.meta.url), {
       type: "module",
       name: WORKER_NAME,
     });
-    // A worker whose script fails to load fires `error` on the SharedWorker
+    // A worker whose script fails to load fires `error` on the Worker
     // object and nothing else — the port just goes quiet.
     worker.onerror = () => {
-      if (!this.heard) this.failEverything(`${WORKER_FAILED} (its script failed to load).`);
+      this.failEverything(`${WORKER_FAILED} (its script failed to load).`);
     };
-    worker.port.onmessage = (e: MessageEvent<FromWorker>) => this.receive(e.data);
-    worker.port.start();
+    const { port1, port2 } = new MessageChannel();
+    worker.postMessage({ port: port2 }, [port2]);
+    window.addEventListener("pagehide", () => worker.terminate());
+    port1.onmessage = (e: MessageEvent<FromWorker>) => this.receive(e.data);
+    port1.start();
 
     // The worker says hello synchronously on connect. Silence past the timeout
     // means this port is attached to nothing that will ever answer, and the
@@ -102,10 +105,10 @@ export class WorkerConnection {
     // top-level-await import) is fixed at the source by importing the wasm
     // lazily, and a reload is the right remedy for anything else.
     setTimeout(() => {
-      if (!this.heard) this.failEverything(`${WORKER_FAILED} (it never answered).`);
+      this.failEverything(`${WORKER_FAILED} (it never answered).`);
     }, HELLO_TIMEOUT_MS);
 
-    return worker.port;
+    return port1;
   }
 
   private failEverything(message: string): void {

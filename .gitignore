@@ -59,3 +59,6 @@ flatpak/node-sources.json
 # Claude Code local settings
 .claude/settings.local.json
 .claude/worktrees/
+
+# Bun is the repository package manager.
+/package-lock.json

@@ -14,7 +14,7 @@ use hyper::service::service_fn;
 use hyper::{Request, Response, StatusCode};
 use hyper_util::rt::{TokioExecutor, TokioIo};
 use hyper_util::server::conn::auto;
-use rcgen::{BasicConstraints, CertificateParams, IsCa, KeyPair};
+use rcgen::{BasicConstraints, CertificateParams, IsCa, KeyPair, PublicKeyData};
 use rustls::pki_types::{CertificateDer, PrivateKeyDer, PrivatePkcs8KeyDer, ServerName};
 use rustls::{ClientConfig, RootCertStore, ServerConfig};
 use tempfile::TempDir;
@@ -61,7 +61,8 @@ fn test_pki() -> TestPki {
 
     let leaf_key = KeyPair::generate().unwrap();
     let leaf_params = CertificateParams::new(vec!["localhost".into()]).unwrap();
-    let leaf = leaf_params.signed_by(&leaf_key, &ca, &ca_key).unwrap();
+    let leaf =
+        leaf_params.signed_by(&leaf_key, &rcgen::Issuer::from_params(&ca_params, &ca_key)).unwrap();
 
     let mut server = ServerConfig::builder_with_provider(ring())
         .with_safe_default_protocol_versions()
@@ -336,7 +337,7 @@ fn concurrent_creators_agree_on_one_ca() {
         let key = KeyPair::from_pem(&std::fs::read_to_string(dir.path().join("ca.key")).unwrap())
             .unwrap();
         let cert = pem::parse(&on_disk).unwrap().into_contents();
-        let spki = key.public_key_der();
+        let spki = key.subject_public_key_info();
         assert!(cert.windows(spki.len()).any(|w| w == spki), "ca.key does not match ca.pem");
     }
 }

@@ -11,24 +11,28 @@ permissions:
 jobs:
   test:
     name: Lint/Test
-    runs-on: macos-latest
+    runs-on: macos-26
+    env:
+      SKIP_WASM_BUILD: "1"
     steps:
       - uses: actions/checkout@v4
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: true
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.4"
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
           shared-key: ci
           cache-on-failure: true
 
-      - run: vp install
-      - run: npm run bootstrap
-      - run: npm run lint
+      - run: bun install --frozen-lockfile
+      - run: bun run bootstrap
+      - run: bun run lint
       - name: Run JS Tests
-        run: vp test
+        run: bun x --no-install vp test run --maxWorkers=4
       - name: Run Rust Tests
         run: cargo test --all --features yaak-app-client/wry
       - name: OpenAPI import round-trip
@@ -38,13 +42,17 @@ jobs:
 
   test-windows:
     name: Rust Tests (Windows)
-    runs-on: windows-latest
+    runs-on: windows-2025
+    env:
+      SKIP_WASM_BUILD: "1"
     steps:
       - uses: actions/checkout@v4
-      - uses: voidzero-dev/setup-vp@v1
+      - uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: true
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: "1.4.4"
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
@@ -55,8 +63,8 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - run: vp install
-      - run: npm run bootstrap
+      - run: bun install --frozen-lockfile
+      - run: bun run bootstrap
         env:
           YAAK_TARGET_ARCH: x64
       - name: Run Rust Tests

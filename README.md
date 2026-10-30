@@ -9,33 +9,28 @@ ApiCow is an independent development fork of Yaak. The first milestone is macOS 
 - Release builds enable the standard Tauri updater against the public [nyssance/releases](https://github.com/nyssance/releases) repo (`apicow-latest/latest.json`, signed updates only); Yaak's update server and commercial-license feature are not used. See [Release](#release) below.
 - Existing internal `yaak-*` crate names, plugin APIs, CLI and serialized formats are retained for compatibility. This is not a complete rebranding or a public release.
 
-See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 24+, Rust and the workspace Vite+ CLI are required. Run `npm ci`, `npm run bootstrap`, then `npm start`.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 24+, Rust and the workspace Vite+ CLI are required. Run `bun install --frozen-lockfile`, `bun run bootstrap`, then `bun start`.
 
 ## Release
 
-发布流程照搬 GitCub：推送 `v<版本>` 标签后，`.github/workflows/release-app.yml` 在 macOS runner 上构建
-Apple Silicon 包，用 Developer ID 签名、公证（`.app` 与 DMG 都盖章）、生成更新器包（`.app.tar.gz` + `.sig`）和
-`latest.json`，在公开仓 [nyssance/releases](https://github.com/nyssance/releases) 建草稿 Release `apicow-v<版本>`，
-源码仓保持私有。目前只发 macOS（Apple Silicon）。
+运行 `fab publish 0.1.1`（别名 `fab p`）发布桌面应用。命令要求已提交的 `main`，创建新 `v<版本>`
+标签并等待 GitHub Actions 构建成功。不会移动已有标签，也不会发布上游 CLI/npm 包。
 
-1. 打标签：`git tag v0.1.0 && git push origin v0.1.0`。版本号沿用上游做法由标签提供：工作流在构建前运行
-   `npm run replace-version` 把标签写进 `crates-tauri/yaak-app-client/tauri.conf.json`，仓库里保持占位 `0.0.0`
-   （preflight 只接受 `0.0.0` 或与标签相同的值）。
-2. 等工作流跑完，在 nyssance/releases 检查草稿 `apicow-v<版本>` 的资源：`apicow_<版本>_darwin_aarch64.app.tar.gz`
-   及 `.sig`（更新器包）、`apicow_<版本>_macos_aarch64.dmg`（已公证盖章）、`latest.json`，然后把草稿发布。
-3. 手动运行 `release` 工作流并填 `publish_latest=v<版本>`：它把该版本的 `latest.json` 改成发布后的直链，覆盖到固定的
-   `apicow-latest` Release。更新器端点只读 `apicow-latest/latest.json`，所以这一步之前已装用户不会看到新版本。
+每版提供两个安装包：macOS Apple Silicon `.dmg`（Developer ID 签名、公证）和 Windows x64
+NSIS `.exe`。Windows 未配置 Authenticode 证书；两平台更新包均使用 Tauri 更新密钥签名。
+源码仓保持私有，安装包发布到公开仓 [nyssance/releases](https://github.com/nyssance/releases)
+的 `apicow-v<版本>` Release。
 
-不带参数的手动运行只出未签名的安装包作为工件，不发布。
+构建完成后，`publish` 校验两个平台的安装包、更新包和签名，再发布草稿并更新
+`apicow-latest/latest.json`。清单使用各自资源的公开下载地址，不会把 Windows 指向 Mac 文件。
+`fab publish 0.1.1 --dry-run` 预览流程，`--no-wait` 仅推标签触发构建。
 
-随包分发的 `vendored/node/yaaknode` 与 `vendored/protoc/yaakprotoc` 由 `scripts/sign-vendored-binaries.mjs`
-（`beforeBundleCommand`）在打包前签上 hardened runtime 与时间戳（yaaknode 带 JIT entitlements），否则公证拒绝整个包；
-没有 `APPLE_SIGNING_IDENTITY` 时该脚本什么都不做。
+工作流手动运行且留空 `publish_latest` 时构建两个未签名测试安装包；填入已发布标签时，仅验证并更新
+自动更新清单。运行器必须有可用 GitHub Actions 额度。
 
-仓库 secrets：`APPLE_CERTIFICATE`（Developer ID Application 证书导出的 .p12 做 base64）、`APPLE_CERTIFICATE_PASSWORD`、
-`APPLE_SIGNING_IDENTITY`、`APPLE_ID`、`APPLE_PASSWORD`（App 专用密码）、`APPLE_TEAM_ID`、`TAURI_PRIVATE_KEY`、
-`TAURI_KEY_PASSWORD`、`RELEASE_TOKEN`（只对 nyssance/releases 有 Contents 读写的 fine-grained token）。更新器私钥只在本机
-`~/.tauri/apicow.key` 和仓库 secrets 里，公钥写在 `tauri.release.conf.json`；丢了私钥或密码就再也签不出已装用户认的更新。
+发布需要：`APPLE_CERTIFICATE`、`APPLE_CERTIFICATE_PASSWORD`、`APPLE_SIGNING_IDENTITY`、
+`APPLE_ID`、`APPLE_PASSWORD`、`APPLE_TEAM_ID`、`TAURI_PRIVATE_KEY`、`TAURI_KEY_PASSWORD` 和
+能写入公开发布仓的 `RELEASE_TOKEN`。更新器公钥在 `tauri.release.conf.json` 中，升级时不得随意更换。
 
 ---
 

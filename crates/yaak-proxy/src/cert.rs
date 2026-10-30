@@ -5,8 +5,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use rcgen::{
-    BasicConstraints, Certificate, CertificateParams, DnType, ExtendedKeyUsagePurpose, IsCa,
-    KeyPair, KeyUsagePurpose,
+    BasicConstraints, CertificateParams, DnType, ExtendedKeyUsagePurpose, IsCa, Issuer, KeyPair,
+    KeyUsagePurpose,
 };
 use rustls::ServerConfig;
 use rustls::pki_types::{CertificateDer, PrivateKeyDer, PrivatePkcs8KeyDer};
@@ -22,8 +22,7 @@ pub struct CaStore {
     key_path: PathBuf,
     pem: String,
     cert_der: CertificateDer<'static>,
-    issuer: Certificate,
-    key: KeyPair,
+    issuer: Issuer<'static, KeyPair>,
     leaf_configs: Mutex<HashMap<String, Arc<ServerConfig>>>,
 }
 
@@ -64,7 +63,7 @@ impl CaStore {
         let cert_der = pem::parse(&pem)
             .map_err(io::Error::other)
             .map(|p| CertificateDer::from(p.into_contents()))?;
-        let issuer = ca_params().self_signed(&key).map_err(io::Error::other)?;
+        let issuer = Issuer::new(ca_params(), key);
 
         Ok(Self {
             cert_path,
@@ -72,7 +71,6 @@ impl CaStore {
             pem,
             cert_der,
             issuer,
-            key,
             leaf_configs: Mutex::new(HashMap::new()),
         })
     }
@@ -113,7 +111,7 @@ impl CaStore {
         params.not_after = now + Duration::days(LEAF_VALIDITY_DAYS);
 
         let leaf_key = KeyPair::generate()?;
-        let leaf_cert = params.signed_by(&leaf_key, &self.issuer, &self.key)?;
+        let leaf_cert = params.signed_by(&leaf_key, &self.issuer)?;
 
         let mut config =
             ServerConfig::builder_with_provider(Arc::new(rustls::crypto::ring::default_provider()))

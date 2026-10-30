@@ -4,7 +4,6 @@
   "version": "0.2.3",
   "private": true,
   "description": "Expose Yaak functionality via Model Context Protocol",
-  "deprecated": "Replaced by the built-in `yaak mcp` in the Yaak CLI. Install the CLI instead.",
   "repository": {
     "type": "git",
     "url": "https://github.com/mountain-loop/yaak.git",
@@ -15,15 +14,16 @@
     "dev": "yaakcli dev"
   },
   "dependencies": {
-    "@hono/mcp": "^0.3.2",
-    "@hono/node-server": "^2.1.4",
-    "@modelcontextprotocol/sdk": "^1.32.1",
-    "hono": "^4.13.13",
-    "zod": "^4.6.6"
+    "@hono/mcp": "^0.3.5",
+    "@hono/node-server": "^2.1.5",
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "hono": "^4.13.14",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@types/node": "^22.20.5",
-    "typescript": "^5.9.3"
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
   },
+  "deprecated": "Replaced by the built-in `yaak mcp` in the Yaak CLI. Install the CLI instead.",
   "minYaakVersion": "2026.1.0"
 }

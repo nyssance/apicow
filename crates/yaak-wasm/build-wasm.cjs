@@ -63,7 +63,10 @@ execSync("wasm-pack build --target bundler", {
   },
 });
 
-// No post-processing: wasm-pack's own entry (pkg/yaak_wasm.js) is what the app
-// imports, and `vite-plugin-wasm` handles its ES Module Integration form in both
-// dev and production builds. A rewrite used to live here for a Vite that could
-// not, and it outlived both that Vite and the crate name it hardcoded.
+// wasm-bindgen's imported migration module must also ship with the generated package.
+const packagePath = path.join(__dirname, "pkg/package.json");
+const generatedPackage = JSON.parse(fs.readFileSync(packagePath, "utf8"));
+if (!generatedPackage.files.includes("snippets")) {
+  generatedPackage.files.push("snippets");
+  fs.writeFileSync(packagePath, `${JSON.stringify(generatedPackage, null, 2)}\n`);
+}

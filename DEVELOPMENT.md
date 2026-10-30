@@ -103,3 +103,47 @@ Notes:
 - A pre-commit hook runs `vp lint` automatically on commit.
 - Some workspace packages also run `tsc --noEmit` for type-checking.
 - VS Code users should install the recommended extensions for format-on-save support.
+
+## Updating dependencies
+
+`fab u` (aliases `fab upgrade`, `fab update`) runs at the repository root and
+upgrades to the latest releases, including major versions:
+
+1. `bun outdated --recursive`
+2. `bun update --recursive --latest`
+3. `cargo upgrade --incompatible allow --pinned allow`
+4. `cargo update`
+
+It installs cargo-edit if needed. `fab u --no-rust` updates only JavaScript;
+`fab u --dry-run` previews commands. The task invokes no vp or npm and performs
+no Git pull, commit, push, publication or tagging. Bun owns the JavaScript lockfile; the obsolete npm package-lock.json is removed.
+
+The 2026-10-30 upgrade migrates the browser database to sqlite-wasm-vfs 0.3 OPFS.
+Web Locks elect one dedicated worker as the OPFS owner; other tabs forward
+requests over BroadcastChannel. Existing IndexedDB SQLite
+files are imported into OPFS without loading an older VFS. ID generation uses
+rand 0.10 with the existing alphabet and lengths. The old VFS bridge and
+getrandom03 aliases have been removed.
+
+Two source-unchanged SQLite adapters are patched in `vendor/` only to use
+rusqlite 0.41: sea-query-rusqlite 0.8 and r2d2_sqlite 0.35, both their latest
+published releases. See their source/license notes. Rolldown 1 enables JSON
+arbitrary precision; sync serialization handles numeric fields in both JSON
+and YAML, covered by a round-trip regression test.
+
+Validation for the final dependency set (2026-10-30):
+
+- `bun outdated --recursive`: no outdated workspace dependencies.
+- `cargo upgrade --incompatible allow --pinned allow` followed by `cargo update`:
+  all direct registry requirements updated, including wasm-bindgen 0.2.130.
+  Transitive versions remain controlled by upstream requirements.
+- `cargo test --workspace --features yaak-app-client/wry`: 961 passed;
+  four documentation examples are ignored.
+- `vp test run --maxWorkers=4`: 1,042 passed under Node 24; limiting concurrent
+  workers avoids timeouts observed while native compilation and builds compete
+  for resources. The two affected files also passed independently (12 tests).
+- Full workspace lint/type checking passed with three existing warnings.
+- Both desktop frontend and Web production builds passed, plus both WASM builds.
+- Isolated Chromium checked IndexedDB-to-OPFS migration, persistence across
+  worker restart, cross-tab writes/events and takeover after closing the owner.
+- This run did not produce a new macOS installer or run the full native GUI suite.

@@ -1,3 +1,8 @@
+if (process.env.SKIP_WASM_BUILD === "1") {
+  console.log("Using the committed WASM packages (SKIP_WASM_BUILD=1)");
+  return;
+}
+
 const { execSync } = require("node:child_process");
 
 const version = tryExecSync("wasm-pack --version");

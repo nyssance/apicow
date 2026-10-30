@@ -17,8 +17,8 @@
     "@readme/httpsnippet": "^11.4.1"
   },
   "devDependencies": {
-    "@types/node": "^22.20.5",
-    "typescript": "^5.9.3"
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
   },
   "minYaakVersion": "2026.2.0-beta.10"
 }

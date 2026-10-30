@@ -8,9 +8,9 @@ publish = false
 dark-light = "3.0.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-dispatch2 = "0.3.0"
-objc2-app-kit = { version = "0.3.1", features = ["NSAppearance", "NSApplication", "NSResponder"] }
-objc2-foundation = { version = "0.3.1", features = ["NSArray", "NSString", "NSUserDefaults"] }
+dispatch2 = "0.3.1"
+objc2-app-kit = { version = "0.3.2", features = ["NSAppearance", "NSApplication", "NSResponder"] }
+objc2-foundation = { version = "0.3.2", features = ["NSArray", "NSString", "NSUserDefaults"] }
 
 [dependencies]
 log = { workspace = true }

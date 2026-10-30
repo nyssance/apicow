@@ -48,7 +48,7 @@ export type ImportPlan = {
   /**
    * Stable source key for every model in `resources`, keyed by its planned ID.
    */
-  sourceKeys: { [key in string]?: string };
+  sourceKeys: { [key in string]: string };
   /**
    * One entry per plannable resource; commit applies only the selected ones.
    */
@@ -61,13 +61,7 @@ export type ImportPlan = {
 };
 
 export type ImportPlanAction =
-  | "create"
-  | "update"
-  | "delete"
-  | "unchanged"
-  | "keep_local"
-  | "conflict"
-  | "ignored";
+  "create" | "update" | "delete" | "unchanged" | "keep_local" | "conflict" | "ignored";
 
 export type ImportPlanItem = {
   action: ImportPlanAction;
@@ -96,7 +90,7 @@ export type ImportPlanSource = {
   importer: string;
   origin: ImportOrigin;
   workspaceId: string;
-  sourceKeys: { [key in string]?: string };
+  sourceKeys: { [key in string]: string };
   linkedSourceId?: string;
 };
 
@@ -111,9 +105,4 @@ export type ImportPlanWarningLevel = "info" | "warning";
  * The model types an import plan can contain.
  */
 export type ImportResourceType =
-  | "environment"
-  | "folder"
-  | "grpc_request"
-  | "http_request"
-  | "websocket_request"
-  | "workspace";
+  "environment" | "folder" | "grpc_request" | "http_request" | "websocket_request" | "workspace";
