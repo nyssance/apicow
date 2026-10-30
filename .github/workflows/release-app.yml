@@ -27,7 +27,7 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.publish_latest == ''
     permissions:
       contents: read
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
       - uses: voidzero-dev/setup-vp@v1
@@ -129,7 +129,7 @@ jobs:
     needs: release-preflight
     permissions:
       contents: write
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
