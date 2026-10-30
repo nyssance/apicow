@@ -27,11 +27,11 @@ def require(condition, message):
 
 
 def check_source():
-    baseline = json.loads(BASELINE.read_text())
+    baseline = json.loads(BASELINE.read_text(encoding="utf-8"))
     for name, expected in baseline['icons'].items():
         require(digest(ROOT / name) == expected, f'Icon changed from reviewed baseline: {name}')
-    config = json.loads((APP / 'tauri.conf.json').read_text())
-    release = json.loads((APP / 'tauri.release.conf.json').read_text())
+    config = json.loads((APP / 'tauri.conf.json').read_text(encoding="utf-8"))
+    release = json.loads((APP / 'tauri.release.conf.json').read_text(encoding="utf-8"))
     require(config['productName'] == 'ApiCow', 'Product name changed')
     require(config['identifier'] == 'day.dreamer.apicow', 'Bundle identifier changed')
     require(config['bundle']['icon'] == baseline['bundleIcons'], 'Bundled icon paths changed')
@@ -57,12 +57,12 @@ def check_source():
             continue
         if '.test.' in name or '.spec.' in name:
             continue
-        require(not retired.search(path.read_text()), f'Retired product URL in {name}')
+        require(not retired.search(path.read_text(encoding="utf-8")), f'Retired product URL in {name}')
     for name in ('README.md', 'CONTRIBUTING.md', '.github/ISSUE_TEMPLATE/config.yml',
                  '.github/pull_request_template.md', 'packages/plugin-runtime-types/package.json'):
-        require(not retired.search((ROOT / name).read_text()), f'Retired public product link in {name}')
+        require(not retired.search((ROOT / name).read_text(encoding="utf-8")), f'Retired public product link in {name}')
     native_templates = ROOT / 'crates/yaak-plugins/src/native_template_functions.rs'
-    require(not retired.search(native_templates.read_text()), 'Retired native template help URL')
+    require(not retired.search(native_templates.read_text(encoding="utf-8")), 'Retired native template help URL')
     return baseline
 
 

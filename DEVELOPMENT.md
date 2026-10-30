@@ -168,3 +168,7 @@ Validation for the final dependency set (2026-10-30):
 - 实际验证：`bun run lint` 通过（3 个既有警告）；相关测试 10 文件、95 项通过；前端生产构建通过；三个认证插件构建及 vendor 通过；`cargo check -p yaak-app-client --features wry,updater` 通过（有既有及停用通知后保留类型的 dead-code 警告）。
 - `check:branding` 扩大到前端、原生应用、内置插件和公开仓入口，并禁止开启上游 license feature。图标指纹、应用 ID、深链、签名更新配置未变。实际生成的 114 个前端/插件 JS 文件扫描没有 Yaak 产品 URL。
 - 公开 Release 列表、Latest、v0.1.5 均返回 HTTP 200；反馈入口转到 GitHub 登录并携带 ApiCow issue 返回地址。本轮未生成/发布新安装包；线上 v0.1.5 不包含本轮修复。
+
+### 发布检查编码修复
+
+v0.1.6 的 Windows 构建在品牌检查阶段触发 `UnicodeDecodeError`：Python 默认 CP1252 无法读取含中文的 UTF-8 源码。所有文本读取现已显式指定 UTF-8；本地将未指定编码的 `Path.read_text` 模拟为 CP1252，完整 `check_source` 通过。v0.1.6 未公开、不移动标签，正式发布继续使用新版本 v0.1.7。
