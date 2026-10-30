@@ -1,6 +1,6 @@
 # 照 GitCub 的发布流程：手动运行只出未签名的安装包当工件；推 v* 标签则签名、公证、
 # 生成更新器元数据并在公开仓 nyssance/releases 建草稿 Release `apicow-v*`（源码仓已公开），
-# 人工检查发布后再把 latest.json 覆盖到固定的 `apicow-latest` Release，更新器只读那里。
+# 双平台产物校验成功后自动公开并更新 `apicow-latest`，更新器只读那里。
 # 版本号沿用上游做法由标签提供：构建前 `bun run replace-version` 把 v* 写进 tauri.conf.json。
 # 发布 macOS Apple Silicon DMG 与 Windows x64 NSIS EXE。
 name: release
@@ -229,8 +229,8 @@ jobs:
           dmg=$(ls target/aarch64-apple-darwin/release/bundle/dmg/*.dmg)
           xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
           xcrun stapler staple "$dmg"
-          cp "$dmg" "apicow_${GITHUB_REF_NAME#v}_macos_aarch64.dmg"
-          gh release upload "$RELEASE_TAG" "apicow_${GITHUB_REF_NAME#v}_macos_aarch64.dmg" --repo nyssance/releases --clobber
+          cp "$dmg" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg"
+          gh release upload "$RELEASE_TAG" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg" --repo nyssance/releases --clobber
       - name: 清理签名钥匙串
         if: always() && runner.os == 'macOS' && env.APICOW_SIGNING_DIR != ''
         shell: bash
