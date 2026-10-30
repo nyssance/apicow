@@ -24,6 +24,7 @@ NSIS `.exe`。Windows 未配置 Authenticode 证书；两平台更新包均使�
 构建完成后，`publish` 校验两个平台的安装包、更新包和签名，再发布草稿并更新
 `apicow-latest/latest.json`。清单使用各自资源的公开下载地址，不会把 Windows 指向 Mac 文件。
 `fab publish 0.1.1 --dry-run` 预览流程，`--no-wait` 仅推标签触发构建。
+失败任务修复后先在 Actions 重跑，再执行 `fab publish 0.1.1 --resume` 等待并完成发布；不会移动标签。
 
 工作流手动运行且留空 `publish_latest` 时构建两个未签名测试安装包；填入已发布标签时，仅验证并更新
 自动更新清单。运行器必须有可用 GitHub Actions 额度。

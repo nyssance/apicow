@@ -38,9 +38,10 @@ def upgrade(c, rust=True, dry_run=False):
 @task(aliases=["p"], help={
     "version": "New app version, for example 0.1.1 (macOS ARM64 + Windows x64)",
     "wait": "Wait for builds and publish both installers plus updater metadata",
+    "resume": "Resume an existing tag without moving it or pushing newer source",
     "dry-run": "Print the release steps without pushing or publishing",
 })
-def publish(c, version, wait=True, dry_run=False):
+def publish(c, version, wait=True, dry_run=False, resume=False):
     """Build and publish ApiCow desktop installers; never retag an existing release."""
     import json
     import re
@@ -63,14 +64,19 @@ def publish(c, version, wait=True, dry_run=False):
             raise Exit("Commit the reviewed changes before publishing", code=1)
         if c.run("git branch --show-current", hide=True).stdout.strip() != "main":
             raise Exit("Publish from main", code=1)
-        head = c.run("git rev-parse HEAD", hide=True).stdout.strip()
-        existing = c.run(f"git rev-parse -q --verify refs/tags/{tag}^{{commit}}", hide=True, warn=True)
-        if existing.ok and existing.stdout.strip() != head:
-            raise Exit(f"{tag} already points to a different commit; choose a new version", code=1)
-        c.run("git push origin HEAD:main")
-        if not existing.ok:
-            c.run(f"git tag -a {tag} -m 'ApiCow {tag}'")
-        c.run(f"git push origin refs/tags/{tag}")
+        head = c.run("git rev-parse HEAD", hide=True, pty=False).stdout.strip()
+        existing = c.run(f"git rev-parse -q --verify refs/tags/{tag}^{{commit}}", hide=True, warn=True, pty=False)
+        if resume:
+            if not existing.ok:
+                raise Exit(f"No local tag {tag}; fetch the release tag before resuming", code=1)
+            head = existing.stdout.strip()
+        else:
+            if existing.ok and existing.stdout.strip() != head:
+                raise Exit(f"{tag} already points to a different commit; use --resume or a new version", code=1)
+            c.run("git push origin HEAD:main")
+            if not existing.ok:
+                c.run(f"git tag -a {tag} -m 'ApiCow {tag}'")
+            c.run(f"git push origin refs/tags/{tag}")
         if not wait:
             print(f"Build started: https://github.com/{repo}/actions/workflows/release-app.yml")
             return
@@ -78,7 +84,7 @@ def publish(c, version, wait=True, dry_run=False):
         for _ in range(30):
             runs = json.loads(c.run(
                 f"gh run list -R {repo} --workflow release-app.yml --event push "
-                f"--commit {head} --json databaseId,headBranch", hide=True).stdout)
+                f"--commit {head} --json databaseId,headBranch", hide=True, pty=False).stdout)
             run_id = next((run["databaseId"] for run in runs if run["headBranch"] == tag), None)
             if run_id is not None:
                 break
