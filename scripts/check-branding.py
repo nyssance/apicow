@@ -38,6 +38,16 @@ def check_source():
     require(release['plugins']['updater'] == baseline['updater'], 'Updater identity/channel changed')
     require('updater' in release['build']['features'], 'Updater disabled')
     require(release['bundle']['createUpdaterArtifacts'], 'Signed update artifacts disabled')
+    # These are product navigation endpoints, not the retained upstream technical docs.
+    retired = ("https://yaak.app/changelog", "https://yaak.app/download",
+               "https://yaak.app/feedback", "https://yaak.app/roadmap", "https://yaak.app/button/new")
+    files = [APP / 'src/lib.rs']
+    for folder in ('components', 'lib'):
+        files.extend((ROOT / 'apps/yaak-client' / folder).rglob('*.tsx'))
+        files.extend((ROOT / 'apps/yaak-client' / folder).rglob('*.ts'))
+    for path in files:
+        if '.test.' not in path.name:
+            require(not any(url in path.read_text() for url in retired), f'Retired product link in {path}')
     return baseline
 
 

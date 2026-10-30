@@ -1,3 +1,4 @@
+import { productLinks, releaseNotesUrl } from "../lib/productLinks";
 import { t } from "@yaakapp-internal/lib/i18n";
 import { useLicense } from "@yaakapp-internal/license";
 import { useRef } from "react";
@@ -60,11 +61,6 @@ export function SettingsDropdown() {
           leftSlot: <Icon icon="folder_output" />,
           onSelect: () => exportData.mutate(),
         },
-        {
-          label: t("Create Run Button"),
-          leftSlot: <Icon icon="rocket" />,
-          onSelect: () => platform.openUrl("https://yaak.app/button/new"),
-        },
         { type: "separator", label: t("Yaak v{{p0}}", { p0: String(appInfo.version) }) },
         {
           label: t("Check for Updates"),
@@ -91,13 +87,13 @@ export function SettingsDropdown() {
           label: t("Feedback"),
           leftSlot: <Icon icon="chat" />,
           rightSlot: <Icon icon="external_link" color="secondary" />,
-          onSelect: () => platform.openUrl("https://yaak.app/feedback"),
+          onSelect: () => platform.openUrl(productLinks.feedback),
         },
         {
           label: t("Changelog"),
           leftSlot: <Icon icon="cake" />,
           rightSlot: <Icon icon="external_link" color="secondary" />,
-          onSelect: () => platform.openUrl(`https://yaak.app/changelog/${appInfo.version}`),
+          onSelect: () => platform.openUrl(releaseNotesUrl(appInfo.version)),
         },
       ]}
     >

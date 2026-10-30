@@ -1,3 +1,4 @@
+import { productLinks } from "../../lib/productLinks";
 import { t } from "@yaakapp-internal/lib/i18n";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { platform } from "@yaakapp-internal/platform";
@@ -60,5 +61,5 @@ export function Link({ href, children, noUnderline, className, ...other }: Props
 }
 
 export function FeedbackLink() {
-  return <Link href="https://yaak.app/roadmap">{t("Feedback")}</Link>;
+  return <Link href={productLinks.feedback}>{t("Feedback")}</Link>;
 }

@@ -115,7 +115,7 @@ fn setup_window_menu<R: Runtime>(win: &WebviewWindow<R>) -> Result<()> {
             "settings" => w.emit("settings", true).unwrap(),
             "open_feedback" => {
                 if let Err(e) =
-                    w.app_handle().opener().open_url("https://yaak.app/feedback", None::<&str>)
+                    w.app_handle().opener().open_url("https://github.com/nyssance/apicow/issues/new", None::<&str>)
                 {
                     warn!("Failed to open feedback {e:?}")
                 }

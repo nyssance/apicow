@@ -1,3 +1,4 @@
+import { releaseNotesUrl } from "./productLinks";
 import { t } from "@yaakapp-internal/lib/i18n";
 import { debounce } from "@yaakapp-internal/lib";
 import type {
@@ -195,7 +196,7 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
       variant="border"
       rightSlot={<Icon icon="external_link" />}
       onClick={async () => {
-        await platform.openUrl(`https://yaak.app/changelog/${version}`);
+        await platform.openUrl(releaseNotesUrl(version));
       }}
     >
       {t("What's New")}
@@ -235,7 +236,7 @@ async function showUpdateAvailableToast(updateInfo: UpdateInfo) {
               color="info"
               rightSlot={<Icon icon="external_link" />}
               onClick={async () => {
-                await platform.openUrl("https://yaak.app/download");
+                await platform.openUrl(releaseNotesUrl(version));
               }}
             >
               {t("Download")}

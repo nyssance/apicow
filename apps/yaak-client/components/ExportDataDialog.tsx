@@ -11,7 +11,6 @@ import { CommercialUseBanner } from "./CommercialUseBanner";
 import { Checkbox } from "./core/Checkbox";
 import { DetailsBanner } from "./core/DetailsBanner";
 import { DialogFooter } from "./core/Dialog";
-import { Link } from "./core/Link";
 import { platform } from "@yaakapp-internal/platform";
 import { pluralizeCount } from "@yaakapp-internal/lib/pluralize";
 
@@ -143,11 +142,6 @@ function ExportDataDialogContent({
         </DetailsBanner>
       </VStack>
       <DialogFooter
-        leftSlot={
-          <Link href="https://yaak.app/button/new" noUnderline className="text-text-subtlest">
-            {t("Create Run Button")}
-          </Link>
-        }
         actions={[
           { label: t("Cancel"), onClick: onHide },
           {
