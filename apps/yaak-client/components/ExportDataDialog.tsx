@@ -7,7 +7,6 @@ import { useCallback, useMemo, useState } from "react";
 import slugify from "slugify";
 import { activeWorkspaceAtom } from "../hooks/useActiveWorkspace";
 import { rpc } from "../lib/rpc";
-import { CommercialUseBanner } from "./CommercialUseBanner";
 import { Checkbox } from "./core/Checkbox";
 import { DetailsBanner } from "./core/DetailsBanner";
 import { DialogFooter } from "./core/Dialog";
@@ -89,8 +88,6 @@ function ExportDataDialogContent({
   return (
     <>
       <VStack space={3} className="pb-4">
-        <CommercialUseBanner source="data-export" title={t("Exporting work data?")} />
-
         <table className="w-full mb-auto min-w-full max-w-full divide-y divide-surface-highlight">
           <thead>
             <tr>

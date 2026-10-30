@@ -34,7 +34,6 @@ import { PlainInput } from "../core/PlainInput";
 import { TabContent, Tabs } from "../core/Tabs/Tabs";
 import { EmptyStateText } from "../EmptyStateText";
 import { SelectFile } from "../SelectFile";
-import { platform } from "@yaakapp-internal/platform";
 
 interface SettingsPluginsProps {
   defaultSubtab?: string;
@@ -103,14 +102,6 @@ export function SettingsPlugins({ defaultSubtab }: SettingsPluginsProps) {
                   title={t("Reload plugins")}
                   spin={refreshPlugins.isPending}
                   onClick={() => refreshPlugins.mutate()}
-                />
-                <IconButton
-                  size="sm"
-                  icon="help"
-                  title={t("View documentation")}
-                  onClick={() =>
-                    platform.openUrl("https://yaak.app/docs/plugin-development/plugins-quick-start")
-                  }
                 />
               </HStack>
             </footer>

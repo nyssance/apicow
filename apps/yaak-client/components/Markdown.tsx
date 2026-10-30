@@ -1,3 +1,4 @@
+import { isUpstreamProductUrl } from "../lib/productLinks";
 import type { CSSProperties } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -81,6 +82,7 @@ const markdownComponents: Partial<Components> = {
     if (href && !href.match(/https?:\/\//)) {
       href = `http://${href}`;
     }
+    if (href && isUpstreamProductUrl(href)) return <span>{children}</span>;
     return (
       <a target="_blank" rel="noreferrer noopener" href={href} {...rest}>
         {children}

@@ -43,7 +43,7 @@ export const plugin: PluginDefinition = {
           {
             type: "markdown",
             content:
-              "OAuth 1.0 is still in beta. Please submit any issues to [Feedback](https://yaak.app/feedback).",
+              "OAuth 1.0 is still in beta. Please submit any issues to [Feedback](https://github.com/nyssance/apicow/issues/new).",
           },
         ],
       },

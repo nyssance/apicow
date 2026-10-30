@@ -6,11 +6,7 @@ import type {
   PluginDefinition,
 } from "@yaakapp/api";
 import type { Algorithm } from "jsonwebtoken";
-import {
-  buildHostedCallbackRedirectUri,
-  DEFAULT_LOCALHOST_PORT,
-  stopActiveServer,
-} from "./callbackServer";
+import { DEFAULT_LOCALHOST_PORT, stopActiveServer } from "./callbackServer";
 import { readCustomParams } from "./customParams";
 import {
   type CallbackType,
@@ -269,7 +265,7 @@ export const plugin: PluginDefinition = {
             label: "Redirect URI (can be any valid URL)",
             placeholder: "https://mysite.example.com/oauth/callback",
             description:
-              "URI the OAuth provider redirects to after authorization. Yaak intercepts this automatically in its embedded browser so any valid URI will work.",
+              "URI the OAuth provider redirects to after authorization. ApiCow intercepts this automatically in its embedded browser so any valid URI will work.",
             optional: true,
             dynamic: hiddenIfNot(
               ["authorization_code", "implicit"],
@@ -279,22 +275,6 @@ export const plugin: PluginDefinition = {
           {
             type: "h_stack",
             inputs: [
-              {
-                type: "select",
-                name: "callbackType",
-                label: "Callback Type",
-                description:
-                  '"Hosted Redirect" uses an external Yaak-hosted endpoint. "Localhost" starts a local server to receive the callback.',
-                defaultValue: "hosted",
-                options: [
-                  { label: "Hosted Redirect", value: "hosted" },
-                  { label: "Localhost", value: "localhost" },
-                ],
-                dynamic: hiddenIfNot(
-                  ["authorization_code", "implicit"],
-                  ({ useExternalBrowser }) => !!useExternalBrowser,
-                ),
-              },
               {
                 type: "text",
                 name: "callbackPort",
@@ -322,8 +302,6 @@ export const plugin: PluginDefinition = {
                 async dynamic(_ctx, { values }) {
                   const grantType = String(values.grantType ?? defaultGrantType);
                   const useExternalBrowser = !!values.useExternalBrowser;
-                  const callbackType = (stringArg(values, "callbackType") ||
-                    "localhost") as CallbackType;
 
                   // Only show for authorization_code and implicit with external browser enabled
                   if (
@@ -333,14 +311,8 @@ export const plugin: PluginDefinition = {
                     return { hidden: true };
                   }
 
-                  // Compute the redirect URI based on callback type
                   const port = intArg(values, "callbackPort") || DEFAULT_LOCALHOST_PORT;
-                  let redirectUri: string;
-                  if (callbackType === "hosted") {
-                    redirectUri = buildHostedCallbackRedirectUri(port);
-                  } else {
-                    redirectUri = `http://127.0.0.1:${port}/callback`;
-                  }
+                  const redirectUri = `http://127.0.0.1:${port}/callback`;
 
                   return {
                     hidden: false,

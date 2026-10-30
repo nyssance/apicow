@@ -21,26 +21,31 @@ test("retains a callback received before the consumer starts waiting", async () 
   await expect(server.waitForCallback()).resolves.toBe(callback);
 });
 
-test("browser navigation can finish before openExternalUrl resolves", async () => {
-  const ctx = {
-    toast: { show: async () => {} },
-    window: {
-      openExternalUrl: async (url: string) => {
-        const redirect = new URL(url).searchParams.get("redirect_uri")!;
-        await post(redirect, `${redirect}?code=fixture&state=fixture`);
+test.each(["localhost", "hosted"] as const)(
+  "%s uses loopback even when browser navigation completes early",
+  async (callbackType) => {
+    const ctx = {
+      toast: { show: async () => {} },
+      window: {
+        openExternalUrl: async (url: string) => {
+          const redirect = new URL(url).searchParams.get("redirect_uri")!;
+          await post(redirect, `${redirect}?code=fixture&state=fixture`);
+        },
       },
-    },
-  } as never;
-  const result = await getRedirectUrlViaExternalBrowser(
-    ctx,
-    new URL("http://127.0.0.1/authorize"),
-    {
-      callbackType: "localhost",
-      callbackPort: 0,
-    },
-  );
-  expect(result.callbackUrl).toBe(`${result.redirectUri}?code=fixture&state=fixture`);
-}, 2000);
+    } as never;
+    const result = await getRedirectUrlViaExternalBrowser(
+      ctx,
+      new URL("http://127.0.0.1/authorize"),
+      {
+        callbackType,
+        callbackPort: 0,
+      },
+    );
+    expect(new URL(result.redirectUri).hostname).toBe("127.0.0.1");
+    expect(result.callbackUrl).toBe(`${result.redirectUri}?code=fixture&state=fixture`);
+  },
+  2000,
+);
 
 test("multiple waiters observe the same callback", async () => {
   const server = await startCallbackServer({ timeoutMs: 1000 });

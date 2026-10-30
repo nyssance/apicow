@@ -17,7 +17,6 @@ import { resolvedModelName } from "../../lib/resolvedModelName";
 import { showConfirm } from "../../lib/confirm";
 import { showErrorToast } from "../../lib/toast";
 import { sync } from "../../init/sync";
-import { CommercialUseBanner } from "../CommercialUseBanner";
 import { Button } from "../core/Button";
 import { Chip } from "../core/Chip";
 import type { CheckboxProps } from "../core/Checkbox";
@@ -219,7 +218,6 @@ export function GitCommitDialog({ syncDir, onDone, workspace }: Props) {
         defaultRatio={0.6}
         firstSlot={({ style }) => (
           <div style={style} className="h-full px-4 flex flex-col gap-3">
-            <CommercialUseBanner source="git-commit" title={t("Using Git for work?")} />
             <SplitLayout
               className="min-h-0 flex-1"
               storageKey="commit-vertical"

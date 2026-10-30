@@ -12,7 +12,6 @@ import { IconButton } from "./core/IconButton";
 import { PillButton } from "./core/PillButton";
 import { EnvironmentActionsDropdown } from "./EnvironmentActionsDropdown";
 import { ImportCurl } from "./ImportCurl";
-import { LicenseBadge } from "./LicenseBadge";
 import { RecentRequestsDropdown } from "./RecentRequestsDropdown";
 import { SettingsDropdown } from "./SettingsDropdown";
 import { SidebarActions } from "./SidebarActions";
@@ -62,9 +61,7 @@ export const WorkspaceHeader = memo(function WorkspaceHeader({
           <PillButton color="danger" onClick={setupOrConfigureEncryption}>
             {t("Enter Encryption Key")}
           </PillButton>
-        ) : (
-          <LicenseBadge />
-        )}
+        ) : null}
         <IconButton
           icon={
             workspaceLayout === "responsive"

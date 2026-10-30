@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import { useToggle } from "../hooks/useToggle";
 import { showConfirm } from "../lib/confirm";
 import { Button } from "./core/Button";
-import { Link } from "./core/Link";
 
 interface Props {
   children: ReactNode;
@@ -34,13 +33,6 @@ export function ConfirmLargeRequestBody({ children, request }: Props) {
             <SizeTag contentLength={tooLargeBytes} />
           </InlineCode>{" "}
           {t("may impact performance.")}
-        </p>
-        <p>
-          {t("See")}{" "}
-          <Link href="https://feedback.yaak.app/en/help/articles/1198684-working-with-large-values">
-            {t("Working With Large Values")}
-          </Link>{" "}
-          {t("for tips.")}
         </p>
         <HStack wrap space={2}>
           <Button color="primary" size="xs" onClick={toggleShowLargeResponse}>

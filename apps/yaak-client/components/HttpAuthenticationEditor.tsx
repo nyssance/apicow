@@ -20,7 +20,6 @@ import { Button } from "./core/Button";
 import { Dropdown, type DropdownItem } from "./core/Dropdown";
 import { IconButton } from "./core/IconButton";
 import { Input, type InputProps } from "./core/Input";
-import { Link } from "./core/Link";
 import { RadioDropdown } from "./core/RadioDropdown";
 import { SegmentedControl } from "./core/SegmentedControl";
 import { DynamicForm } from "./DynamicForm";
@@ -68,9 +67,6 @@ export function HttpAuthenticationEditor({ model }: Props) {
               .
             </p>
             <AuthenticationTypeDropdown model={model} />
-            <Link href="https://yaak.app/docs/using-yaak/request-inheritance">
-              {t("Documentation")}
-            </Link>
           </div>
         </EmptyStateText>
       );

@@ -14,7 +14,6 @@ import {
 } from "../../lib/agentSetup";
 import { appInfo } from "../../lib/appInfo";
 import { rpc } from "../../lib/rpc";
-import { Link } from "../core/Link";
 import { SegmentedControl } from "../core/SegmentedControl";
 import { SettingCommand, SettingSnippet, SettingsList, SettingsSection } from "../core/SettingRow";
 import { DeprecatedPluginBanner } from "./SettingsPlugins";
@@ -91,7 +90,6 @@ export function SettingsAgents() {
                 </p>
                 <SettingSnippet className="mt-3" language="shell" snippet={CLI_INSTALL_COMMAND} />
                 <div className="mt-3 mb-1 flex items-center gap-4 text-sm">
-                  <Link href="https://yaak.app/docs/cli">{t("Docs")}</Link>
                   <span className="text-text-subtlest">
                     {t("Checks again when you come back to Yaak.")}
                   </span>

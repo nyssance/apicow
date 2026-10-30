@@ -13,7 +13,6 @@ import { hideDialog } from "../lib/dialog";
 import { CopyIconButton } from "./CopyIconButton";
 import { Button } from "./core/Button";
 import { Input } from "./core/Input";
-import { Link } from "./core/Link";
 import type { TabItem } from "./core/Tabs/Tabs";
 import { TabContent, Tabs } from "./core/Tabs/Tabs";
 import { EmptyStateText } from "./EmptyStateText";
@@ -174,11 +173,7 @@ export function FolderSettingsDialog({ folderId, tab }: Props) {
             <EmptyStateText>
               <VStack alignItems="center" space={1.5}>
                 <p>
-                  {t("Override")}{" "}
-                  <Link href="https://yaak.app/docs/using-yaak/environments-and-variables">
-                    {t("Variables")}
-                  </Link>{" "}
-                  {t("for requests within this folder.")}
+                  {t("Override")} {t("Variables")} {t("for requests within this folder.")}
                 </p>
                 <Button
                   variant="border"

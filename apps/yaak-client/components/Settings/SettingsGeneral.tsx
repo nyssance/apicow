@@ -8,7 +8,6 @@ import { useCheckForUpdates } from "../../hooks/useCheckForUpdates";
 import { appInfo } from "../../lib/appInfo";
 import { revealInFinderText } from "../../lib/reveal";
 import { CargoFeature } from "../CargoFeature";
-import { CommercialUseBanner } from "../CommercialUseBanner";
 import { DismissibleBanner } from "../core/DismissibleBanner";
 import { IconButton } from "../core/IconButton";
 import { platform } from "@yaakapp-internal/platform";
@@ -43,9 +42,6 @@ export function SettingsGeneral() {
         <p className="text-text-subtle">
           {t("Configure general settings for update behavior and more.")}
         </p>
-      </div>
-      <div className="mt-3 mb-5">
-        <CommercialUseBanner source="settings-general" title={t("Using Yaak for work?")} />
       </div>
       <SettingsList className="space-y-8">
         <SettingsSection title={t("Language")}>
@@ -116,13 +112,6 @@ export function SettingsGeneral() {
                 "Download Yaak updates in the background so they are ready to install.",
               )}
               disabled={!settings.autoupdate}
-            />
-
-            <ModelSettingRowBoolean
-              model={settings}
-              modelKey="checkNotifications"
-              title={t("Check for notifications")}
-              description={t("Periodically ping Yaak servers to check for relevant notifications.")}
             />
 
             <SettingRowBoolean

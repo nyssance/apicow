@@ -7,13 +7,13 @@
     "insomnia-alternative",
     "postman-alternative"
   ],
-  "homepage": "https://yaak.app",
+  "homepage": "https://github.com/nyssance/apicow",
   "bugs": {
-    "url": "https://feedback.yaak.app"
+    "url": "https://github.com/nyssance/apicow/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mountain-loop/yaak"
+    "url": "https://github.com/nyssance/apicow"
   },
   "files": [
     "lib/**/*"

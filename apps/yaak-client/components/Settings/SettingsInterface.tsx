@@ -1,25 +1,19 @@
 import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { useFonts } from "@yaakapp-internal/fonts";
-import { useLicense } from "@yaakapp-internal/license";
 import type { EditorKeymap, Settings } from "@yaakapp-internal/models";
 import { patchModel, settingsAtom } from "@yaakapp-internal/models";
 import { clamp, Heading, VStack } from "@yaakapp-internal/ui";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { activeWorkspaceAtom } from "../../hooks/useActiveWorkspace";
-import { showConfirm } from "../../lib/confirm";
-import { pricingUrl } from "../../lib/pricingUrl";
 import { rpc } from "../../lib/rpc";
-import { CargoFeature } from "../CargoFeature";
 import { Button } from "../core/Button";
 import { Checkbox } from "../core/Checkbox";
-import { Link } from "../core/Link";
 import {
   ModelSettingRowBoolean,
   ModelSettingRowSelect,
   SettingRow,
-  SettingRowBoolean,
   SettingRowSelect,
   SettingSelectControl,
   SettingsList,
@@ -188,10 +182,6 @@ export function SettingsInterface() {
             />
           )}
         </SettingsSection>
-
-        <CargoFeature feature="license">
-          <LicenseSettings settings={settings} />
-        </CargoFeature>
       </SettingsList>
     </VStack>
   );
@@ -226,54 +216,5 @@ function NativeTitlebarSetting({ settings }: { settings: Settings }) {
         </Button>
       )}
     </SettingRow>
-  );
-}
-
-function LicenseSettings({ settings }: { settings: Settings }) {
-  const license = useLicense();
-  if (license.check.data?.status !== "personal_use") {
-    return null;
-  }
-
-  return (
-    <SettingsSection title={t("License")}>
-      <SettingRowBoolean
-        checked={settings.hideLicenseBadge}
-        title={t("Hide personal use badge")}
-        description={t("Hide the personal-use badge from the interface.")}
-        onChange={async (hideLicenseBadge) => {
-          if (hideLicenseBadge) {
-            const confirmed = await showConfirm({
-              id: "hide-license-badge",
-              title: t("Confirm Personal Use"),
-              confirmText: t("Confirm"),
-              description: (
-                <VStack space={3}>
-                  <p>{t("Hey there \ud83d\udc4b\ud83c\udffc")}</p>
-                  <p>
-                    {t("Yaak is free for personal projects and learning.")}{" "}
-                    <strong>
-                      {t("If you\u2019re using Yaak at work, a license is required.")}
-                    </strong>
-                  </p>
-                  <p>
-                    {t("Licenses help keep Yaak independent and sustainable.")}{" "}
-                    <Link href={pricingUrl("app.license.badge-hide-confirm")}>
-                      {t("Purchase a License \u2192")}
-                    </Link>
-                  </p>
-                </VStack>
-              ),
-              requireTyping: "Personal Use",
-              color: "info",
-            });
-            if (!confirmed) {
-              return;
-            }
-          }
-          await patchModel(settings, { hideLicenseBadge });
-        }}
-      />
-    </SettingsSection>
   );
 }

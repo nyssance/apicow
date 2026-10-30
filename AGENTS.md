@@ -23,3 +23,5 @@
 - 发布品牌基线：黑白牛头，保持原有轮廓，不含左侧圆环/波浪。`scripts/branding-baseline.json` 固定已目视确认的图标指纹、名称、应用 ID 和更新源；不得为通过检查而自动更新基线。更改必须核对实际最终安装包。CI 同时验证 DMG、更新归档与 Windows 安装器内的应用图标，任何一项失败禁止公开版本及更新清单。
 
 - 2026-10-30 用户要求产品发布隔离：ApiCow 正式 Release 与 Latest 仅在 nyssance/apicow；禁止在共用仓切换 Latest。nyssance/releases 的 apicow-latest 只保留旧客户端兼容清单，不再向该仓发布 ApiCow 新版本。
+
+- 2026-10-30 用户要求检查全部产品跳转，不得引导至 Yaak：更新说明/下载/反馈使用 ApiCow 独立仓；没有对应文档的帮助入口隐藏。检查范围包括前端、原生菜单、插件 Markdown/元数据、OAuth 回调、通知、README 和 GitHub Issue 模板。保留 MIT 版权；API 请求目标和未发布的上游 CLI 服务代码不作为产品导航替换。发布前执行 `bun run check:branding`，不得只改菜单或为过检缩小扫描范围。

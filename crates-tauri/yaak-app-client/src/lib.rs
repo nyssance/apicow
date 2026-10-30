@@ -218,7 +218,7 @@ async fn cmd_send_feedback<R: Runtime>(
     feature: String,
     text: String,
 ) -> YaakResult<()> {
-    feedback::send_feedback(&app_handle, feature, text).await;
+    feedback::send_feedback(&app_handle, feature, text).await?;
     Ok(())
 }
 

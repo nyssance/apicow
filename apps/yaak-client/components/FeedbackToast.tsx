@@ -23,22 +23,26 @@ export function FeedbackToast({ feature, onDone }: Props) {
     hideToastById(`feature-feedback-${feature}`);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const trimmedText = text.trim();
     if (sentRef.current || trimmedText.length === 0) return;
 
     sentRef.current = true;
     setSent(true);
-    onDone();
-
-    // Fire-and-forget; failures are intentionally ignored
-    rpc("cmd_send_feedback", { feature, text: trimmedText }).catch(() => {});
-    showToast({
-      id: `feature-feedback-${feature}`,
-      timeout: 3000,
-      color: "success",
-      message: t("Thanks for the feedback!"),
-    });
+    try {
+      await rpc("cmd_send_feedback", { feature, text: trimmedText });
+      onDone();
+      showToast({
+        id: `feature-feedback-${feature}`,
+        timeout: 5000,
+        color: "info",
+        message: t("Finish submitting your feedback on GitHub."),
+      });
+    } catch (err) {
+      sentRef.current = false;
+      setSent(false);
+      showToast({ color: "danger", message: String(err) });
+    }
   };
 
   return (
@@ -69,7 +73,7 @@ export function FeedbackToast({ feature, onDone }: Props) {
           disabled={sent || text.trim().length === 0}
           onClick={handleSend}
         >
-          {t("Send")}
+          {t("Continue on GitHub")}
         </Button>
       </HStack>
     </VStack>

@@ -14,3 +14,20 @@ export function releaseNotesUrl(version: string): string {
   }
   return `${productLinks.releases}/tag/v${normalized}`;
 }
+
+/** Applies to product/help navigation, not the user's API request destinations. */
+export function isUpstreamProductUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    const host = url.hostname.toLowerCase().replace(/\.$/, "");
+    return (
+      host === "yaak.run" ||
+      host.endsWith(".yaak.run") ||
+      host === "yaak.app" ||
+      host.endsWith(".yaak.app") ||
+      (host === "github.com" && /^\/(?:mountain-loop\/yaak|yaakapp)(?:\/|$)/i.test(url.pathname))
+    );
+  } catch {
+    return false;
+  }
+}

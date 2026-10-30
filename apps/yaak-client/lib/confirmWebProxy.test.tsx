@@ -49,11 +49,7 @@ describe("proxy consent disclosure", () => {
     expect(disclosure).toContain("credentials");
     expect(disclosure).toContain("server shown below");
     expect(disclosure).not.toContain("Yaak’s servers");
-    expect(disclosure).toContain(
-      'href="https://yaak.app/docs/getting-started/web-proxy?ref=app.yaak.web"',
-    );
-    expect(disclosure).toContain('target="_blank"');
-    expect(disclosure).toContain("how the proxy works");
+    expect(disclosure).not.toContain("href=");
 
     const Actions = dialog.render;
     const actions = renderToStaticMarkup(<Actions hide={vi.fn()} />);

@@ -80,7 +80,7 @@ pub(crate) fn template_function_keyring() -> TemplateFunction {
         args: vec![
             TemplateFunctionArg::FormInput(FormInput::Banner(FormInputBanner {
                 inputs: Some(vec![FormInput::Markdown(FormInputMarkdown {
-                    content: "For most cases, prefer the [`secure(…)`](https://yaak.app/help/encryption) template function, which encrypts values using a key stored in keychain".to_string(),
+                    content: "For most cases, prefer the `secure(…)` template function, which encrypts values using a key stored in keychain".to_string(),
                     hidden: None,
                 })]),
                 color: Some(Color::Info),

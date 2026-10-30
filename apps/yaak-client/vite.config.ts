@@ -29,7 +29,7 @@ const iconsDir = normalizePath(
  */
 const yaakTarget = process.env.YAAK_TARGET === "web" ? "web" : "desktop";
 
-const webUrl = "https://web.yaak.app";
+const webUrl = process.env.APICOW_WEB_URL?.replace(/\/$/, "");
 const webDir = normalizePath(path.join(import.meta.dirname, "web"));
 
 /** Link previews for the hosted web app. Meaningless inside the desktop window. */
@@ -37,22 +37,27 @@ function webHead() {
   return {
     name: "web-head",
     transformIndexHtml() {
-      const title = "Yaak in your browser";
+      const title = "ApiCow in your browser";
       const description = "No download, no setup. Open a tab and send your first request.";
       return [
         { tag: "meta", attrs: { name: "description", content: description } },
         { tag: "meta", attrs: { property: "og:type", content: "website" } },
-        { tag: "meta", attrs: { property: "og:url", content: webUrl } },
+        ...(webUrl ? [{ tag: "meta", attrs: { property: "og:url", content: webUrl } }] : []),
         { tag: "meta", attrs: { property: "og:title", content: title } },
         { tag: "meta", attrs: { property: "og:description", content: description } },
-        { tag: "meta", attrs: { property: "og:image", content: `${webUrl}/og.png` } },
+        {
+          tag: "meta",
+          attrs: { property: "og:image", content: webUrl ? `${webUrl}/og.png` : "/og.png" },
+        },
         { tag: "meta", attrs: { property: "og:image:width", content: "1200" } },
         { tag: "meta", attrs: { property: "og:image:height", content: "630" } },
         { tag: "meta", attrs: { name: "twitter:card", content: "summary_large_image" } },
-        { tag: "meta", attrs: { name: "twitter:site", content: "@yaakapp" } },
         { tag: "meta", attrs: { name: "twitter:title", content: title } },
         { tag: "meta", attrs: { name: "twitter:description", content: description } },
-        { tag: "meta", attrs: { name: "twitter:image", content: `${webUrl}/og.png` } },
+        {
+          tag: "meta",
+          attrs: { name: "twitter:image", content: webUrl ? `${webUrl}/og.png` : "/og.png" },
+        },
       ];
     },
   };

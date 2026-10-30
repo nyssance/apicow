@@ -1,12 +1,10 @@
 import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
-import { useLicense } from "@yaakapp-internal/license";
 import { pluginsAtom, settingsAtom } from "@yaakapp-internal/models";
 import { HeaderSize, HStack, Icon, CountBadge } from "@yaakapp-internal/ui";
 import classNames from "classnames";
 import { useAtomValue } from "jotai";
 import { useKeyPressEvent } from "react-use";
-import { appInfo } from "../../lib/appInfo";
 import { capitalize } from "../../lib/capitalize";
 import { TabContent, type TabItem, Tabs } from "../core/Tabs/Tabs";
 import { SettingsAgents } from "./SettingsAgents";
@@ -14,7 +12,6 @@ import { SettingsCertificates } from "./SettingsCertificates";
 import { SettingsGeneral } from "./SettingsGeneral";
 import { SettingsHotkeys } from "./SettingsHotkeys";
 import { SettingsInterface } from "./SettingsInterface";
-import { SettingsLicense } from "./SettingsLicense";
 import { SettingsPlugins } from "./SettingsPlugins";
 import { SettingsProxy } from "./SettingsProxy";
 import { SettingsTheme } from "./SettingsTheme";
@@ -33,7 +30,6 @@ const TAB_PROXY = "proxy";
 const TAB_CERTIFICATES = "certificates";
 const TAB_PLUGINS = "plugins";
 const TAB_AGENTS = "agents";
-const TAB_LICENSE = "license";
 const tabs = [
   TAB_GENERAL,
   TAB_THEME,
@@ -43,7 +39,6 @@ const tabs = [
   TAB_AGENTS,
   TAB_CERTIFICATES,
   TAB_PROXY,
-  TAB_LICENSE,
 ] as const;
 export type SettingsTab = (typeof tabs)[number];
 export type SettingsTabWithSubtab = SettingsTab | `${SettingsTab}:${string}`;
@@ -53,7 +48,6 @@ export default function Settings({ tab, hide }: Props) {
   const [mainTab, subtab] = tab?.split(":") ?? [];
   const settings = useAtomValue(settingsAtom);
   const plugins = useAtomValue(pluginsAtom);
-  const licenseCheck = useLicense();
 
   // Close settings window on escape. In a dialog, the dialog handles Escape itself.
   // TODO: Could this be put in a better place? Eg. in Rust key listener when creating the window
@@ -97,9 +91,7 @@ export default function Settings({ tab, hide }: Props) {
         tabs={tabs.map((value): TabItem => ({
           value,
           label: t(capitalize(value)),
-          hidden:
-            (!appInfo.featureLicense && value === TAB_LICENSE) ||
-            (!platform.capabilities.agents && value === TAB_AGENTS),
+          hidden: !platform.capabilities.agents && value === TAB_AGENTS,
           leftSlot:
             value === TAB_GENERAL ? (
               <Icon icon="settings" className="text-secondary" />
@@ -117,8 +109,6 @@ export default function Settings({ tab, hide }: Props) {
               <Icon icon="puzzle" className="text-secondary" />
             ) : value === TAB_AGENTS ? (
               <Icon icon="sparkles" className="text-secondary" />
-            ) : value === TAB_LICENSE ? (
-              <Icon icon="key_round" className="text-secondary" />
             ) : null,
           rightSlot:
             value === TAB_CERTIFICATES ? (
@@ -127,8 +117,6 @@ export default function Settings({ tab, hide }: Props) {
               <CountBadge count={plugins.filter((p) => p.source !== "bundled").length} />
             ) : value === TAB_PROXY && settings.proxy?.type === "enabled" ? (
               <CountBadge count />
-            ) : value === TAB_LICENSE && licenseCheck.check.data?.status === "personal_use" ? (
-              <CountBadge count color="notice" />
             ) : null,
         }))}
       >
@@ -155,9 +143,6 @@ export default function Settings({ tab, hide }: Props) {
         </TabContent>
         <TabContent value={TAB_CERTIFICATES} className="overflow-y-auto h-full px-6 py-4!">
           <SettingsCertificates />
-        </TabContent>
-        <TabContent value={TAB_LICENSE} className="overflow-y-auto h-full px-6 py-4!">
-          <SettingsLicense />
         </TabContent>
       </Tabs>
     </div>

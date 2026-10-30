@@ -25,7 +25,7 @@ export const plugin: PluginDefinition = {
           {
             type: "markdown",
             content:
-              "NTLM is still in beta. Please submit any issues to [Feedback](https://yaak.app/feedback).",
+              "NTLM is still in beta. Please submit any issues to [Feedback](https://github.com/nyssance/apicow/issues/new).",
           },
         ],
       },

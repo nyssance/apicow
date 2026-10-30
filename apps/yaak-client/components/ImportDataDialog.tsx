@@ -10,7 +10,6 @@ import { Banner, FormattedError, HStack, Icon, VStack, IconTooltip } from "@yaak
 import classNames from "classnames";
 import { type ComponentProps, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { errorMessage } from "../lib/errorMessage";
-import { CommercialUseBanner } from "./CommercialUseBanner";
 import {
   ImportSourceList,
   type ImportSourceDetection,
@@ -468,8 +467,6 @@ function LoadedImportDataDialog({
   return (
     <>
       <VStack space={4} className="h-full pb-4">
-        <CommercialUseBanner source="data-import" title={t("Importing work data?")} />
-
         <ImportSourceList
           sources={sources}
           detections={detections}

@@ -1,6 +1,5 @@
 import { productLinks, releaseNotesUrl } from "../lib/productLinks";
 import { t } from "@yaakapp-internal/lib/i18n";
-import { useLicense } from "@yaakapp-internal/license";
 import { useRef } from "react";
 import { openSettings } from "../commands/openSettings";
 import { useCheckForUpdates } from "../hooks/useCheckForUpdates";
@@ -8,7 +7,6 @@ import { useExportData } from "../hooks/useExportData";
 import { appInfo } from "../lib/appInfo";
 import { showDialog } from "../lib/dialog";
 import { importData } from "../lib/importData";
-import { pricingUrl } from "../lib/pricingUrl";
 import type { DropdownRef } from "./core/Dropdown";
 import { Dropdown } from "./core/Dropdown";
 import { Icon } from "@yaakapp-internal/ui";
@@ -20,7 +18,6 @@ export function SettingsDropdown() {
   const exportData = useExportData();
   const dropdownRef = useRef<DropdownRef>(null);
   const checkForUpdates = useCheckForUpdates();
-  const { check } = useLicense();
 
   return (
     <Dropdown
@@ -67,15 +64,6 @@ export function SettingsDropdown() {
           leftSlot: <Icon icon="update" />,
           hidden: !appInfo.featureUpdater,
           onSelect: () => checkForUpdates.mutate(),
-        },
-        {
-          label: t("Purchase License"),
-          color: "success",
-          hidden: check.data == null || check.data.status === "active",
-          leftSlot: <Icon icon="circle_dollar_sign" />,
-          rightSlot: <Icon icon="external_link" color="success" className="opacity-60" />,
-          onSelect: () =>
-            platform.openUrl(pricingUrl(`app.menu.purchase.${check.data?.status ?? "unknown"}`)),
         },
         {
           label: t("Install CLI"),

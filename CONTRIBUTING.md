@@ -1,15 +1,8 @@
-# Contributing to Yaak
+# Contributing to ApiCow
 
-Yaak accepts community pull requests for:
+Report bugs and discuss changes in [ApiCow issues](https://github.com/nyssance/apicow/issues).
+For local development, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-- Bug fixes
-
-Pull requests that introduce broad new features, major redesigns, or large refactors are out of scope unless explicitly approved first.
-
-## Approval for Non-Bugfix Changes
-
-If your PR is not a bug fix, include a link to the [feedback item](https://yaak.app/feedback) where @gschier explicitly gave you permission to work on it.
-
-## Development Setup
-
-For local setup and development workflows, see [`DEVELOPMENT.md`](DEVELOPMENT.md).
+Keep pull requests focused on the problem being solved. Describe the resulting behavior,
+the checks actually run, and any remaining limitations. Preserve the copyright notices
+and MIT license in [LICENSE](LICENSE).

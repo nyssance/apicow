@@ -706,6 +706,8 @@
   "Temporarily disable the proxy without losing the configuration.": "临时停用代理并保留配置。",
   "Text": "文本",
   "Text Content": "文本内容",
+  "Finish submitting your feedback on GitHub.": "请在 GitHub 页面完成提交反馈。",
+  "Continue on GitHub": "前往 GitHub 继续",
   "Thanks for the feedback!": "感谢反馈！",
   "The": "此",
   "The active workspace was not found. Select a workspace from the header menu or report this bug to": "未找到当前工作区，请从顶部菜单选择工作区，或报告此问题给",

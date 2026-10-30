@@ -1,4 +1,4 @@
-import { releaseNotesUrl } from "./productLinks";
+import { isUpstreamProductUrl, releaseNotesUrl } from "./productLinks";
 import { t } from "@yaakapp-internal/lib/i18n";
 import { debounce } from "@yaakapp-internal/lib";
 import type {
@@ -367,7 +367,7 @@ function showNotificationToast(n: YaakNotification) {
       rpc("cmd_dismiss_notification", { notificationId: n.id }).catch(console.error);
     },
     action: ({ hide }) => {
-      return actionLabel && actionUrl ? (
+      return actionLabel && actionUrl && !isUpstreamProductUrl(actionUrl) ? (
         <Button
           size="xs"
           color={stringToColor(n.color) ?? undefined}

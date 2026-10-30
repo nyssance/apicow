@@ -1,10 +1,9 @@
-import { productLinks } from "../../lib/productLinks";
+import { isUpstreamProductUrl, productLinks } from "../../lib/productLinks";
 import { t } from "@yaakapp-internal/lib/i18n";
 import { Link as RouterLink } from "@tanstack/react-router";
 import { platform } from "@yaakapp-internal/platform";
 import classNames from "classnames";
 import type { HTMLAttributes } from "react";
-import { appInfo } from "../../lib/appInfo";
 import { Icon } from "@yaakapp-internal/ui";
 
 interface Props extends HTMLAttributes<HTMLAnchorElement> {
@@ -13,6 +12,8 @@ interface Props extends HTMLAttributes<HTMLAnchorElement> {
 }
 
 export function Link({ href, children, noUnderline, className, ...other }: Props) {
+  if (isUpstreamProductUrl(href)) return <span className={className}>{children}</span>;
+
   const isExternal = href.match(/^https?:\/\//);
 
   className = classNames(
@@ -23,22 +24,14 @@ export function Link({ href, children, noUnderline, className, ...other }: Props
   );
 
   if (isExternal) {
-    const isYaakLink = href.startsWith("https://yaak.app");
-    let finalHref = href;
-    if (isYaakLink) {
-      const url = new URL(href);
-      url.searchParams.set("ref", appInfo.identifier);
-      finalHref = url.toString();
-    }
     return (
-      // eslint-disable-next-line react/jsx-no-target-blank
       <a
-        href={finalHref}
+        href={href}
         target="_blank"
-        rel={isYaakLink ? undefined : "noopener noreferrer"}
+        rel="noopener noreferrer"
         onClick={(e) => {
           e.preventDefault();
-          void platform.openUrl(finalHref);
+          void platform.openUrl(href);
         }}
         className={className}
         {...other}

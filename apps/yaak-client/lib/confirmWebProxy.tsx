@@ -1,7 +1,6 @@
 import { t } from "@yaakapp-internal/lib/i18n";
 import { platform } from "@yaakapp-internal/platform";
 import { InlineCode } from "@yaakapp-internal/ui";
-import { Link } from "../components/core/Link";
 import { showConfirm } from "./confirm";
 
 const acceptedProxies = new Set<string>();
@@ -36,13 +35,6 @@ export function confirmWebProxy(): Promise<boolean> {
         </p>
         <p>
           <InlineCode className="break-all">{proxyUrl}</InlineCode>
-        </p>
-        <p>
-          {t("Learn more about")}{" "}
-          <Link href="https://yaak.app/docs/getting-started/web-proxy">
-            {t("how the proxy works")}
-          </Link>
-          .
         </p>
       </div>
     ),

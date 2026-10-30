@@ -2,7 +2,6 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 import http from "node:http";
 import type { Context } from "@yaakapp/api";
 
-export const HOSTED_CALLBACK_URL_BASE = "https://oauth.yaak.app/redirect";
 export const DEFAULT_LOCALHOST_PORT = 8765;
 const CALLBACK_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
@@ -173,19 +172,6 @@ export function startCallbackServer(options: {
 }
 
 /**
- * Build the redirect URI for the hosted callback page.
- * The port is encoded in the URL path so the hosted page can redirect
- * to the local server without relying on query params (which some OAuth
- * providers strip). The default port is omitted for a cleaner URL.
- */
-export function buildHostedCallbackRedirectUri(localPort: number): string {
-  if (localPort === DEFAULT_LOCALHOST_PORT) {
-    return HOSTED_CALLBACK_URL_BASE;
-  }
-  return `${HOSTED_CALLBACK_URL_BASE}/${localPort}`;
-}
-
-/**
  * Stop the active callback server if one is running.
  * Called during plugin dispose to ensure the server is cleaned up before the process exits.
  */
@@ -224,16 +210,9 @@ export async function getRedirectUrlViaExternalBrowser(
   });
 
   try {
-    // Determine the redirect URI to send to the OAuth provider
-    let oauthRedirectUri: string;
-
-    if (callbackType === "hosted") {
-      oauthRedirectUri = buildHostedCallbackRedirectUri(server.port);
-      console.log("[oauth2] Using hosted callback redirect:", oauthRedirectUri);
-    } else {
-      oauthRedirectUri = server.redirectUri;
-      console.log("[oauth2] Using localhost callback redirect:", oauthRedirectUri);
-    }
+    // Legacy hosted selections also use loopback; ApiCow never relays OAuth credentials
+    // through an upstream service. The form displays this URI for provider registration.
+    const oauthRedirectUri = server.redirectUri;
 
     // Set the redirect URI on the authorization URL
     authorizationUrl.searchParams.set("redirect_uri", oauthRedirectUri);
@@ -290,14 +269,14 @@ function getFragmentForwardingHtml(): string {
       color: hsl(245,23%,85%);
     }
     .container { text-align: center; }
-    .logo { display: block; width: 100px; height: 100px; margin: 0 auto 32px; border-radius: 50%; }
+    .brand { font-size: 32px; font-weight: 700; color: white; margin-bottom: 32px; }
     h1 { font-size: 28px; font-weight: 600; margin-bottom: 12px; }
     p { font-size: 16px; color: hsl(245,18%,58%); }
   </style>
 </head>
 <body>
   <div class="container">
-    <svg class="logo" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(649.94,712.03,-712.03,649.94,179.25,220.59)"><stop offset="0" stop-color="#4cc48c"/><stop offset=".5" stop-color="#476cc9"/><stop offset="1" stop-color="#ba1ab7"/></linearGradient></defs><rect x="0" y="0" width="1024" height="1024" fill="url(#g)"/><g transform="matrix(0.822,0,0,0.822,91.26,91.26)"><path d="M766.775,105.176C902.046,190.129 992.031,340.639 992.031,512C992.031,706.357 876.274,873.892 710,949.361C684.748,838.221 632.417,791.074 538.602,758.96C536.859,790.593 545.561,854.983 522.327,856.611C477.951,859.719 321.557,782.368 310.75,710.135C300.443,641.237 302.536,535.834 294.475,482.283C86.974,483.114 245.65,303.256 245.65,303.256L261.925,368.357L294.475,368.357C294.475,368.357 298.094,296.03 310.75,286.981C326.511,275.713 366.457,254.592 473.502,254.431C519.506,190.629 692.164,133.645 766.775,105.176ZM603.703,352.082C598.577,358.301 614.243,384.787 623.39,401.682C639.967,432.299 672.34,459.32 760.231,456.739C780.796,456.135 808.649,456.743 831.555,448.316C919.689,369.191 665.548,260.941 652.528,270.706C629.157,288.235 677.433,340.481 685.079,352.082C663.595,350.818 630.521,352.121 603.703,352.082ZM515.817,516.822C491.026,516.822 470.898,536.949 470.898,561.741C470.898,586.532 491.026,606.66 515.817,606.66C540.609,606.66 560.736,586.532 560.736,561.741C560.736,536.949 540.609,516.822 515.817,516.822ZM656.608,969.83C610.979,984.25 562.391,992.031 512,992.031C247.063,992.031 31.969,776.937 31.969,512C31.969,247.063 247.063,31.969 512,31.969C581.652,31.969 647.859,46.835 707.634,73.574C674.574,86.913 627.224,104.986 620,103.081C343.573,30.201 98.64,283.528 98.64,511.993C98.64,761.842 376.244,989.043 627.831,910C637.21,907.053 645.743,936.753 656.608,969.83Z" fill="#fff"/></g></svg>
+    <p class="brand">ApiCow</p>
     <h1 id="title">Sending authorization callback...</h1>
     <p id="message">Please wait</p>
   </div>

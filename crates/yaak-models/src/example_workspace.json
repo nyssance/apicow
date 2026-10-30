@@ -3,7 +3,7 @@
     {
       "id": "{{WORKSPACE}}",
       "name": "Example Workspace",
-      "description": "A small tour of Yaak using the [Yaak Playground](https://yaak.run) API. Nothing here needs an account.\n\n1. Open **Getting Started / List posts** and press Send\n2. Open **Variables / Get the current user**, then switch the environment in the top-left to change which user it fetches\n3. Open **Chaining / Posts by the first user** to see how one request reads a value out of another request's response\n4. Open **Authentication / Get my profile** to see a login token used for you\n\nDelete this workspace whenever you're done with it."
+      "description": "A small tour of ApiCow using a public example API. Nothing here needs an account.\n\n1. Open **Getting Started / List posts** and press Send\n2. Open **Variables / Get the current user**, then switch the environment in the top-left to change which user it fetches\n3. Open **Chaining / Posts by the first user** to see how one request reads a value out of another request's response\n4. Open **Authentication / Get my profile** to see a login token used for you\n\nDelete this workspace whenever you're done with it."
     }
   ],
   "environments": [

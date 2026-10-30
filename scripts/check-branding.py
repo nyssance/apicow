@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import plistlib
+import re
 from pathlib import Path
 import struct
 import subprocess
@@ -38,16 +39,30 @@ def check_source():
     require(release['plugins']['updater'] == baseline['updater'], 'Updater identity/channel changed')
     require('updater' in release['build']['features'], 'Updater disabled')
     require(release['bundle']['createUpdaterArtifacts'], 'Signed update artifacts disabled')
-    # These are product navigation endpoints, not the retained upstream technical docs.
-    retired = ("https://yaak.app/changelog", "https://yaak.app/download",
-               "https://yaak.app/feedback", "https://yaak.app/roadmap", "https://yaak.app/button/new")
-    files = [APP / 'src/lib.rs']
-    for folder in ('components', 'lib'):
-        files.extend((ROOT / 'apps/yaak-client' / folder).rglob('*.tsx'))
-        files.extend((ROOT / 'apps/yaak-client' / folder).rglob('*.ts'))
-    for path in files:
-        if '.test.' not in path.name:
-            require(not any(url in path.read_text() for url in retired), f'Retired product link in {path}')
+    require('license' not in release['build']['features'], 'Upstream commercial license service enabled')
+    require('license' not in config.get('build', {}).get('features', []), 'Upstream license service enabled')
+    # Scan all shipped UI/native/plugin sources, not just the known menu strings.
+    # User request fixtures, copyright, and protocol service integrations are separate.
+    tracked = subprocess.check_output(['git', 'ls-files', '-z'], cwd=ROOT).decode().split('\0')
+    roots = ('apps/', 'packages/ui/', 'packages/platform/',
+             'crates-tauri/yaak-app-client/src/', 'crates-tauri/yaak-app-proxy/src/', 'plugins/')
+    retired = re.compile(r'https?://(?:[a-z0-9.-]+\.)?yaak\.app(?:[/:?\#"\s]|$)', re.I)
+    for name in tracked:
+        path = ROOT / name
+        if not name.startswith(roots) or not path.is_file():
+            continue
+        if path.suffix not in ('.ts', '.tsx', '.rs', '.html', '.json'):
+            continue
+        if any(part in ('tests', 'fixtures', 'bindings') for part in path.parts):
+            continue
+        if '.test.' in name or '.spec.' in name:
+            continue
+        require(not retired.search(path.read_text()), f'Retired product URL in {name}')
+    for name in ('README.md', 'CONTRIBUTING.md', '.github/ISSUE_TEMPLATE/config.yml',
+                 '.github/pull_request_template.md', 'packages/plugin-runtime-types/package.json'):
+        require(not retired.search((ROOT / name).read_text()), f'Retired public product link in {name}')
+    native_templates = ROOT / 'crates/yaak-plugins/src/native_template_functions.rs'
+    require(not retired.search(native_templates.read_text()), 'Retired native template help URL')
     return baseline
 
 

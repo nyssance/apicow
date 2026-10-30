@@ -8,7 +8,6 @@ import { useResolvedAppearance } from "../../hooks/useResolvedAppearance";
 import { useResolvedTheme } from "../../hooks/useResolvedTheme";
 import type { ButtonProps } from "../core/Button";
 import { IconButton } from "../core/IconButton";
-import { Link } from "../core/Link";
 import type { SelectProps } from "../core/Select";
 import {
   ModelSettingRowSelect,
@@ -76,12 +75,6 @@ export function SettingsTheme() {
     <VStack space={1.5} className="mb-4">
       <div className="mb-3">
         <Heading>{t("Theme")}</Heading>
-        <p className="text-text-subtle">
-          {t("Make Yaak your own by selecting a theme, or")}{" "}
-          <Link href="https://yaak.app/docs/plugin-development/plugins-quick-start">
-            {t("Create Your Own")}
-          </Link>
-        </p>
       </div>
       <SettingsList className="space-y-8">
         <SettingsSection title={t("Theme")}>
