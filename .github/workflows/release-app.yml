@@ -57,6 +57,8 @@ jobs:
         with:
           shared-key: ci
           cache-on-failure: true
+      - name: 验证已确认的图标及品牌配置
+        run: python scripts/check-branding.py
       - run: bun install --frozen-lockfile
       - run: bun run bootstrap
         env:
@@ -176,6 +178,8 @@ jobs:
         with:
           shared-key: ci
           cache-on-failure: true
+      - name: 验证已确认的图标及品牌配置
+        run: python scripts/check-branding.py
       - run: bun install --frozen-lockfile
       - run: bun run bootstrap
         env:
@@ -231,6 +235,28 @@ jobs:
           xcrun stapler staple "$dmg"
           cp "$dmg" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg"
           gh release upload "$RELEASE_TAG" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg" --repo nyssance/releases --clobber
+      - name: 验证最终 DMG 和自动更新包中的真实图标
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mount_dir=$(mktemp -d)
+          update_dir=$(mktemp -d)
+          trap 'hdiutil detach "$mount_dir" >/dev/null 2>&1 || true; rm -rf "$mount_dir" "$update_dir"' EXIT
+          dmg=$(find target/aarch64-apple-darwin/release/bundle/dmg -name '*.dmg' -print -quit)
+          hdiutil attach "$dmg" -readonly -nobrowse -mountpoint "$mount_dir"
+          python3 scripts/check-branding.py --mac-bundle "$mount_dir/ApiCow.app" --version "$GITHUB_REF_NAME"
+          archive=$(find target/aarch64-apple-darwin/release/bundle -name '*.app.tar.gz' -print -quit)
+          tar -xzf "$archive" -C "$update_dir"
+          python3 scripts/check-branding.py --mac-bundle "$update_dir/ApiCow.app" --version "$GITHUB_REF_NAME"
+      - name: 验证 Windows EXE 内嵌图标和 NSIS 安装内容
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $env:PATH += ";C:\Program Files\7-Zip"
+          $installer = (Get-ChildItem target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe | Select-Object -First 1).FullName
+          python scripts/check-branding.py --windows-exe target/x86_64-pc-windows-msvc/release/yaak-app-client.exe --windows-installer "$installer"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: 清理签名钥匙串
         if: always() && runner.os == 'macOS' && env.APICOW_SIGNING_DIR != ''
         shell: bash

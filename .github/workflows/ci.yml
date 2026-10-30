@@ -28,6 +28,8 @@ jobs:
           shared-key: ci
           cache-on-failure: true
 
+      - name: Verify reviewed branding
+        run: python scripts/check-branding.py
       - run: bun install --frozen-lockfile
       - run: bun run bootstrap
       - run: bun run lint
@@ -63,6 +65,8 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Verify reviewed branding
+        run: python scripts/check-branding.py
       - run: bun install --frozen-lockfile
       - run: bun run bootstrap
         env:
