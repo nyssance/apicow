@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 
 export function validateRelease(release, source, signatures, versionTag, allowDraft = false) {
   assert.match(versionTag ?? "", /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
-  assert.equal(release.tag_name, `apicow-${versionTag}`);
+  assert.equal(release.tag_name, versionTag);
   if (!allowDraft)
     assert.equal(release.draft, false, "Publish the version release before updating latest");
   const { assets } = release;
@@ -33,14 +33,14 @@ export function validateRelease(release, source, signatures, versionTag, allowDr
       entry.signature.trim(),
       `Signature mismatch for ${platform}`,
     );
-    const publicPrefix = `https://github.com/nyssance/releases/releases/download/apicow-${versionTag}/`;
+    const publicPrefix = `https://github.com/nyssance/apicow/releases/download/${versionTag}/`;
     const draftUrl = new URL(asset.browser_download_url);
     assert.ok(
       asset.browser_download_url.startsWith(publicPrefix) ||
         (allowDraft &&
           release.draft &&
           draftUrl.origin === "https://github.com" &&
-          /^\/nyssance\/releases\/releases\/download\/untagged-[^/]+\//.test(draftUrl.pathname)),
+          /^\/nyssance\/apicow\/releases\/download\/untagged-[^/]+\//.test(draftUrl.pathname)),
       `Unexpected asset download URL for ${platform}`,
     );
     entry.url = `${publicPrefix}${encodeURIComponent(asset.name)}`;

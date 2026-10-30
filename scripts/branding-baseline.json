@@ -117,9 +117,7 @@
   ],
   "updater": {
     "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM5MjUwQkI0MEU0RUM5NDMKUldSRHlVNE90QXNseVJsUkVhVGJXcXZQT3lRbUxncXZKM2hCeENFV0dweEU0TlhWdm0xS0Z0dkYK",
-    "endpoints": [
-      "https://github.com/nyssance/releases/releases/download/apicow-latest/latest.json"
-    ],
+    "endpoints": ["https://github.com/nyssance/apicow/releases/latest/download/latest.json"],
     "requireSignedVersion": true
   }
 }

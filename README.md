@@ -6,7 +6,7 @@ ApiCow is an independent development fork of Yaak. The first milestone is macOS 
 - The source copyright and MIT license remain in [LICENSE](LICENSE).
 - Local development identity: `day.dreamer.apicow.dev`; production identity: `day.dreamer.apicow`.
 - Language: Settings → General → Language. Defaults to the system language; changing it flushes pending model writes and reloads the window.
-- Release builds enable the standard Tauri updater against the public [nyssance/releases](https://github.com/nyssance/releases) repo (`apicow-latest/latest.json`, signed updates only); Yaak's update server and commercial-license feature are not used. See [Release](#release) below.
+- Release builds enable the standard Tauri updater against the public [nyssance/apicow](https://github.com/nyssance/apicow) repo (`releases/latest/download/latest.json`, signed updates only); Yaak's update server and commercial-license feature are not used. See [Release](#release) below.
 - Existing internal `yaak-*` crate names, plugin APIs, CLI and serialized formats are retained for compatibility. This is not a complete rebranding or a public release.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 24+, Rust and the workspace Vite+ CLI are required. Run `bun install --frozen-lockfile`, `bun run bootstrap`, then `bun start`.
@@ -18,11 +18,11 @@ See [DEVELOPMENT.md](DEVELOPMENT.md) for the inherited build workflow. Node.js 2
 
 每版提供两个安装包：macOS Apple Silicon `.dmg`（Developer ID 签名、公证）和 Windows x64
 NSIS `.exe`。Windows 未配置 Authenticode 证书；两平台更新包均使用 Tauri 更新密钥签名。
-源码仓已公开，安装包发布到公开仓 [nyssance/releases](https://github.com/nyssance/releases)
-的 `apicow-v<版本>` Release。
+源码仓已公开，安装包发布到公开仓 [nyssance/apicow](https://github.com/nyssance/apicow)
+的 `v<版本>` Release。
 
 构建完成后，GitHub Actions 自动校验两个平台的安装包、更新包和签名，再发布草稿并更新
-`apicow-latest/latest.json`。清单使用各自资源的公开下载地址，不会把 Windows 指向 Mac 文件。
+独立仓库的 Latest。旧版本仍读取的共用仓 `apicow-latest/latest.json` 仅作为兼容入口，指向独立仓库资源，不修改共用仓 Latest。清单使用各自资源的公开下载地址，不会把 Windows 指向 Mac 文件。
 `fab publish 0.1.1 --dry-run` 预览流程，`--no-wait` 推标签后立即返回，Actions 仍会在构建成功后自动发布。
 失败任务修复后先在 Actions 重跑，再执行 `fab publish 0.1.1 --resume` 等待并完成发布；不会移动标签。
 

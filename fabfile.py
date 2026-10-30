@@ -52,13 +52,13 @@ def publish(c, version, wait=True, dry_run=False, resume=False):
     if not re.fullmatch(r"v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?", tag):
         raise Exit("Version must be v<semver>", code=1)
     repo = "nyssance/apicow"
-    release_tag = f"apicow-{tag}"
+    release_tag = tag
     with c.cd(shlex.quote(str(ROOT))):
         if dry_run:
             print(f"Check clean main checkout; create new {tag}; push to {repo}")
             print("Build macOS ARM64 DMG + Windows x64 NSIS EXE via release-app.yml")
             if wait:
-                print(f"Validate both signed updater assets; publish {release_tag}; update apicow-latest")
+                print(f"Validate both signed updater assets; publish {release_tag}; update the dedicated release and legacy updater feed")
             return
         if c.run("git status --porcelain", hide=True).stdout.strip():
             raise Exit("Commit the reviewed changes before publishing", code=1)
@@ -93,6 +93,6 @@ def publish(c, version, wait=True, dry_run=False, resume=False):
             raise Exit("No release workflow was created; check GitHub Actions", code=1)
         c.run(f"gh run watch {run_id} -R {repo} --exit-status")
         c.run(f"bun scripts/publish-latest.mjs {tag} --check-only")
-        c.run(f"gh release edit {release_tag} -R nyssance/releases --draft=false --latest=false")
+        c.run(f"gh release edit {release_tag} -R nyssance/apicow --draft=false --latest=true")
         c.run(f"bun scripts/publish-latest.mjs {tag}")
-        print(f"Published: https://github.com/nyssance/releases/releases/tag/{release_tag}")
+        print(f"Published: https://github.com/nyssance/apicow/releases/tag/{release_tag}")

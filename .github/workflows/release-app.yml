@@ -1,6 +1,6 @@
 # 照 GitCub 的发布流程：手动运行只出未签名的安装包当工件；推 v* 标签则签名、公证、
-# 生成更新器元数据并在公开仓 nyssance/releases 建草稿 Release `apicow-v*`（源码仓已公开），
-# 双平台产物校验成功后自动公开并更新 `apicow-latest`，更新器只读那里。
+# 生成更新器元数据并在公开仓 nyssance/apicow 建草稿 Release `v*`（源码仓已公开），
+# 双平台产物校验成功后自动公开并更新 独立仓库的 Latest；旧版更新地址仅保留兼容清单。
 # 版本号沿用上游做法由标签提供：构建前 `bun run replace-version` 把 v* 写进 tauri.conf.json。
 # 发布 macOS Apple Silicon DMG 与 Windows x64 NSIS EXE。
 name: release
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_latest:
-        description: 已发布的版本标签（如 v0.1.0）：把它的 latest.json 覆盖到 apicow-latest
+        description: 已发布的版本标签（如 v0.1.0）：校验其 latest.json 并同步旧版兼容更新清单
         required: false
         type: string
   push:
@@ -123,8 +123,8 @@ jobs:
         id: prepare-release
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          RELEASE_TAG: apicow-${{ github.ref_name }}
-          RELEASE_REPO: nyssance/releases
+          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_REPO: nyssance/apicow
         run: |
           set -euo pipefail
           releases=$(gh api --paginate "repos/$RELEASE_REPO/releases" |
@@ -211,8 +211,8 @@ jobs:
           tauriScript: node ../../node_modules/@tauri-apps/cli/tauri.js
           projectPath: ./crates-tauri/yaak-app-client
           owner: nyssance
-          repo: releases
-          tagName: apicow-${{ github.ref_name }}
+          repo: apicow
+          tagName: ${{ github.ref_name }}
           releaseId: ${{ needs.release-preflight.outputs.release_id }}
           releaseName: ApiCow ${{ github.ref_name }}
           releaseDraft: true
@@ -227,14 +227,14 @@ jobs:
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          RELEASE_TAG: apicow-${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
           dmg=$(ls target/aarch64-apple-darwin/release/bundle/dmg/*.dmg)
           xcrun notarytool submit "$dmg" --apple-id "$APPLE_ID" --password "$APPLE_PASSWORD" --team-id "$APPLE_TEAM_ID" --wait
           xcrun stapler staple "$dmg"
           cp "$dmg" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg"
-          gh release upload "$RELEASE_TAG" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg" --repo nyssance/releases --clobber
+          gh release upload "$RELEASE_TAG" "apicow_${GITHUB_REF_NAME#v}_darwin_aarch64.dmg" --repo nyssance/apicow --clobber
       - name: 验证最终 DMG 和自动更新包中的真实图标
         if: runner.os == 'macOS'
         shell: bash
@@ -276,10 +276,10 @@ jobs:
           VERSION_TAG: ${{ github.ref_name }}
         run: |
           node scripts/publish-latest.mjs "$VERSION_TAG" --check-only
-          gh release edit "apicow-$VERSION_TAG" --repo nyssance/releases --draft=false --latest=false
+          gh release edit "$VERSION_TAG" --repo nyssance/apicow --draft=false --latest=true
           node scripts/publish-latest.mjs "$VERSION_TAG"
 
-  # 发布草稿后手动运行：把该版本的 latest.json 覆盖到固定的 apicow-latest Release，更新器才看到新版本。
+  # 发布草稿后手动运行：同步该版本 latest.json 至旧版兼容更新清单。
   publish-latest:
     if: github.event_name == 'workflow_dispatch' && inputs.publish_latest != ''
     runs-on: ubuntu-24.04

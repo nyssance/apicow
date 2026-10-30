@@ -9,8 +9,8 @@ import { validateRelease } from "./lib/release-manifest.mjs";
 const versionTag = process.argv[2];
 assert.match(versionTag ?? "", /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/, "Expected v<semver>");
 const checkOnly = process.argv.includes("--check-only");
-const repo = "nyssance/releases";
-const tag = `apicow-${versionTag}`;
+const repo = "nyssance/apicow";
+const tag = versionTag;
 const gh = (...args) => execFileSync("gh", args, { encoding: "utf8" }).trim();
 // GitHub's by-tag endpoint omits drafts; list releases to find both states.
 const releases = JSON.parse(gh("api", "--paginate", "--slurp", `repos/${repo}/releases`)).flat();
@@ -49,29 +49,15 @@ try {
   } else {
     writeFileSync(join(temp, "latest.json"), JSON.stringify(manifest, null, 2) + "\n");
     gh("release", "upload", tag, join(temp, "latest.json"), "--repo", repo, "--clobber");
-    try {
-      gh("release", "view", "apicow-latest", "--repo", repo);
-    } catch {
-      gh(
-        "release",
-        "create",
-        "apicow-latest",
-        "--repo",
-        repo,
-        "--title",
-        "ApiCow 更新清单",
-        "--notes",
-        "ApiCow 自动更新清单",
-        "--latest=false",
-      );
-    }
+    // Existing installed versions still read this legacy feed. It points to assets
+    // in the ApiCow repository and never changes the shared repository's Latest.
     gh(
       "release",
       "upload",
       "apicow-latest",
       join(temp, "latest.json"),
       "--repo",
-      repo,
+      "nyssance/releases",
       "--clobber",
     );
     console.log(`Published updater manifest for ${tag}`);

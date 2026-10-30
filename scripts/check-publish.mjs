@@ -7,12 +7,12 @@ const names = [
   "apicow_0.1.1_darwin_aarch64.app.tar.gz",
 ];
 const release = {
-  tag_name: "apicow-v0.1.1",
+  tag_name: "v0.1.1",
   draft: false,
   assets: names.map((name, id) => ({
     name,
     id,
-    browser_download_url: `https://github.com/nyssance/releases/releases/download/apicow-v0.1.1/${name}`,
+    browser_download_url: `https://github.com/nyssance/apicow/releases/download/v0.1.1/${name}`,
   })),
 };
 const source = {
@@ -20,11 +20,11 @@ const source = {
   platforms: {
     "darwin-aarch64": {
       signature: "mac-signature",
-      url: "https://api.github.com/repos/nyssance/releases/releases/assets/2",
+      url: "https://api.github.com/repos/nyssance/apicow/releases/assets/2",
     },
     "windows-x86_64": {
       signature: "windows-signature",
-      url: "https://api.github.com/repos/nyssance/releases/releases/assets/1",
+      url: "https://api.github.com/repos/nyssance/apicow/releases/assets/1",
     },
   },
 };
@@ -55,12 +55,21 @@ console.log(
 const draft = structuredClone(release);
 draft.draft = true;
 for (const asset of draft.assets) {
-  asset.browser_download_url = asset.browser_download_url.replace(
-    "apicow-v0.1.1/",
-    "untagged-test/",
-  );
+  asset.browser_download_url = asset.browser_download_url.replace("v0.1.1/", "untagged-test/");
 }
 const draftResult = validateRelease(draft, source, signatures, "v0.1.1", true);
 assert.equal(draftResult.platforms["darwin-aarch64"].url, release.assets[2].browser_download_url);
 assert.throws(() => validateRelease(draft, source, signatures, "v0.1.1"));
 console.log("PASS: draft placeholder URLs are normalized only during preflight");
+
+const foreign = structuredClone(release);
+foreign.assets[0].browser_download_url = foreign.assets[0].browser_download_url.replace(
+  "nyssance/apicow",
+  "nyssance/releases",
+);
+foreign.assets[2].browser_download_url = foreign.assets[2].browser_download_url.replace(
+  "nyssance/apicow",
+  "nyssance/releases",
+);
+assert.throws(() => validateRelease(foreign, source, signatures, "v0.1.1"));
+console.log("PASS: release assets must belong to the dedicated ApiCow repository");

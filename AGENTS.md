@@ -21,3 +21,5 @@
 - 2026-10-30 用户授权本次发布，并要求 macOS 与 Windows 各一个安装包：macOS Apple Silicon DMG、Windows x64 NSIS EXE。若发布受阻，先修复 publish 流程；不得发布不完整的双平台更新清单。
 
 - 发布品牌基线：黑白牛头，保持原有轮廓，不含左侧圆环/波浪。`scripts/branding-baseline.json` 固定已目视确认的图标指纹、名称、应用 ID 和更新源；不得为通过检查而自动更新基线。更改必须核对实际最终安装包。CI 同时验证 DMG、更新归档与 Windows 安装器内的应用图标，任何一项失败禁止公开版本及更新清单。
+
+- 2026-10-30 用户要求产品发布隔离：ApiCow 正式 Release 与 Latest 仅在 nyssance/apicow；禁止在共用仓切换 Latest。nyssance/releases 的 apicow-latest 只保留旧客户端兼容清单，不再向该仓发布 ApiCow 新版本。
