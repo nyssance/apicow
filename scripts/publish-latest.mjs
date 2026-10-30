@@ -12,6 +12,11 @@ const checkOnly = process.argv.includes("--check-only");
 const repo = "nyssance/apicow";
 const tag = versionTag;
 const gh = (...args) => execFileSync("gh", args, { encoding: "utf8" }).trim();
+const legacyGh = (...args) =>
+  execFileSync("gh", args, {
+    encoding: "utf8",
+    env: { ...process.env, GH_TOKEN: process.env.LEGACY_RELEASE_TOKEN ?? process.env.GH_TOKEN },
+  }).trim();
 // GitHub's by-tag endpoint omits drafts; list releases to find both states.
 const releases = JSON.parse(gh("api", "--paginate", "--slurp", `repos/${repo}/releases`)).flat();
 const matches = releases.filter((release) => release.tag_name === tag);
@@ -51,7 +56,7 @@ try {
     gh("release", "upload", tag, join(temp, "latest.json"), "--repo", repo, "--clobber");
     // Existing installed versions still read this legacy feed. It points to assets
     // in the ApiCow repository and never changes the shared repository's Latest.
-    gh(
+    legacyGh(
       "release",
       "upload",
       "apicow-latest",

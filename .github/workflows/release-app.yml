@@ -122,7 +122,7 @@ jobs:
       - name: 准备公开仓的草稿 Release
         id: prepare-release
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ github.ref_name }}
           RELEASE_REPO: nyssance/apicow
         run: |
@@ -200,7 +200,7 @@ jobs:
       - uses: tauri-apps/tauri-action@v1
         env:
           YAAK_TARGET_ARCH: ${{ matrix.arch }}
-          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
@@ -226,7 +226,7 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
@@ -263,6 +263,8 @@ jobs:
         run: bash scripts/macos-signing.sh cleanup
 
   publish-release:
+    permissions:
+      contents: write
     needs: release
     runs-on: ubuntu-24.04
     steps:
@@ -272,7 +274,8 @@ jobs:
           node-version: "24"
       - name: 校验双平台产物并发布正式版本和更新清单
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LEGACY_RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           VERSION_TAG: ${{ github.ref_name }}
         run: |
           node scripts/publish-latest.mjs "$VERSION_TAG" --check-only
@@ -281,6 +284,8 @@ jobs:
 
   # 发布草稿后手动运行：同步该版本 latest.json 至旧版兼容更新清单。
   publish-latest:
+    permissions:
+      contents: write
     if: github.event_name == 'workflow_dispatch' && inputs.publish_latest != ''
     runs-on: ubuntu-24.04
     steps:
@@ -290,6 +295,7 @@ jobs:
           node-version: "24"
       - name: 验证双平台资源并发布更新清单
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          LEGACY_RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           VERSION_TAG: ${{ inputs.publish_latest }}
         run: node scripts/publish-latest.mjs "$VERSION_TAG"
