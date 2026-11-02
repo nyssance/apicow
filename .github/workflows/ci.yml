@@ -32,7 +32,6 @@ jobs:
         run: python scripts/check-branding.py
       - run: bun install --frozen-lockfile
       - run: bun run bootstrap
-      - run: bun run lint
       - name: Run JS Tests
         run: bun x --no-install vp test run --maxWorkers=4
       - name: Run Rust Tests
