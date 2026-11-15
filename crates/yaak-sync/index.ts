@@ -1,7 +1,7 @@
 import { platform } from "@yaakapp-internal/platform";
 import type { WatchResult } from "@yaakapp-internal/rpc-schema";
-import { SyncOp } from "./bindings/gen_sync";
-import { WatchEvent } from "./bindings/gen_watch";
+import { type SyncOp } from "./bindings/gen_sync";
+import { type WatchEvent } from "./bindings/gen_watch";
 
 export * from "./bindings/gen_models";
 

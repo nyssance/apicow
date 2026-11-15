@@ -1,5 +1,9 @@
 import { platform } from "@yaakapp-internal/platform";
-import { PluginNameVersion, PluginSearchResponse, PluginUpdatesResponse } from "./bindings/gen_api";
+import {
+  type PluginNameVersion,
+  type PluginSearchResponse,
+  type PluginUpdatesResponse,
+} from "./bindings/gen_api";
 
 export * from "./bindings/gen_models";
 export * from "./bindings/gen_events";

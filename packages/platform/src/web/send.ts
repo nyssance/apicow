@@ -231,10 +231,10 @@ function headOf(frame: Extract<Frame, { type: "response" }>): ResponsePatch {
 class ResponseWriter {
   private state: ResponseRow;
 
-  constructor(
-    private readonly db: WorkerConnection,
-    initial: ResponseRow,
-  ) {
+  private readonly db: WorkerConnection;
+
+  constructor(db: WorkerConnection, initial: ResponseRow) {
+    this.db = db;
     this.state = initial;
   }
 
@@ -281,11 +281,15 @@ class TimelineWriter {
   private queue: HttpResponseEventData[] = [];
   private inFlight: Promise<void> = Promise.resolve();
 
-  constructor(
-    private readonly db: WorkerConnection,
-    private readonly responseId: string,
-    private readonly workspaceId: string,
-  ) {}
+  private readonly db: WorkerConnection;
+  private readonly responseId: string;
+  private readonly workspaceId: string;
+
+  constructor(db: WorkerConnection, responseId: string, workspaceId: string) {
+    this.db = db;
+    this.responseId = responseId;
+    this.workspaceId = workspaceId;
+  }
 
   push(events: HttpResponseEventData[]): void {
     if (events.length === 0) return;
@@ -315,8 +319,16 @@ class TimelineWriter {
  * yaak-models), so an edit made while the send was in flight survives rather
  * than being written over by the send's stale snapshot.
  */
-async function persistCookies(db: WorkerConnection, jar: CookieJar, cookies: Cookie[]): Promise<void> {
-  await db.rpc("web_persist_send_cookies", { cookieJarId: jar.id, before: jar.cookies, after: cookies });
+async function persistCookies(
+  db: WorkerConnection,
+  jar: CookieJar,
+  cookies: Cookie[],
+): Promise<void> {
+  await db.rpc("web_persist_send_cookies", {
+    cookieJarId: jar.id,
+    before: jar.cookies,
+    after: cookies,
+  });
 }
 
 /**

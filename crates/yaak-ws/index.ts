@@ -1,5 +1,5 @@
 import { platform } from "@yaakapp-internal/platform";
-import { WebsocketConnection } from "@yaakapp-internal/models";
+import { type WebsocketConnection } from "@yaakapp-internal/models";
 
 export function deleteWebsocketConnections(requestId: string) {
   return platform.rpc("cmd_ws_delete_connections", {

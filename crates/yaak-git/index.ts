@@ -4,16 +4,16 @@ import { createFastMutation } from "@yaakapp/yaak-client/hooks/useFastMutation";
 import { queryClient } from "@yaakapp/yaak-client/lib/queryClient";
 import { useMemo } from "react";
 import {
-  BranchDeleteResult,
-  CloneResult,
-  GitBranchInfo,
-  GitCommit,
-  GitFileDiff,
-  GitRemote,
-  GitStatusSummary,
-  GitWorktreeStatus,
-  PullResult,
-  PushResult,
+  type BranchDeleteResult,
+  type CloneResult,
+  type GitBranchInfo,
+  type GitCommit,
+  type GitFileDiff,
+  type GitRemote,
+  type GitStatusSummary,
+  type GitWorktreeStatus,
+  type PullResult,
+  type PushResult,
 } from "./bindings/gen_git";
 import { showToast } from "@yaakapp/yaak-client/lib/toast";
 

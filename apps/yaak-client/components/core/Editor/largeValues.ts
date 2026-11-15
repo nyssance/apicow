@@ -139,13 +139,17 @@ function makeTagButton(el: HTMLElement, title: string, onOpen: () => void) {
 }
 
 class LargeValueWidget extends WidgetType {
-  constructor(
-    private readonly from: number,
-    private readonly to: number,
-    private readonly valueFrom: number,
-    private readonly sniffed: SniffedValue | null,
-  ) {
+  private readonly from: number;
+  private readonly to: number;
+  private readonly valueFrom: number;
+  private readonly sniffed: SniffedValue | null;
+
+  constructor(from: number, to: number, valueFrom: number, sniffed: SniffedValue | null) {
     super();
+    this.from = from;
+    this.to = to;
+    this.valueFrom = valueFrom;
+    this.sniffed = sniffed;
   }
 
   eq(other: LargeValueWidget) {

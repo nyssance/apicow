@@ -1,5 +1,5 @@
 import { createStore } from "jotai";
-import { AnyModel } from "../bindings/gen_models";
+import { type AnyModel } from "../bindings/gen_models";
 
 export type ExtractModel<T, M> = T extends { model: M } ? T : never;
 export type ModelStoreData<T extends AnyModel = AnyModel> = {

@@ -2,7 +2,7 @@ import { atom } from "jotai";
 
 import { selectAtom } from "jotai/utils";
 import type { AnyModel } from "../bindings/gen_models";
-import { ExtractModel } from "./types";
+import { type ExtractModel } from "./types";
 import { newStoreData } from "./util";
 
 export const modelStoreDataAtom = atom(newStoreData());

@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { platform } from "@yaakapp-internal/platform";
 import { appInfo } from "@yaakapp/yaak-client/lib/appInfo";
 import { useEffect } from "react";
-import { LicenseCheckStatus } from "./bindings/license";
+import { type LicenseCheckStatus } from "./bindings/license";
 
 export * from "./bindings/license";
 

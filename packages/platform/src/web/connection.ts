@@ -48,9 +48,6 @@ export class WorkerConnection {
    */
   readonly label = `tab_${randomId(4)}`;
 
-  /** True once the worker has said anything at all. */
-  private heard = false;
-
   constructor() {
     if (
       typeof Worker === "undefined" ||
@@ -125,7 +122,6 @@ export class WorkerConnection {
   }
 
   private receive(message: FromWorker): void {
-    this.heard = true;
     switch (message.type) {
       case "hello":
       case "ready":

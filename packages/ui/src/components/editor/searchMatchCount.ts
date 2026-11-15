@@ -237,7 +237,10 @@ export function searchMatchCount(): Extension {
       private countEl: HTMLElement | null = null;
       private counter = new MatchCounter();
 
-      constructor(private view: EditorView) {
+      private view: EditorView;
+
+      constructor(view: EditorView) {
+        this.view = view;
         this.updateCount();
       }
 

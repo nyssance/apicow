@@ -1,12 +1,7 @@
 {
+  "extends": "@nyssance/tsconfig",
   "compilerOptions": {
-    "target": "es2021",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "strict": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "jsx": "react-jsx",
-    "noEmit": true
+    "jsx": "react-jsx"
   },
   "include": ["src"]
 }

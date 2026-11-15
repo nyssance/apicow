@@ -1,0 +1,9 @@
+{
+  "extends": "@nyssance/tsconfig",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true
+  },
+  "include": ["vite.config.ts"]
+}

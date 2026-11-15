@@ -1,19 +1,6 @@
 {
+  "extends": "@nyssance/tsconfig",
   "compilerOptions": {
-    "target": "es2021",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "useDefineForClassFields": true,
-    "allowJs": false,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx",
     "types": ["node"]
   },

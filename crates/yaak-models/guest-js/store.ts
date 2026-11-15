@@ -1,8 +1,8 @@
 import { platform } from "@yaakapp-internal/platform";
 import { debounce } from "@yaakapp-internal/lib";
-import { AnyModel, ModelPayload } from "../bindings/gen_models";
+import { type AnyModel, type ModelPayload } from "../bindings/gen_models";
 import { modelStoreDataAtom } from "./atoms";
-import { ExtractModel, JotaiStore, ModelStoreData } from "./types";
+import { type ExtractModel, type JotaiStore, type ModelStoreData } from "./types";
 import { newStoreData } from "./util";
 
 let _store: JotaiStore | null = null;

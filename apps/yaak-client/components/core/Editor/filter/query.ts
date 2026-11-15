@@ -129,7 +129,11 @@ export function tokenize(input: string): Tok[] {
 
 class Parser {
   private i = 0;
-  constructor(private toks: Tok[]) {}
+  private toks: Tok[];
+
+  constructor(toks: Tok[]) {
+    this.toks = toks;
+  }
 
   private peek(): Tok {
     return this.toks[this.i] ?? { kind: "EOF" };

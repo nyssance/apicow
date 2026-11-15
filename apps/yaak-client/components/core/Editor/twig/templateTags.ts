@@ -12,12 +12,15 @@ import { collectArgumentValues } from "./util";
 class TemplateTagWidget extends WidgetType {
   readonly #clickListenerCallback: () => void;
 
-  constructor(
-    readonly option: TwigCompletionOption,
-    readonly rawTag: string,
-    readonly startPos: number,
-  ) {
+  readonly option: TwigCompletionOption;
+  readonly rawTag: string;
+  readonly startPos: number;
+
+  constructor(option: TwigCompletionOption, rawTag: string, startPos: number) {
     super();
+    this.option = option;
+    this.rawTag = rawTag;
+    this.startPos = startPos;
     this.#clickListenerCallback = () => {
       this.option.onClick?.(this.rawTag, this.startPos);
     };

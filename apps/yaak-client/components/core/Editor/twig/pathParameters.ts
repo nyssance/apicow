@@ -6,12 +6,15 @@ import { Decoration, EditorView, ViewPlugin, WidgetType } from "@codemirror/view
 class PathPlaceholderWidget extends WidgetType {
   readonly #clickListenerCallback: () => void;
 
-  constructor(
-    readonly rawText: string,
-    readonly startPos: number,
-    readonly onClick: () => void,
-  ) {
+  readonly rawText: string;
+  readonly startPos: number;
+  readonly onClick: () => void;
+
+  constructor(rawText: string, startPos: number, onClick: () => void) {
     super();
+    this.rawText = rawText;
+    this.startPos = startPos;
+    this.onClick = onClick;
     this.#clickListenerCallback = () => {
       this.onClick?.();
     };
