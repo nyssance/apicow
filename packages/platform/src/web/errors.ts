@@ -10,7 +10,7 @@ import type { CapabilityName } from "../types";
  * having to parse prose back out of the message.
  */
 export class UnsupportedCommandError extends Error {
-  readonly name = "UnsupportedCommandError";
+  override readonly name = "UnsupportedCommandError";
   /** Stable discriminator, so a caller can branch without matching on text. */
   readonly code = "unsupported_command";
   readonly cmd: string;

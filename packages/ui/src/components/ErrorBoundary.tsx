@@ -27,11 +27,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: unknown, info: ErrorInfo) {
+  override componentDidCatch(error: unknown, info: ErrorInfo) {
     console.warn("Error caught by ErrorBoundary:", error, info);
   }
 
-  render() {
+  override render() {
     const { hasError, error } = this.state;
     if (!hasError) {
       return this.props.children;

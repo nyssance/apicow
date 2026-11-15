@@ -20,7 +20,7 @@ class PathPlaceholderWidget extends WidgetType {
     };
   }
 
-  eq(other: PathPlaceholderWidget) {
+  override eq(other: PathPlaceholderWidget) {
     return this.startPos === other.startPos && this.rawText === other.rawText;
   }
 
@@ -32,12 +32,12 @@ class PathPlaceholderWidget extends WidgetType {
     return elt;
   }
 
-  destroy(dom: HTMLElement) {
+  override destroy(dom: HTMLElement) {
     dom.removeEventListener("click", this.#clickListenerCallback);
     super.destroy(dom);
   }
 
-  ignoreEvent() {
+  override ignoreEvent() {
     return false;
   }
 }

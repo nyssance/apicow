@@ -26,7 +26,7 @@ class TemplateTagWidget extends WidgetType {
     };
   }
 
-  eq(other: TemplateTagWidget) {
+  override eq(other: TemplateTagWidget) {
     return (
       this.option.name === other.option.name &&
       this.option.type === other.option.type &&
@@ -53,12 +53,12 @@ class TemplateTagWidget extends WidgetType {
     return elt;
   }
 
-  destroy(dom: HTMLElement) {
+  override destroy(dom: HTMLElement) {
     dom.removeEventListener("click", this.#clickListenerCallback);
     super.destroy(dom);
   }
 
-  ignoreEvent() {
+  override ignoreEvent() {
     return false;
   }
 }

@@ -129,7 +129,7 @@
   "devDependencies": {
     "@grpc/grpc-js": "^1.14.7",
     "@grpc/proto-loader": "^0.8.1",
-    "@nyssance/tsconfig": "^0.1.0",
+    "@nyssance/tsconfig": "^0.1.2",
     "@rolldown/plugin-babel": "^0.3.1",
     "@tailwindcss/postcss": "^4.3.5",
     "@tauri-apps/cli": "^3.0.0-alpha.6",

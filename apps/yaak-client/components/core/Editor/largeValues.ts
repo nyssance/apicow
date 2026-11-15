@@ -152,7 +152,7 @@ class LargeValueWidget extends WidgetType {
     this.sniffed = sniffed;
   }
 
-  eq(other: LargeValueWidget) {
+  override eq(other: LargeValueWidget) {
     return (
       other.from === this.from &&
       other.to === this.to &&
@@ -242,7 +242,7 @@ class LargeValueWidget extends WidgetType {
     });
   }
 
-  ignoreEvent() {
+  override ignoreEvent() {
     return false;
   }
 }
