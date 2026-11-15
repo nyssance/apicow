@@ -40,7 +40,7 @@
     "@tauri-apps/plugin-shell": "^3.0.0-alpha.3",
     "buffer": "^6.0.3",
     "classnames": "^2.5.1",
-    "cm6-graphql": "^0.2.2",
+    "cm6-graphql": "^1.0.0",
     "codemirror-json-schema": "^0.8.1",
     "date-fns": "^4.4.0",
     "deep-equal": "^2.2.3",

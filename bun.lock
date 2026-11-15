@@ -70,7 +70,7 @@
         "@tauri-apps/plugin-shell": "^3.0.0-alpha.3",
         "buffer": "^6.0.3",
         "classnames": "^2.5.1",
-        "cm6-graphql": "^0.2.2",
+        "cm6-graphql": "^1.0.0",
         "codemirror-json-schema": "^0.8.1",
         "date-fns": "^4.4.0",
         "deep-equal": "^2.2.3",
@@ -1561,7 +1561,7 @@
 
     "clsx": ["clsx@2.1.1", "", {}, "sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA=="],
 
-    "cm6-graphql": ["cm6-graphql@0.2.2", "", { "dependencies": { "graphql-language-service": "^5.7.0" }, "peerDependencies": { "@codemirror/autocomplete": "^6.0.0", "@codemirror/language": "^6.0.0", "@codemirror/lint": "^6.9.7", "@codemirror/state": "^6.0.0", "@codemirror/view": "^6.0.0", "@lezer/highlight": "^1.0.0", "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0" } }, "sha512-z9DQonlhuCQZotqSxKUMdZpZKZO8xaxx9BQNf2EBr0auunWaS9FJmUoeiBECOn24aZq2UZqcPIa9OwYZolk8Tg=="],
+    "cm6-graphql": ["cm6-graphql@1.0.0", "", { "dependencies": { "graphql-language-service": "^6.0.0" }, "peerDependencies": { "@codemirror/autocomplete": "^6.0.0", "@codemirror/language": "^6.0.0", "@codemirror/lint": "^6.9.7", "@codemirror/state": "^6.0.0", "@codemirror/view": "^6.0.0", "@lezer/highlight": "^1.0.0", "graphql": "^16.11.0 || ^17.0.0" } }, "sha512-nOiWqjXN2J9qv32NjCOd8RN5kjIOSySjU6Y02xTGqAPboDyn86hfaAwvTwY2w3p9OA6klQW2jhc8M7+/Pxblvg=="],
 
     "codemirror-json-schema": ["codemirror-json-schema@0.8.1", "", { "dependencies": { "@sagold/json-pointer": "^5.1.1", "@shikijs/markdown-it": "^1.22.2", "best-effort-json-parser": "^1.1.2", "json-schema": "^0.4.0", "json-schema-library": "^9.3.5", "loglevel": "^1.9.1", "markdown-it": "^14.1.0", "shiki": "^1.22.2", "yaml": "^2.3.4" }, "optionalDependencies": { "@codemirror/autocomplete": "^6.16.2", "@codemirror/lang-json": "^6.0.1", "@codemirror/lang-yaml": "^6.1.1", "codemirror-json5": "^1.0.3", "json5": "^2.2.3" }, "peerDependencies": { "@codemirror/language": "^6.10.2", "@codemirror/lint": "^6.8.0", "@codemirror/state": "^6.4.1", "@codemirror/view": "^6.27.0", "@lezer/common": "^1.2.1" } }, "sha512-4lKPjW+nugNAmM5MsggJyn6TUxYdCCwAJIr9T4cZeTFPdkbBvPteCOGtDedrTOIeTC2ZFJtVg7VHIXnYU32t8w=="],
 
@@ -1805,7 +1805,7 @@
 
     "graphql": ["graphql@17.1.0", "", {}, "sha512-JKCOa7rSQNrket/JFhuua86hljUO+IIpyUHfKxlKD6FEfbrLX8jc1FDrA0KPKI+s8OspBCF/5npYccAICHXPpQ=="],
 
-    "graphql-language-service": ["graphql-language-service@5.7.0", "", { "dependencies": { "debounce-promise": "^3.1.2", "nullthrows": "^1.0.0", "vscode-languageserver-types": "^3.17.1" }, "peerDependencies": { "graphql": "^15.5.0 || ^16.0.0 || ^17.0.0" }, "bin": { "graphql": "dist/temp-bin.js" } }, "sha512-5mwDb9HyHxMcO9RCLLieg6rC1u9XKJKWhFuvaZFJi3broQZDz1fcFNlm96UCMrIgI6MSsb9RwwqKKp2sZOZ9Gw=="],
+    "graphql-language-service": ["graphql-language-service@6.0.1", "", { "dependencies": { "debounce-promise": "^3.1.2", "vscode-languageserver-types": "^3.18.5" }, "peerDependencies": { "graphql": "^16.11.0 || ^17.0.0" } }, "sha512-f+/kcxErsGlv/wbmm1PbaNWEL6nTNyUMpkZffQpiSWisuD07AUGQKE/6t3GtYuPhB/mbbWTuaJXkyE0zv+qHnQ=="],
 
     "has-bigints": ["has-bigints@1.1.0", "", {}, "sha512-R3pbpkcIqv2Pm3dUwgjclDRVmWpTJW2DcMzcIhEXEx1oh/CEMObMm3KLmRJOdvhM7o4uQBnwr8pzRK2sJWIqfg=="],
 
@@ -2238,8 +2238,6 @@
     "normalize-path": ["normalize-path@3.0.0", "", {}, "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA=="],
 
     "npm-run-all": ["npm-run-all@4.1.5", "", { "dependencies": { "ansi-styles": "^3.2.1", "chalk": "^2.4.1", "cross-spawn": "^6.0.5", "memorystream": "^0.3.1", "minimatch": "^3.0.4", "pidtree": "^0.3.0", "read-pkg": "^3.0.0", "shell-quote": "^1.6.1", "string.prototype.padend": "^3.0.0" }, "bin": { "npm-run-all": "bin/npm-run-all/index.js", "run-p": "bin/run-p/index.js", "run-s": "bin/run-s/index.js" } }, "sha512-Oo82gJDAVcaMdi3nuoKFavkIHBRVqQ1qvMb+9LHk/cF4P6B2m8aP04hGf7oL6wZ9BuGwX1onlLhpuoofSyoQDQ=="],
-
-    "nullthrows": ["nullthrows@1.1.1", "", {}, "sha512-2vPPEi+Z7WqML2jZYddDIfy5Dqb0r2fze2zTxNNknZaFpVHU3mFB3R+DWeJWGVx0ecvttSGlJTI+WG+8Z4cDWw=="],
 
     "oauth-1.0a": ["oauth-1.0a@2.2.6", "", {}, "sha512-6bkxv3N4Gu5lty4viIcIAnq5GbxECviMBeKR3WX/q87SPQ8E8aursPZUtsXDnxCs787af09WPRBLqYrf/lwoYQ=="],
 
