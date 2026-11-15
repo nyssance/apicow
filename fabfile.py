@@ -2,37 +2,24 @@
 
 import shlex
 from pathlib import Path
+lazy from shutil import which
 
 from fabric import task
+lazy from invoke import Context
 
 ROOT = Path(__file__).resolve().parent
 
 
-@task(aliases=["u", "update"], help={
-    "rust": "Upgrade Rust dependencies too (disable with --no-rust)",
-    "dry-run": "Print commands without changing dependencies",
-})
-def upgrade(c, rust=True, dry_run=False):
-    """Upgrade dependencies to latest releases, including major versions."""
-    def run(command, **kwargs):
-        if dry_run:
-            print(f"[{ROOT}] {command}")
-            return None
-        return c.run(command, **kwargs)
-
-    with c.cd(shlex.quote(str(ROOT))):
-        if not any((ROOT / name).exists() for name in ("bun.lock", "bun.lockb")):
-            run("bun install")
-        run("bun outdated --recursive", warn=True)
-        run("bun update --recursive --latest")
-        if rust:
-            installed = run("command -v cargo-upgrade", warn=True, hide=True)
-            if dry_run:
-                print("Install cargo-edit only if cargo-upgrade is missing.")
-            elif not installed.ok:
-                run("cargo install cargo-edit --locked")
-            run("cargo upgrade --incompatible allow --pinned allow")
-            run("cargo update")
+@task(aliases=["u", "update"])
+def upgrade(c: Context) -> None:
+    """升级"""
+    c.run("bun outdated --recursive")
+    c.run("bun update --recursive")
+    c.run("cargo update")
+    # 只报告超出声明范围的新版本，跨大版本手动决定
+    if not which("cargo-outdated"):
+        c.run("cargo install cargo-outdated")
+    c.run("cargo outdated --depth 1 --workspace", warn=True)
 
 
 @task(aliases=["p"], help={
