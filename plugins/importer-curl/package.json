@@ -10,6 +10,6 @@
     "test": "bun x --bun --no-install vp test --run tests"
   },
   "dependencies": {
-    "shlex": "^3.0.0"
+    "shlex": "^3.0.1"
   }
 }

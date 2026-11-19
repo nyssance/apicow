@@ -15,6 +15,6 @@
     "test": "bun x --bun --no-install vp test --run tests"
   },
   "dependencies": {
-    "httpntlm": "^1.8.14"
+    "httpntlm": "^1.8.15"
   }
 }
