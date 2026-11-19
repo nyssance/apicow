@@ -9184,9 +9184,9 @@ checksum = "adb6935a6f5c20170eeceb1a3835a49e12e19d792f6dd344ccc76a985ca5a6ca"
 
 [[package]]
 name = "tauri"
-version = "3.0.0-alpha.5"
+version = "3.0.0-alpha.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5a9b34042b264a9ecd402aa8aa3e825a4c95e77097a45b0737e02d86509c43b"
+checksum = "4b0cad7bd420aa41bdf7beab9a95e02d83c4cab1cb6f7b94fe4fd1e0c605feaa"
 dependencies = [
  "anyhow",
  "bytes",
@@ -9390,9 +9390,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-hasgard"
-version = "0.6.2"
+version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4dbaea5fb0b4b707323690b52a2271bb1621587685d3bd4aae07275e610d7b9"
+checksum = "dcfcab07798d57785130608e09d76fb9598e5882bc088f53896a923b4d4d9bf9"
 dependencies = [
  "block2",
  "core-foundation 0.10.1",
@@ -9555,9 +9555,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-runtime"
-version = "3.0.0-alpha.4"
+version = "3.0.0-alpha.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37d33186aff00f285828a7d1a63ac040c2384e6b63a3f1c1d2c4aac492cc0a10"
+checksum = "ade3281587f58a4878192946ae2007ce03cb6d208d082e1350c5ec95554596f3"
 dependencies = [
  "cookie",
  "dpi",
@@ -9615,9 +9615,9 @@ dependencies = [
 
 [[package]]
 name = "tauri-runtime-wry"
-version = "3.0.0-alpha.5"
+version = "3.0.0-alpha.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7afdc42aba986b11cd2c9b592c33c688bf71a9cd0db0d5eb1a97addfdefc287"
+checksum = "2f9bf76d9a937d43f15b2f048f5e5bed39cf71f1be21114a303ad4c9f2f0f28f"
 dependencies = [
  "gtk",
  "http",

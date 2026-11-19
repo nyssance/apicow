@@ -37,7 +37,7 @@ NSIS `.exe`。Windows 未配置 Authenticode 证书；两平台更新包均使�
 
 ## ApiCow Hasgard 调试
 
-使用 `cargo install tauri-hasgard-cli --version '^0.6' --locked` 安装 CLI。
+使用 `cargo install tauri-hasgard-cli --version '^0.7' --locked` 安装 CLI。
 `npm run client:debug` 启动带 Hasgard 的开发模式；`npm run client:debug:build`
 生成 `target/debug/bundle/macos/ApiCow Test.app`。首次构建会执行原版 bootstrap。
 
