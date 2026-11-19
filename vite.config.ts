@@ -30,6 +30,8 @@ export default defineConfig({
     },
   },
   test: {
+    pool: "threads",
+    setupFiles: [import.meta.dirname + "/scripts/test-setup.ts"],
     // Nested git worktrees live under .claude, and their tests are not this checkout's
     exclude: ["**/node_modules/**", "**/flatpak/**", "**/.claude/**"],
   },

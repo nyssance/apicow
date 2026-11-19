@@ -189,8 +189,6 @@ describe("regex.replace", () => {
       },
       purpose: "send",
     });
-    await expect(fn).rejects.toThrow(
-      "Invalid regular expression: /[/: Unterminated character class",
-    );
+    await expect(fn).rejects.toThrow(SyntaxError);
   });
 });

@@ -5,7 +5,7 @@ import { convertPostman } from "../src";
 
 describe("importer-postman", () => {
   const p = path.join(__dirname, "fixtures");
-  const fixtures = fs.readdirSync(p);
+  const fixtures = fs.readdirSync(p).sort();
 
   for (const fixture of fixtures) {
     if (fixture.includes(".output")) {

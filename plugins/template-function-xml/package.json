@@ -9,7 +9,7 @@
   "scripts": {
     "build": "yaakcli build",
     "dev": "yaakcli dev",
-    "test": "vp test --run tests"
+    "test": "bun x --bun --no-install vp test --run tests"
   },
   "dependencies": {
     "@xmldom/xmldom": "^0.9.12",
