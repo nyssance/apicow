@@ -31,4 +31,4 @@ futures-util = "0.3"
 hyper-util = { version = "0.1", features = ["server-auto"] }
 reqwest = { workspace = true }
 tempfile = "3"
-tokio-tungstenite = { version = "0.30.0", default-features = false, features = ["handshake"] }
+tokio-tungstenite = { version = "0.30", default-features = false, features = ["handshake"] }

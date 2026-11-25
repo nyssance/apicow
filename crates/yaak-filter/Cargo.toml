@@ -7,8 +7,8 @@ publish = false
 [dependencies]
 fancy-regex = "0.20"
 indexmap = "2"
-sxd-document = "0.3.2"
-sxd-xpath = "0.4.2"
+sxd-document = "0.3"
+sxd-xpath = "0.4"
 
 [dev-dependencies]
 serde_json = { workspace = true, features = ["preserve_order"] }

@@ -107,16 +107,15 @@ Notes:
 ## Updating dependencies
 
 `fab u` (aliases `fab upgrade`, `fab update`) runs at the repository root and
-upgrades to the latest releases, including major versions:
+updates within the declared ranges:
 
 1. `bun outdated --recursive`
-2. `bun update --recursive --latest`
-3. `cargo upgrade --incompatible allow --pinned allow`
-4. `cargo update`
+2. `bun update --recursive`
+3. `cargo update --verbose`, which also lists each direct crate whose newest
+   release is outside its declared range (`Unchanged … (available: …)`).
 
-It installs cargo-edit if needed. `fab u --no-rust` updates only JavaScript;
-`fab u --dry-run` previews commands. The task invokes no vp or npm and performs
-no Git pull, commit, push, publication or tagging. Bun owns the JavaScript lockfile; the obsolete npm package-lock.json is removed.
+Raising a range across a major version is done by hand. The task invokes no vp
+or npm and performs no Git pull, commit, push, publication or tagging. Bun owns the JavaScript lockfile; the obsolete npm package-lock.json is removed.
 
 The 2026-10-30 upgrade migrates the browser database to sqlite-wasm-vfs 0.3 OPFS.
 Web Locks elect one dedicated worker as the OPFS owner; other tabs forward

@@ -23,9 +23,9 @@ keyring = { workspace = true }
 log = { workspace = true }
 rand = "0.10"
 reqwest = { workspace = true, features = ["form"] }
-rolldown = "1.2.16"
-rolldown_common = "1.2.16"
-rolldown_watcher = "1.2.16"
+rolldown = "1"
+rolldown_common = "1"
+rolldown_watcher = "1"
 schemars = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
@@ -55,6 +55,6 @@ yaak-templates = { workspace = true }
 
 [dev-dependencies]
 assert_cmd = "2"
-rmcp = { version = "3.8.0", default-features = false, features = ["client"] }
+rmcp = { version = "3", default-features = false, features = ["client"] }
 predicates = "3"
 tempfile = "3"

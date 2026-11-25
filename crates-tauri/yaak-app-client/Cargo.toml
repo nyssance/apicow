@@ -23,26 +23,26 @@ license = ["yaak-license"]
 tauri-build = { version = "3.0.0-alpha.4", features = [] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
-openssl-sys = { version = "0.9.117", features = ["vendored"] } # For Ubuntu installation to work
+openssl-sys = { version = "0.9", features = ["vendored"] } # For Ubuntu installation to work
 
 [target.'cfg(any(target_os = "macos", target_os = "linux"))'.dependencies]
 rlimit = "0.11" # Raise the launchd 256 open-file soft limit at startup
 
 [dependencies]
-base64 = "0.23.1" # For writing values the editor only ever held encoded
-charset = "0.1.5"
+base64 = "0.23" # For writing values the editor only ever held encoded
+charset = "0.1"
 chrono = { workspace = true, features = ["serde"] }
-cookie = "0.18.2"
-eventsource-client = { git = "https://github.com/yaakapp/rust-eventsource-client", version = "0.14.0" }
-http = { version = "1.5.0", default-features = false }
+cookie = "0.18"
+eventsource-client = { git = "https://github.com/yaakapp/rust-eventsource-client", version = "0.14" }
+http = { version = "1", default-features = false }
 log = { workspace = true }
-md5 = "0.8.1"
-notify = "8.2.1"
+md5 = "0.8"
+notify = "8"
 pretty_graphql = "0.2"
-r2d2 = "0.8.10"
+r2d2 = "0.8"
 r2d2_sqlite = "0.35"
-mime_guess = "2.0.5"
-rand = "0.10.3"
+mime_guess = "2"
+rand = "0.10"
 reqwest = { workspace = true, features = [
   "multipart",
   "gzip",
@@ -60,7 +60,7 @@ tauri = { workspace = true, features = ["devtools", "protocol-asset"] }
 tauri-plugin-clipboard-manager = "3.0.0-alpha.3"
 tauri-plugin-deep-link = "3.0.0-alpha.3"
 tauri-plugin-dialog = { workspace = true }
-tauri-plugin-hasgard = { version = "0.7", optional = true }
+tauri-plugin-hasgard = { version = "0.8", optional = true }
 tauri-plugin-fs = "3.0.0-alpha.3"
 tauri-plugin-log = { version = "3.0.0-alpha.3", features = ["colored"] }
 tauri-plugin-opener = "3.0.0-alpha.3"
@@ -70,14 +70,14 @@ tauri-plugin-single-instance = { version = "3.0.0-alpha.3", features = ["deep-li
 tauri-plugin-updater = "3.0.0-alpha.3"
 thiserror = { workspace = true }
 tokio = { workspace = true, features = ["sync"] }
-tokio-stream = "0.1.19"
-tokio-tungstenite = { version = "0.30.0", default-features = false }
+tokio-stream = "0.1"
+tokio-tungstenite = { version = "0.30", default-features = false }
 url = "2"
 tokio-util = { version = "0.7", features = ["codec"] }
 ts-rs = { workspace = true }
 yaak-rpc = { workspace = true }
 yaak-rpc-schema = { workspace = true }
-uuid = "1.29.0"
+uuid = "1"
 yaak-api = { workspace = true }
 yaak-common = { workspace = true }
 yaak-tauri-utils = { workspace = true }
